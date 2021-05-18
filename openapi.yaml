@@ -261,7 +261,11 @@ tags:
   - name: availabilityModel
     x-displayName: Availability Model
     description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Availability" />                       
+      <SchemaDefinition schemaRef="#/components/schemas/Availability" />
+  - name: orderModel
+    x-displayName: Order Model
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Order" />                    
 
 x-tagGroups:
   - name: Models
@@ -275,6 +279,7 @@ x-tagGroups:
       - itemOfferModel
       - optionGroupModel
       - availabilityModel
+      - orderModel
 #  - name: Menus
 #    tags:
 #      - menuOverview
@@ -2239,4 +2244,53 @@ components:
             type: "object"
             description:  "Hours"
             allOf:
-              - $ref: "#/components/schemas/Hours"                   
+              - $ref: "#/components/schemas/Hours"              
+    Order:
+      type: "object"
+      title: "Order"
+      required: ["@id","@type"]
+      properties:
+        "@id":
+          type: "string"
+          format: "UUID"
+          description:  "A unique identifier of the availability."
+        "@type":
+            type: "string"
+            enum:
+              - "DELIVERY"
+              - "TAKEOUT"
+        displayId:
+          type: "string"
+          description: "Customer ID order shown on the screen."
+        createdAt:
+          type: "string"
+          format: date-time
+          description:  "Order creation date in ISO timestamp format." 
+        orderTiming:
+            type: "string"
+            enum:
+              - "Instant"
+              - "Scheduled"
+        preparationStartDateTime:
+            type: "string"
+            description: "Order preparation start time."
+        merchant:
+            type: "object"
+            properties:
+              "@id":
+                allOf:
+                  - $ref: "#/components/schemas/Merchant/properties/@id"
+              name:
+                allOf:
+                  - $ref: "#/components/schemas/Merchant/properties/name"
+        items:
+          type: "array"
+          items:
+            type: "object"
+            required: ["@id"]
+            properties:
+              "@id":
+                type: "string"
+                format: "UUID"
+              index:
+                type: "number"
