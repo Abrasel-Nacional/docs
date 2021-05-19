@@ -2265,7 +2265,7 @@ components:
         createdAt:
           type: "string"
           format: date-time
-          description:  "Order creation date in ISO timestamp format." 
+          description: "Order creation date in ISO timestamp format." 
         orderTiming:
             type: "string"
             enum:
@@ -2294,3 +2294,243 @@ components:
                 format: "UUID"
               index:
                 type: "number"
+              name:
+                type: "string"
+              externalCode:
+                type: "string"
+              unit:
+                type: "string"
+                enum:
+                  - "UNIT"
+                  - "KG"
+                  - "L"
+              ean:
+                type: "string"
+              quantity:
+                type: "number"
+              specialInstructions:
+                type: "string"
+              unitPrice:
+                type: "object"
+                allOf:
+                  - $ref: "#/components/schemas/Price"
+              optionsPrice:
+                type: "object"
+                allOf:
+                  - $ref: "#/components/schemas/Price"
+              totalPrice:
+                type: "object"
+                allOf:
+                  - $ref: "#/components/schemas/Price"
+              options:
+                type: "array"
+                items:
+                  type: "object"
+                  required: ["@id"]
+                  properties:
+                    index:
+                      type: "number"
+                    "@id":
+                      type: "string"
+                      format: "UUID"
+                    name:
+                      type: "string"
+                    externalCode:
+                      type: "string"
+                    unit:
+                      type: "string"
+                    ean:
+                      type: "string"
+                      description: ""
+                    quantity:
+                      type: "number"
+                    unitPrice:
+                      type: "object"
+                      allOf:
+                        - $ref: "#/components/schemas/Price"
+                    price:
+                      type: "object"
+                      allOf:
+                        - $ref: "#/components/schemas/Price"
+                    specialInstructions:
+                      type: "string"
+        otherFees:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              type:
+                type: "string"
+                enum:
+                  - "DELIVERY_FEE"
+                  - "SERVICE_FEE"
+                  - "TIP"
+              receivedBy:
+                type: "string"
+                enum:
+                  - "MARKETPLACE"
+                  - "MERCHANT"
+              receiverDocument:
+                type: "string"
+                description: "Mandatory for marketplace."
+              price:
+                type: "object"
+                allOf:
+                  - $ref: "#/components/schemas/Price"
+              observation:
+                type: "string"
+        discounts:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              value:
+                type: "number"
+              target:
+                type: "string"
+                enum:
+                  - "CART"
+                  - "DELIVERY_FEE"
+                  - "ITEM"
+              targetId:
+                type: "string"
+                description: "Only mandatory if target field is equal `ITEM`."
+              sponsorshipValues:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    name:
+                      type: "string"
+                      enum:
+                        - "MARKETPLACE"
+                        - "MERCHANT"
+                    value:
+                      type: "number"
+                      format: "decimal"
+        total:
+          type: "object"
+          properties:
+            items:
+              type: "number"
+            otherFees:
+              type: "number"
+            discount:
+              type: "number"
+            orderAmount:
+              type: "number"
+        payments:
+          type: "object"
+          properties:
+            prepaid:
+              type: "number"
+            pending:
+              type: "number"
+            methods:
+              type: "array"
+              items:
+                type: "object"
+                properties:
+                  value:
+                    type: "number"
+                  currency:
+                    allOf:
+                      - $ref: "#/components/schemas/Price/properties/currency"
+                  type:
+                    type: "string"
+                    enum:
+                      - "ONLINE"
+                      - "OFFLINE"
+                  method:
+                    type: "string"
+                    enum:
+                      - "CREDIT"
+                      - "DEBIT"
+                      - "MEAL_VOUCHER"
+                      - "FOOD_VOUCHER"
+                      - "WALLET"
+                      - "PIX"
+                      - "CASH"
+                      - "OTHER"
+                  methodInfo:
+                    type: "string"
+                  changeFor:
+                    type: "number"
+                    format: "decimal"
+                    description: "Only mandatory for `CASH` method."
+        customer:
+          type: "object"
+          required: ["@id"]
+          properties:
+            "@id":
+              type: "string"
+              format: "UUID"
+            phone:
+              type: "object"
+              properties:
+                number:
+                  type: "string"
+                extension:
+                  type: "string"
+            documentNumber:
+              type: "string"
+            name:
+              type: "string"
+            ordersCountOnMerchant:
+              type: "number"
+        delivery:
+          type: "object"
+          properties:
+            deliveredBy:
+              type: "string"
+              enum:
+                - "MERCHANT"
+                - "MARKETPLACE"
+            deliveryAddress:
+              type: "object"
+              properties:
+                country:
+                  type: "string"
+                streetName:
+                  type: "string"
+                formattedAddress:
+                  type: "string"
+                streetNumber:
+                  type: "string"
+                city:
+                  type: "string"
+                postalCode:
+                  type: "string"
+                coordinates:
+                  type: "object"
+                  properties:
+                    latitude:
+                      type: "number"
+                    longitude:
+                      type: number
+                neighborhood:
+                  type: "string"
+                state:
+                  type: "string"
+                complement:
+                  type: "string"
+            deliveryDateTime:
+              type: "string"
+              format: date-time
+              description: "Delivery date in ISO timestamp format." 
+        takeout:
+          type: "object"
+          properties:
+            mode:
+              type: "string"
+              enum:
+                - "DEFAULT"
+                - "PICKUP_AREA"
+            takeoutDateTime:
+              type: "string"
+              format: date-time
+              description: "Takeout date in ISO timestamp format."
+        extraInfo:
+          type: "string"
