@@ -280,21 +280,21 @@ x-tagGroups:
       - optionGroupModel
       - availabilityModel
       - orderModel
-#  - name: Menus
-#    tags:
-#      - menuOverview
-#      - menuEndpoints
-#  - name: Orders
-#    tags:
-#      - ordersOverview
-#      - ordersWebhook
-#      - ordersPolling
-#      - ordersDetails
-#      - ordersStatus
-#      - ordersCancellation
-#  - name: Payments
-#    tags:
-#      - payment
+  - name: Menus
+    tags:
+     - menuOverview
+     - menuEndpoints
+  - name: Orders
+    tags:
+     - ordersOverview
+     - ordersWebhook
+     - ordersPolling
+     - ordersDetails
+     - ordersStatus
+     - ordersCancellation
+  - name: Payments
+    tags:
+     - payment
 
 paths:
   /merchants:
@@ -472,52 +472,32 @@ paths:
         "503":
           $ref: "#/components/responses/ServicoIndisponivel"
 
-  /orders/{id}:
+  /orders/{orderId}:
     get:
       parameters: 
-        - name: "txid"
-          in: "query"
+        - name: "orderId"
+          required: true
+          in: "path"
           schema:
-            allOf:
-              - $ref: "#/components/schemas/TxId"
-              - pattern: "[a-zA-Z0-9]{1,35}"
-
-        - name: "cpf"
-          in: "query"
-          schema:
-            type: "string"
-            title: "CPF"
-            pattern: "/^\\d{11}$/"
-            description: "Filtro pelo CPF do pagador. Não pode ser utilizado ao mesmo tempo que o CNPJ."
-        - name: "cnpj"
-          in: "query"
-          schema:
-            type: "string"
-            title: "CNPJ"
-            pattern: "/^\\d{14}$/"
-            description: "Filtro pelo CNPJ do pagador. Não pode ser utilizado ao mesmo tempo que o CPF."
-        - $ref: "#/components/parameters/paginaAtual"
-        - $ref: "#/components/parameters/itensPorPagina"
+            type: integer
+            format: int64
       tags:
       - "ordersDetails"
       summary: "Get Order Details"
       security:
-        - OAuth2: [pix.read]  
-      description: "Endpoint para consultar os detalhes de um pedido recebido"
+        - OAuth2: [pix.read] #falta confirmar segurança
+      description: "Endpoint to consult the details of an order."
       responses:
         "200":
-          description: "lista dos Pix recebidos de acordo com o critério de busca."
+          description: "`orderId` returning success."
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/PixConsultados"
-              examples:
-                getCobs1:
-                  $ref: "#/components/examples/getPix1"
-        "403":
-          $ref: "#/components/responses/AcessoNegado"
-        "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
+                $ref: "#/components/schemas/Order"
+        '400':
+          description: "Invalid `orderID` supplied."
+        '404':
+          description: "`orderId` not found."
   /confirm:
     post:
       parameters: 
@@ -2269,8 +2249,8 @@ components:
         orderTiming:
             type: "string"
             enum:
-              - "Instant"
-              - "Scheduled"
+              - "INSTANT"
+              - "SCHEDULED"
         preparationStartDateTime:
             type: "string"
             description: "Order preparation start time."
@@ -2302,8 +2282,6 @@ components:
                 type: "string"
                 enum:
                   - "UNIT"
-                  - "KG"
-                  - "L"
               ean:
                 type: "string"
               quantity:
