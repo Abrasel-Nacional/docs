@@ -479,8 +479,8 @@ paths:
           required: true
           in: "path"
           schema:
-            type: integer
-            format: int64
+            type: "string"
+            format: "UUID"
       tags:
       - "ordersDetails"
       summary: "Get Order Details"
@@ -489,15 +489,20 @@ paths:
       description: "Endpoint to consult the details of an order."
       responses:
         "200":
-          description: "`orderId` returning success."
+          description: "Order returning success."
           content:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Order"
-        '400':
-          description: "Invalid `orderID` supplied."
-        '404':
-          description: "`orderId` not found."
+        "400":
+          description: "Invalid Order Supplied."
+        "401":
+          description: "Unauthorized"
+        "404":
+          description: "Order Not Found."
+        "500":
+          description: "Internal Server Error."
+        
   /confirm:
     post:
       parameters: 
