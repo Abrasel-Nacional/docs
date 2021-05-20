@@ -496,8 +496,6 @@ paths:
                 $ref: "#/components/schemas/Order"
         "400":
           description: "Invalid Order Supplied."
-        "401":
-          description: "Unauthorized"
         "404":
           description: "Order Not Found."
         "500":
