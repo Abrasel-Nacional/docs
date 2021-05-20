@@ -204,10 +204,10 @@ tags:
         
 
   - name: ordersDetails
-    x-displayName: Order Detail
+    x-displayName: Order Details
     description: |-
 
-        Detalhes do Pedido
+        Order details parameters and responses.
 
   - name: ordersStatus
     x-displayName: Status Update
