@@ -2617,3 +2617,105 @@ components:
           type: "string"
           enum:
             - "DISH_ALREADY_DONE"
+    SalesByMerchant:
+          type: "array"
+          required: ["@id"]
+          items:
+            type: "object"
+            properties:
+              "@id":
+                type: "string"
+                format: "UUID"
+              orderDate:
+                type: "string"
+                format: "date-time"
+              lastProcessingDate:
+                type: "string"
+                format: "date-time"
+              orderStatus:
+                type: "string"
+                enum:
+                  - "CONCLUDED"
+              companyName:
+                type: "string"
+              documentNumber:
+                type: "string"
+              businessModelOrder:
+                type: "string"
+                enum:
+                  - "MARKETPLACE"
+              payment:
+                type: "object"
+                properties:
+                  type:
+                    type: "string"
+                    enum:
+                      - "ONLINE"
+                  method:
+                    type: "string"
+                    enum:
+                      - "CREDIT"
+                      - "CASH"
+                  brand:
+                    type: "string"
+                  liability:
+                    type: "string"
+                    enum:
+                      - "MERCHANT"
+                  cardNumber:
+                    type: "string"
+                  billing:
+                    type: "object"
+                    properties:
+                      gmv:
+                        type: "number"
+                      totalBag:
+                        type: "number"
+                      deliveryFee:
+                        type: "number"
+                      benefitMarkeplace:
+                        type: "number"
+                      benefitMerchant:
+                        type: "number"
+                      commission:
+                        type: "number"
+                      acquirerFee:
+                        type: "number"
+                      deliveryCommission:
+                        type: "number"
+                      commissionRate:
+                        type: "number"
+                        format: "percent"
+                      acquirerFeeRate:
+                        type: "number"
+                        format: "percent"
+                      anticipationFee:
+                        type: "number"
+                      anticipationFeeRate:
+                        type: "number"
+                        format: "percent" #olhar documentação sobre percent
+                      totalDebit:
+                        type: "number"
+                      totalCredit:
+                        type: "number"
+                  transfer:
+                    type: "object"
+                    properties:
+                      expectedTransferDate:
+                        type: "string"
+                        format: "date-time"
+                      expectedBankAccount:
+                        type: "object"
+                        properties:
+                          bankNumber:
+                            type: "string"
+                          bankName:
+                            type: "string"
+                          branchCode:
+                            type: "string"
+                          branchCodeDigit:
+                            type: "string"
+                          accountNumber:
+                            type: "string"
+                          accountNumberDigit:
+                            type: "string"
