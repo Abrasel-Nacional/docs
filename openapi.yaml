@@ -501,35 +501,92 @@ paths:
         "500":
           description: "Internal Server Error."
         
-  /confirm:
+  /orders/{orderId}/confirm:
     post:
       parameters: 
         - name: "@id"
-          in: "query"
+          in: "path"
+          required: true
           schema:
-            allOf:
-              - $ref: "#/components/schemas/TxId"
-              - pattern: "[a-zA-Z0-9]{1,35}"
+            type: "string"
+            format: "UUID"
+      requestBody:
+          $ref: "#/components/requestBodies/ConfirmedOrder"
       tags:
       - "ordersStatus"
       summary: "Confirm"
       security:
         - OAuth2: [pix.read]  
-      description: "Confirma recebimento do pedido"
+      description: "Confirms receipt of order."
       responses:
         "200":
-          description: "lista dos Pix recebidos de acordo com o critério de busca."
-          content:
-            "application/json":
-              schema:
-                $ref: "#/components/schemas/PixConsultados"
-              examples:
-                getCobs1:
-                  $ref: "#/components/examples/getPix1"
-        "403":
-          $ref: "#/components/responses/AcessoNegado"
-        "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
+          description: "Order confirmed."
+        "500":
+          description: "Internal Server Error."
+  /orders/{orderId}/cancelRequest:
+    post:
+      parameters: 
+        - name: "@id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      requestBody:
+          $ref: "#/components/requestBodies/CancelRequest"
+      tags:
+      - "ordersCancellation"
+      summary: "Request order cancellation"
+      security:
+        - OAuth2: [pix.read]  
+      description: "Request order cancellation."
+      responses:
+        "200":
+          description: "Order cancellation requested."
+        "500":
+          description: "Internal Server Error."
+  /orders/{orderId}/cancelAccepted:
+    post:
+      parameters: 
+        - name: "@id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      tags:
+      - "ordersCancellation"
+      summary: "Accept order cancellation"
+      security:
+        - OAuth2: [pix.read]  
+      description: "Accept order cancellation"
+      responses:
+        "200":
+          description: "Order cancellation confirmed."
+        "500":
+          description: "Internal Server Error."
+  /orders/{orderId}/cancelDenied:
+    post:
+      parameters: 
+        - name: "@id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      requestBody:
+          $ref: "#/components/requestBodies/CancelDenied"
+      tags:
+      - "ordersCancellation"
+      summary: "Request order denied"
+      security:
+        - OAuth2: [pix.read]  
+      description: "Request order denied."
+      responses:
+        "200":
+          description: "Denied cancellation order confirmed."
+        "500":
+          description: "Internal Server Error."  
   /dispatch:
     post:
       parameters: 
@@ -588,7 +645,7 @@ paths:
         "403":
           $ref: "#/components/responses/AcessoNegado"
         "503":
-          $ref: "#/components/responses/ServicoIndisponivel"                              
+          $ref: "#/components/responses/ServicoIndisponivel"                             
 components:
   securitySchemes:
     OAuth 2:
@@ -1262,26 +1319,26 @@ components:
         status: 503
         detail: "Serviço não está disponível no momento. Serviço solicitado pode estar em manutenção ou fora da janela de funcionamento."     
   requestBodies:
-    CobBody:
-      description: "Dados para geração da cobrança imediata."
+    ConfirmedOrder:
+      description: "Order confirmation."
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/OrderConfirmed"
+    CancelRequest:
+      description: "Request to order cancelled."
       required: true
       content:
         "application/json":
           schema:
-            $ref: "#/components/schemas/CobSolicitada"
-          examples:
-            exemplo1:
-              $ref: "#/components/examples/cobBody2"
-    CobVBody:
-      description: "Dados para geração da cobrança com vencimento."
+            $ref: "#/components/schemas/RequestCancelled"
+    CancelDenied:
+      description: "Request to cancel order denied."
       required: true
       content:
         "application/json":
           schema:
-            $ref: "#/components/schemas/CobVSolicitada"
-          examples:
-            exemplo1:
-              $ref: "#/components/examples/cobBody1"
+            $ref: "#/components/schemas/RequestDenied"
     LoteCobVBody:
       description: "Dados para geração de lote de cobranças com vencimento."
       required: true
@@ -2515,3 +2572,48 @@ components:
               description: "Takeout date in ISO timestamp format."
         extraInfo:
           type: "string"
+    OrderConfirmed:
+      type: "object"
+      title: "Order Confirmed"
+      properties:
+        reason:
+          type: "string"
+        createdAt: 
+          type: "string"
+          format: date-time
+          description: "Order creation date in ISO timestamp format."
+        orderExternalCode:
+          type: "string"
+    RequestCancelled:
+      type: "object"
+      title: "Request Cancelled"
+      properties:
+        reason:
+          type: "string"
+        code:
+          type: "string"
+          enum:
+            - "ITEM_AVAILABILITY"
+        mode:
+          type: "string"
+          enum:
+            - "AUTO"
+            - "MANUAL"
+        out_of_stock_items:
+          type: "array"
+          items:
+            type: string
+        invalid_items:
+          type: "array"
+          items:
+            type: string
+    RequestDenied:
+      type: "object"
+      title: "Request Cancelled"
+      properties:
+        reason:
+          type: "string"
+        code:
+          type: "string"
+          enum:
+            - "DISH_ALREADY_DONE"
