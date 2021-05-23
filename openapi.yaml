@@ -272,16 +272,13 @@ tags:
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Event" /> 
   - name: authentication
-    x-displayName: Request Access Token
-    description: |
-    
-      Endpoint para consultar os merchants de um estabelecimento
+    x-displayName:
+    description: |    
       ...
       # Authorization
       Some description authentication
 
       <!-- ReDoc-Inject: <security-definitions> -->
-      <SecurityDefinitions />
       ...
 
 x-tagGroups:
