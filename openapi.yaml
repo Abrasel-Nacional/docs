@@ -283,7 +283,7 @@ tags:
       <!-- ReDoc-Inject: <security-definitions> -->
       <SecurityDefinitions />
       ...
-      
+
 x-tagGroups:
   - name: ""
     tags:
@@ -327,16 +327,7 @@ paths:
       security:
         - OAuth2: [od.all]
       description: |-
-          Endpoint para consultar os merchants de um estabelecimento
-
-          ...
-          # Authorization
-          Some description authentication
-
-          <!-- ReDoc-Inject: <security-definitions> -->
-          <SecurityDefinitions />
-          ...
-          
+          Endpoint para consultar os merchants de um estabelecimento          
       requestBody:
           $ref: "#/components/requestBodies/Token"  
       responses:
