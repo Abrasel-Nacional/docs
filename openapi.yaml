@@ -272,17 +272,14 @@ tags:
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Event" /> 
   - name: authentication
-    x-displayName:
+    x-displayName: "Security"
     description: |    
-      ...
-      # Authorization
-      Some description authentication
 
       <!-- ReDoc-Inject: <security-definitions> -->
-      ...
+
 
 x-tagGroups:
-  - name: Authentication
+  - name: ""
     tags:
       - authentication
   - name: Models
