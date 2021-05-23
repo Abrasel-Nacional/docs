@@ -323,7 +323,7 @@ paths:
 
           ...
           # Authorization
-          Some description
+          Some description authentication
 
           <!-- ReDoc-Inject: <security-definitions> -->
           ...
