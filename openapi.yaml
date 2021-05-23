@@ -326,6 +326,7 @@ paths:
           Some description authentication
 
           <!-- ReDoc-Inject: <security-definitions> -->
+          <SecurityDefinitions />
           ...
           
       requestBody:
@@ -841,7 +842,7 @@ components:
 #      type: apiKey
 #      name: api_key
 #      in: header
-  
+
   examples:
     cobBody1:
       summary: "Exemplo de criação de cobrança com vencimento 1"
