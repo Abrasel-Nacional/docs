@@ -285,7 +285,7 @@ tags:
       ...
 
 x-tagGroups:
-  - name: ""
+  - name: Authentication
     tags:
       - authentication
   - name: Models
