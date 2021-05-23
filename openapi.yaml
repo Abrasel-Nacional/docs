@@ -226,6 +226,7 @@ tags:
     description: |-
 
         Endpoint de conciliação
+
   - name: menuEntitiesModel
     x-displayName: Menu Entities Model
     description: |
@@ -266,8 +267,19 @@ tags:
     x-displayName: Order Model
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Order" />                    
+  - name: eventModel
+    x-displayName: Event Model
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Event" /> 
+  - name: authentication
+    x-displayName: Request Access Token
+    description: |
+      <SchemaDefinition schemaRef="#/components/schemas/Event" />        
 
 x-tagGroups:
+  - name: ""
+    tags:
+      - authentication
   - name: Models
     tags:
       - menuEntitiesModel
@@ -280,23 +292,58 @@ x-tagGroups:
       - optionGroupModel
       - availabilityModel
       - orderModel
-  - name: Menus
-    tags:
-     - menuOverview
-     - menuEndpoints
+      - eventModel
+#  - name: Menus
+#    tags:
+#      - menuOverview
+#      - menuEndpoints
   - name: Orders
     tags:
-     - ordersOverview
-     - ordersWebhook
-     - ordersPolling
-     - ordersDetails
-     - ordersStatus
-     - ordersCancellation
+      - ordersOverview
+      - ordersWebhook
+      - ordersPolling
+      - ordersDetails
+      - ordersStatus
+      - ordersCancellation
   - name: Payments
     tags:
-     - payment
+      - payment
 
 paths:
+  /oauth/token:
+    get:
+      operationId: "getToken"
+      tags:
+      - "authentication"
+      summary: "Get token"
+      security:
+        - OAuth2: [od.all]
+      description: |-
+          Endpoint para consultar os merchants de um estabelecimento
+
+          ...
+          # Authorization
+          Some description
+
+          <!-- ReDoc-Inject: <security-definitions> -->
+          ...
+          
+      requestBody:
+          $ref: "#/components/requestBodies/Token"  
+      responses:
+        "200":
+          description: "Dados da cobrança imediata."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "404":
+          $ref: "#/components/responses/NaoEncontrado"
+        "503":
+          $ref: "#/components/responses/ServicoIndisponivel"
+
   /merchants:
     get:
       operationId: "merchant"
@@ -328,12 +375,12 @@ paths:
           name: "inicio"
           required: true
           schema:
-            $ref:  "#/components/schemas/Inicio"
+            $ref:  "#/components/schemas/Generico"
         - in: "query"
           name: "fim"
           required: true
           schema:
-            $ref:  "#/components/schemas/Fim"
+            $ref:  "#/components/schemas/Generico"
         - name: "cpf"
           in: "query"
           schema:
@@ -358,8 +405,8 @@ paths:
             type: "string"
             title: "Status da Cobrança"
             description: "Filtro pelo status da cobrança."
-        - $ref: "#/components/parameters/paginaAtual"
-        - $ref: "#/components/parameters/itensPorPagina"
+#        - $ref: "#/components/parameters/paginaAtual"
+#        - $ref: "#/components/parameters/itensPorPagina"
       tags:
       - "menuEndpoints"
       summary: "Get specific information about Services and Menus of a Merchant"
@@ -373,12 +420,12 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/CobsConsultadas"
-              examples:
-                getCobs1:
-                  $ref: "#/components/examples/getCobs1"
-                getCobs2:
-                  $ref: "#/components/examples/getCobs2"
+                $ref: "#/components/schemas/Generico"
+#              examples:
+#                getCobs1:
+#                  $ref: "#/components/examples/getCobs1"
+#                getCobs2:
+#                  $ref: "#/components/examples/getCobs2"
         "403":
           $ref: "#/components/responses/AcessoNegado"
         "503":
@@ -390,7 +437,7 @@ paths:
           in: "query"
           schema:
             allOf:
-              - $ref: "#/components/schemas/TxId"
+              - $ref: "#/components/schemas/Generico"
               - pattern: "[a-zA-Z0-9]{1,35}"
       tags:
       - "ordersWebhook"
@@ -404,7 +451,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/PixConsultados"
+                $ref: "#/components/schemas/Generico"
               examples:
                 getCobs1:
                   $ref: "#/components/examples/getPix1"
@@ -419,7 +466,7 @@ paths:
           in: "query"
           schema:
             allOf:
-              - $ref: "#/components/schemas/TxId"
+              - $ref: "#/components/schemas/Generico"
               - pattern: "[a-zA-Z0-9]{1,35}"
       tags:
       - "ordersPolling"
@@ -433,7 +480,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/PixConsultados"
+                $ref: "#/components/schemas/Generico"
               examples:
                 getCobs1:
                   $ref: "#/components/examples/getPix1"
@@ -449,7 +496,7 @@ paths:
           in: "query"
           schema:
             allOf:
-              - $ref: "#/components/schemas/TxId"
+              - $ref: "#/components/schemas/Generico"
               - pattern: "[a-zA-Z0-9]{1,35}"
       tags:
       - "ordersPolling"
@@ -463,7 +510,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/PixConsultados"
+                $ref: "#/components/schemas/Generico"
               examples:
                 getCobs1:
                   $ref: "#/components/examples/getPix1"
@@ -594,7 +641,7 @@ paths:
           in: "query"
           schema:
             allOf:
-              - $ref: "#/components/schemas/TxId"
+              - $ref: "#/components/schemas/Generico"
               - pattern: "[a-zA-Z0-9]{1,35}"
       tags:
       - "ordersStatus"
@@ -608,7 +655,7 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/PixConsultados"
+                $ref: "#/components/schemas/Generico"
               examples:
                 getCobs1:
                   $ref: "#/components/examples/getPix1"
@@ -624,7 +671,7 @@ paths:
           in: "query"
           schema:
             allOf:
-              - $ref: "#/components/schemas/TxId"
+              - $ref: "#/components/schemas/Generico"
               - pattern: "[a-zA-Z0-9]{1,35}"
       tags:
       - "ordersStatus"
@@ -638,7 +685,94 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/PixConsultados"
+                $ref: "#/components/schemas/Generico"
+              examples:
+                getCobs1:
+                  $ref: "#/components/examples/getPix1"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "503":
+          $ref: "#/components/responses/ServicoIndisponivel"
+  /cancelRequest:
+    post:
+      parameters: 
+        - name: "@id"
+          in: "query"
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/Generico"
+              - pattern: "[a-zA-Z0-9]{1,35}"
+      tags:
+      - "ordersCancellation"
+      summary: "Request order cancellation"
+      security:
+        - OAuth2: [pix.read]  
+      description: "Confirma recebimento do pedido"
+      responses:
+        "200":
+          description: "lista dos Pix recebidos de acordo com o critério de busca."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Generico"
+              examples:
+                getCobs1:
+                  $ref: "#/components/examples/getPix1"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "503":
+          $ref: "#/components/responses/ServicoIndisponivel"
+  /cancelAccepeted:
+    post:
+      parameters: 
+        - name: "@id"
+          in: "query"
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/Generico"
+              - pattern: "[a-zA-Z0-9]{1,35}"
+      tags:
+      - "ordersCancellation"
+      summary: "Accept order cancellation"
+      security:
+        - OAuth2: [pix.read]  
+      description: "Confirma recebimento do pedido"
+      responses:
+        "200":
+          description: "lista dos Pix recebidos de acordo com o critério de busca."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Generico"
+              examples:
+                getCobs1:
+                  $ref: "#/components/examples/getPix1"
+        "403":
+          $ref: "#/components/responses/AcessoNegado"
+        "503":
+          $ref: "#/components/responses/ServicoIndisponivel"
+  /cancelDenied:
+    post:
+      parameters: 
+        - name: "@id"
+          in: "query"
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/Generico"
+              - pattern: "[a-zA-Z0-9]{1,35}"
+      tags:
+      - "ordersCancellation"
+      summary: "Deny order cancellation"
+      security:
+        - OAuth2: [pix.read]  
+      description: "Confirma recebimento do pedido"
+      responses:
+        "200":
+          description: "lista dos Pix recebidos de acordo com o critério de busca."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/Generico"
               examples:
                 getCobs1:
                   $ref: "#/components/examples/getPix1"
@@ -649,27 +783,65 @@ paths:
 components:
   securitySchemes:
     OAuth 2:
-      description: |
-        Open Delivery suports OAuth 2
-        Get access to data while protecting your account credentials.
-        OAuth2 is also a safer and more secure way to give you access.
       type: oauth2
       flows:
         clientCredentials:
           tokenUrl: /token
+          bearerFormat: "JWT"
           scopes:
-            od.all: "Access to all Open Delivery APIs"
-    bearer:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-                        
-    api_key:
-      description: >
-        Usage: Necessary to validate the order event notification sender.
-      type: apiKey
-      name: api_key
-      in: header
+            od.all: "Access to all Open Delivery APIs"      
+      description: |
+        Open Delivery suports OAuth 2
+        Get access to data while protecting your account credentials.
+        OAuth2 is also a safer and more secure way to give you access.
+        
+        Generating a Client Credentials token
+
+        To generate a client credentials token, retrieve your client_id and client_secret for your app from the Developer Dashboard and see the example below. Note this endpoint expects requests to be encoded as application/x-www-form-urlencoded or multipart/form-data.
+
+        Example Request
+        ```
+        curl -F "client_secret=$CLIENT_SECRET" \
+            -F "client_id=$CLIENT_ID" \
+            -F "grant_type=client_credentials" \
+            -F "scope=od.all" \
+            /oauth/v1/token
+        ```    
+
+        Example Response
+        ```
+        {
+          "accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJlNjkwYjczZC01OTI4LTRkMTctODE2ZC01Y2Y5YjgyZTJhOWUiLCJhdWQiOiJvcmRlciIsInVzZXJfbmFtZSI6ImU2OTBiNzNkLTU5MjgtNGQxNy04MTZkLTVjZjliODJlMmE5ZSIsInNjb3BlIjpbIm9yZGVyIl0sInRlbmFudElkIjoiNmFjNjkxZDEtMjZjNi00ZmVkLWJmN2ItOTEwMzJkNTM4NWZkIiwiaXNzIjoiaUZvb2QiLCJtZXJjaGFudF9zY29wZSI6WyI2YjQ4N2EyNy1jNGZjLTRmMjYtYjA1ZS0zOTY3YzIzMzE4ODI6b3JkZXIiXSwiZXhwIjoxNjEyMjMwNDU5LCJpYXQiOjE2MTIyMDg4NTksIm1lcmNoYW50X3Njb3BlZCI6dHJ1ZSwiY2xpZW50X2lkIjoiZTY5MGI3M2QtNTkyOC00ZDE3LTgxNmQtNWNmOWI4MmUyYTllIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9DTElFTlQiXX0.lYqdxjHoOksq8COqJ-VZxzd524MhVzH7hkMfp5zGTpqzp26z5XJwOPHAy7L6oyagUgRfxntKeu0Up_JHgJ-Vr0h5Y9wY4XHcK1yxpFXFB5f5ilGDB0hVN3UGa4GBqeVpCbAPQUl4VhbF2byeL9PuO4TfTZmoWyuec9-xEH_nbHg",
+          "tokenType": "Bearer",
+          "expiresIn": 2592000,
+          "scope": "od.all",
+        }
+        ```
+
+        Usage
+        The access_token field will contain the token used to authenticate against the Open Delivery APIs. Once you’ve obtained this token, you can provide it in the “Authorization” header of requests you make to endpoints that require client credentials scopes.
+
+        The expires_in field indicates the lifetime of the access token, provided in seconds. Tokens are valid for 30 days (2,592,000 seconds) and should be cached and re-used across requests until (or shortly before) expiration, not re-generated per request.
+        ```
+        curl \
+          -H 'authorization: Bearer <TOKEN>' \
+          https://api.uber.com/v1/eats/stores"
+        ```          
+
+
+
+#    bearer:
+#      type: http
+#      scheme: bearer
+#      bearerFormat: JWT
+#                        
+#    api_key:
+#      description: >
+#        Usage: Necessary to validate the order event notification sender.
+#      type: apiKey
+#      name: api_key
+#      in: header
+  
   examples:
     cobBody1:
       summary: "Exemplo de criação de cobrança com vencimento 1"
@@ -1318,7 +1490,16 @@ components:
         title: "Serviço Indisponível"
         status: 503
         detail: "Serviço não está disponível no momento. Serviço solicitado pode estar em manutenção ou fora da janela de funcionamento."     
+  
   requestBodies:
+    Token:
+      description: "Request a token"
+      required: true
+      content:
+        "application/json":
+          schema:
+            $ref: "#/components/schemas/TokenRequest"
+
     ConfirmedOrder:
       description: "Order confirmation."
       content:
@@ -1339,6 +1520,7 @@ components:
         "application/json":
           schema:
             $ref: "#/components/schemas/RequestDenied"
+
     LoteCobVBody:
       description: "Dados para geração de lote de cobranças com vencimento."
       required: true
@@ -1358,8 +1540,8 @@ components:
                       required: ["txid"]
                       properties:
                         txid:
-                          $ref: "#/components/schemas/TxId"
-                    - $ref: "#/components/schemas/CobVSolicitada"
+                          $ref: "#/components/schemas/Generico"
+                    - $ref: "#/components/schemas/Generico"
           examples:
             exemplo1:
               $ref: "#/components/examples/loteCobVBody1"
@@ -1381,8 +1563,8 @@ components:
                       required: ["txid"]
                       properties:
                         txid:
-                          $ref: "#/components/schemas/TxId"
-                    - $ref: "#/components/schemas/CobVRevisada"
+                          $ref: "#/components/schemas/Generico"
+                    - $ref: "#/components/schemas/Generico"
           examples:
             exemplo1:
               $ref: "#/components/examples/loteCobVBodyRevisado1"
@@ -1392,7 +1574,7 @@ components:
       content:
         "application/json":
           schema:
-            $ref: "#/components/schemas/CobRevisada"
+            $ref: "#/components/schemas/Generico"
           examples:
             exemplo1:
               $ref: "#/components/examples/cobBody3"
@@ -1406,7 +1588,7 @@ components:
       content:
         "application/json":
           schema:
-            $ref: "#/components/schemas/CobVRevisada"
+            $ref: "#/components/schemas/Generico"
           examples:
             exemplo1:
               $ref: "#/components/examples/cobBody3"
@@ -1420,7 +1602,7 @@ components:
       content:
         "application/json":
           schema:
-            $ref: "#/components/schemas/PayloadLocationSolicitada"
+            $ref: "#/components/schemas/Generico"
           examples:
             exemplo1:
               $ref: "#/components/examples/payloadLocationBody1"
@@ -1430,7 +1612,7 @@ components:
       content:
         "application/json":
           schema:
-            $ref: "#/components/schemas/DevolucaoSolicitada"
+            $ref: "#/components/schemas/Generico"
           examples:
             exemplo1:
               $ref: "#/components/examples/devolucaoSolicitada1"
@@ -1439,7 +1621,7 @@ components:
       content:
         "application/json":
           schema:
-            $ref: "#/components/schemas/WebhookSolicitado"
+            $ref: "#/components/schemas/Generico"
           examples:
             exemplo1:
               $ref: "#/components/examples/webhookBody1"
@@ -1453,13 +1635,55 @@ components:
               pix:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/Pix"
+                  $ref: "#/components/schemas/Generico"
                 example:
                   - allOf:
                     - $ref: "#/components/examples/pixWebhook1/value"
                   - allOf:
                     - $ref: "#/components/examples/pixWebhook2/value"
   schemas:
+    TokenRequest:
+      type: "object"
+      title: "TokenRequest"
+      required: [""]
+      properties:
+        clientId:
+          type: "string"
+          format: "date-time"
+          description:  "The last modified date and time in ISO timestamp format but with type String. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication."
+        clientSecret:
+          type: "integer"
+          description:  "Time to Live (in seconds). 
+          \nMin: 500
+          Max: 86400. 
+          \nA new request must be done when the TTL expires."
+        grantType:
+          type: "string"
+          description:  "Time to Live (in seconds)." 
+          enum:
+            - "clientCredentials"
+
+    TokenResponse:
+      type: "object"
+      title: "TokenResponse"
+      required: [""]
+      properties:
+        accessToken:
+          type: "string"
+          format: "date-time"
+          description:  "The last modified date and time in ISO timestamp format but with type String. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication."
+        tokenType:
+          type: "integer"
+          description:  "Time to Live (in seconds). 
+          \nMin: 500
+          Max: 86400. 
+          \nA new request must be done when the TTL expires."
+        expiresIn:
+          type: "integer"
+          description:  "Time to Live (in seconds). 
+          \nMin: 500
+          Max: 86400. 
+          \nA new request must be done when the TTL expires."    
 
     MenuEntity:
       type: "object"
@@ -1485,45 +1709,35 @@ components:
         services:
           type: "array"
           description:  "A required entity to implement. Describes food ordering services details for a merchant."
-          items:
-            type: "object"            
-            allOf:
-              - $ref: "#/components/schemas/Service" 
+          items:           
+            $ref: "#/components/schemas/Service" 
         items:
           type: "array"
           description:  "A required entity to implement. Describes an array of items. To be used with an `ItemOffer` or an `Option`."
           items:
-            type: "object"            
-            allOf:
-              - $ref: "#/components/schemas/Item" 
+            $ref: "#/components/schemas/Item" 
         menus:
           type: "array"
           description:  "A required entity to implement. Describes an array of menus."
           items:
-            type: "object"            
-            allOf:
-              - $ref: "#/components/schemas/Menu"
+            $ref: "#/components/schemas/Menu"
         categories:
           type: "array"
           description:  "A required entity to implement. Describes an array of sections in the menu where `ItemOffers` will be showed."
           items:
             type: "object"            
-            allOf:
-              - $ref: "#/components/schemas/Category" 
+            $ref: "#/components/schemas/Category" 
         itemOffers:
           type: "array"
           description:  "A required entity to implement. Describes an array of offers for the `Items`."
           items:
             type: "object"            
-            allOf:
-              - $ref: "#/components/schemas/ItemOffer"
+            $ref: "#/components/schemas/ItemOffer"
         optionGroups:
           type: "array"
           description:  "An optional entity to implement. Describes additional options of an `ItemOffer`."
           items:
-            type: "object"            
-            allOf:
-              - $ref: "#/components/schemas/OptionGroup"
+            $ref: "#/components/schemas/OptionGroup"
         availability:
           type: "array"
           description:  "An optional entity to implement. Describes the time period during which a `Category` or an `ItemOffer` entity is served."
@@ -1681,7 +1895,7 @@ components:
          
     Service:
       type: "object"
-      title: "Merchant"
+      title: "Service"
       required: ["@id","@type"]
       properties:
         "@id":
@@ -1705,11 +1919,8 @@ components:
             - DELIVERY
             - TAKEOUT
         menuId:
-          type: "string"
           description:  "The @id value of the `Menu` entity correlated to this `Service` entity."
-        merchantId:
-          type: "string"
-          description:  "Merchant"
+          $ref: "#/components/schemas/Menu/properties/@id"     
         serviceArea:
           type: "object"
           description:  "A conditional entity to implement (required if the Service entity associated has serviceType set to \"DELIVERY\"). Describes the geographical region in which food can be delivered."
@@ -2142,10 +2353,10 @@ components:
             type: string
             format: "UUID"  
         itemOfferId:
-          type: "array"
+          type: array
           description:  "A list of the @id values of the child `ItemOffer` entities that correspond to this `Category` entity. Default assumes all `ItemOffer` entities are available in this category."
           items:
-            allOf:
+            anyOf:
             - $ref: "#/components/schemas/ItemOffer/properties/@id"           
                   
     ItemOffer:
@@ -2293,7 +2504,7 @@ components:
         "@id":
           type: "string"
           format: "UUID"
-          description:  "A unique identifier of the availability."
+          description:  "A unique identifier of the order."
         "@type":
             type: "string"
             enum:
@@ -2719,3 +2930,149 @@ components:
                             type: "string"
                           accountNumberDigit:
                             type: "string"
+
+    Event:
+      type: "object"
+      title: "Event"
+      required: ["@id","@type"]
+      discriminator:
+        propertyName: eventType
+        mapping:
+          CREATED: '#/components/schemas/EventMetadata'
+          CONFIRMED: '#/components/schemas/EventMetadataConfirm'
+          DISPATCHED: '#/components/schemas/EventMetadata'
+          READY_FOR_PICKUP: '#/components/schemas/EventMetadata'
+          PICKUP_AREA_ASSIGNED: '#/components/schemas/EventMetadata'
+          CONCLUDED: '#/components/schemas/EventMetadata'
+          CANCELLATION_REQUESTED: '#/components/schemas/EventMetadataCancel'
+          CANCELLATION_REQUEST_DENIED: '#/components/schemas/EventMetadataCancel'
+          CANCELLED: '#/components/schemas/EventMetadataCancel'
+      properties:
+        eventId:
+          type: "string"
+          format: "UUID"
+          description:  "A unique identifier of the event."  
+        eventType:
+            type: "string"
+            description: "The event type"
+            enum:
+              - "CREATED"
+              - "CONFIRMED"
+              - "DISPATCHED"
+              - "READY_FOR_PICKUP"
+              - "PICKUP_AREA_ASSIGNED"
+              - "CONCLUDED"
+              - "CANCELLATION_REQUESTED"
+              - "CANCELLATION_REQUEST_DENIED"
+              - "CANCELLED"
+        orderId:
+          allOf:
+            - $ref: "#/components/schemas/Order/properties/@id"
+        orderUrl:
+          type: "string"
+          format: "uri"
+          description: "The URL to get the order details"
+        createdAt:
+          type: "string"
+          format: date-time
+          description:  "Order creation date in ISO timestamp format." 
+
+    EventMetadataCancel:
+      description: Metadata
+      allOf:
+        - $ref: '#/components/schemas/Event'
+        - type: object
+        - properties:
+            metadata: 
+              type: object
+              description: "Information related to the Event Type"
+              properties:
+                reason:
+                  type: "string"
+                  description: "Reason for the cancellation"
+                code:
+                  type: "string"
+                  description: "Cancelation reason code"
+                  enum:
+                    - "PROBLEMAS_DE_SISTEMA"
+                    - "PEDIDO_EM_DUPLICIDADE"
+                    - "ITEM_INDISPONIVEL"
+                    - "RESTAURANTE_SEM_MOTOBOY"
+                    - "CARDÁPIO_DESATUALIZADO"
+                    - "PEDIDO_FORA_DA_AREA_DE_ENTREGA"
+                    - "CLIENTE_GOLPISTA_TROTE"
+                    - "FORA_DO_HORÁRIO_DELIVERY"
+                    - "DIFICULDADES_INTERNAS_RESTAURANTE"
+                    - "AREA_DE_RISCO"
+                clientId:
+                  type: "string"
+                  description: "The URL to get the order details"
+     
+    EventMetadata:
+      description: Metadata
+      allOf:
+        - $ref: '#/components/schemas/Event'
+
+    EventMetadataConfirm:
+      description: Metadata
+      allOf:
+        - $ref: '#/components/schemas/Event'
+        - type: object
+        - properties:
+            metadata: 
+              type: object
+              description: "Information related to the Event Type"
+              properties:
+                expectedPreparationStartTime:
+                  type: "string"
+                  format: "date-time"
+                  description: "Expected preparation start time after Order Confirmation"
+                clientId:
+                  type: "string"
+                  description: "The URL to get the order details"   
+    Generico:
+      type: "object"
+      title: "Order"
+      required: ["@id","@type"]
+      properties:
+        "@id":
+          type: "string"
+          format: "UUID"
+          description:  "A unique identifier of the order."                    
+                
+  responses:
+    RequisicaoInvalida:
+      description: "Problemas na requisição."
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Generico'
+    NaoEncontrado:
+      description: "Recurso solicitado não foi encontrado."
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Generico'
+          examples:
+            exemplo1:
+              $ref: "#/components/examples/NaoEncontradoExample1"
+    AcessoNegado:
+      description: "Requisição de participante autenticado que viola alguma regra de autorização."
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Generico'
+          examples:
+            exemplo1:
+              $ref: "#/components/examples/AcessoNegadoExample1"
+    ServicoIndisponivel:
+      description: "Serviço não está disponível no momento. Serviço solicitado pode estar em manutenção ou fora da janela de funcionamento."
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Generico'
+          examples:
+            exemplo1:
+              $ref: "#/components/examples/ServicoIndisponivelExample1"
+            
+
