@@ -209,7 +209,7 @@ tags:
       Cras luctus ultrices arcu. Quisque non tortor euismod, mollis ligula id, scelerisque enim. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec et lacinia purus. Nunc porttitor orci mi, vitae egestas tortor tempus vel. Nam accumsan, justo in imperdiet ornare, nisl ipsum dignissim magna, in vestibulum dolor ante ac elit.
 
   - name: ordersWebhook
-    x-displayName: Webhook Events
+    x-displayName: Webhook
     description: |-
 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
@@ -218,7 +218,7 @@ tags:
           </div>
 
   - name: ordersPolling
-    x-displayName: Polling Events
+    x-displayName: Polling
     description: |-
 
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
@@ -315,7 +315,7 @@ tags:
 
       Cras luctus ultrices arcu. Quisque non tortor euismod, mollis ligula id, scelerisque enim. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec et lacinia purus. Nunc porttitor orci mi, vitae egestas tortor tempus vel. Nam accumsan, justo in imperdiet ornare, nisl ipsum dignissim magna, in vestibulum dolor ante ac elit.
     
-      # How to Access
+      ## How to Access
 
       Instruções em como acessar o repositório
 
@@ -336,15 +336,15 @@ x-tagGroups:
       - availabilityModel
       - orderModel
       - eventModel
-#  - name: Menus
-#    tags:
-#      - menuOverview
-#      - menuEndpoints
+  - name: Menus
+    tags:
+      - menuOverview
+      - menuEndpoints
   - name: Orders
     tags:
       - ordersOverview
-      - ordersWebhook
       - ordersPolling
+      - ordersWebhook
       - ordersDetails
       - ordersStatus
       - ordersCancellation
@@ -466,35 +466,37 @@ paths:
         "503":
           $ref: "#/components/responses/ServicoIndisponivel"
 
-  /event:
-    post:
-      parameters: 
-        - name: "@id"
-          in: "query"
+  /healthCheck:
+    get:
+      parameters:
+        - in: "query"
+          name: "merchantId"
+          required: true
           schema:
-            allOf:
-              - $ref: "#/components/schemas/Generico"
-              - pattern: "[a-zA-Z0-9]{1,35}"
+            $ref:  "#/components/schemas/Merchant/properties/@id"
       tags:
-      - "ordersWebhook"
-      summary: "Send Events"
+      - "menuEndpoints"
+      summary: "Get a Health Check on an merchant info"
       security:
         - OAuth2: [od.all]  
-      description: "Envio de novos eventos via webhook"
+      description: |-
+          Endpoint para consultar todos os dados de um merchant específico, comodados básicos, cardápios e serviços
       responses:
         "200":
-          description: "lista dos Pix recebidos de acordo com o critério de busca."
+          description: "Lista de cobranças imediatas."
           content:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Generico"
               examples:
                 getCobs1:
-                  $ref: "#/components/examples/getPix1"
+                  $ref: "#/components/examples/getCobs1"
+                getCobs2:
+                  $ref: "#/components/examples/getCobs2"
         "403":
           $ref: "#/components/responses/AcessoNegado"
         "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
+          $ref: "#/components/responses/ServicoIndisponivel"          
   
   "/events:polling":
     get:
@@ -753,7 +755,35 @@ paths:
             $ref: "#/components/responses/NaoEncontrado"
           "503":
             $ref: "#/components/responses/ServicoIndisponivel"
-                        
+
+x-webhooks:
+  menuUpdated:
+    post:
+      summary: New menu update
+      description: Information about a update in the systems
+      operationId: newEvent
+      tags: 
+        - menuEndpoints
+      responses:
+        "200":
+          description: Return a 200 status to indicate that the data was received successfully
+
+  newEvent:
+    post:
+      summary: New event
+      description: Information about a new event in the systems
+      operationId: newEvent
+      tags: 
+        - ordersWebhook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "200":
+          description: Return a 200 status to indicate that the data was received successfully                     
+
 components:
 
   securitySchemes:
