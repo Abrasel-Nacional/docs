@@ -309,7 +309,7 @@ tags:
     x-displayName: Repository Overview
     description: |-
 
-      Explicações de fluxos do funcionamento do cardápio.
+      Explicações de fluxos do funcionamento do repositório.
       
       Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
 
@@ -354,7 +354,7 @@ x-tagGroups:
       - availabilityModel
       - orderModel
       - eventModel
-      
+
 paths:
   /oauth/token:
     get:
