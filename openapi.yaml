@@ -272,11 +272,29 @@ tags:
     description: |
       <SchemaDefinition schemaRef="#/components/schemas/Event" /> 
   - name: authentication
-    x-displayName: "Security"
+    x-displayName: "Authentication"
     description: |    
+        Open Delivery suports **OAuth 2**.
+        <!-- ReDoc-Inject: <security-definitions> -->
 
-      <!-- ReDoc-Inject: <security-definitions> -->
+        ### Generating a Client Credentials Token
 
+        To generate a client credentials token, retrieve your client_id and client_secret for your app from your Ordering Application Company and see the [endpoint](#operation/getToken) below.
+
+        ### Usage
+
+        The **accessToken** field will contain the token used to authenticate against the Open Delivery APIs. Once you’ve obtained this token, you can provide it in the “Authorization” header of requests you make to endpoints that require client credentials scopes.
+
+        The **expiresIn** field indicates the lifetime of the access token, provided in seconds. This should be cached and re-used across requests until (or shortly before) expiration, not re-generated per request.
+        
+        ```
+        curl \
+          -H 'authorization: Bearer <TOKEN>' \
+          https://{baseURL}/v1/events:polling
+        ``` 
+        
+        
+        Refresh Token is not available.
 
 x-tagGroups:
   - name: ""
@@ -318,8 +336,6 @@ paths:
       tags:
       - "authentication"
       summary: "Get token"
-      security:
-        - OAuth2: [od.all]
       description: |-
           Endpoint para consultar os merchants de um estabelecimento          
       requestBody:
@@ -453,20 +469,13 @@ paths:
           $ref: "#/components/responses/AcessoNegado"
         "503":
           $ref: "#/components/responses/ServicoIndisponivel"
-  "/polling:":
+  "/events:polling":
     get:
-      parameters: 
-        - name: "@id"
-          in: "query"
-          schema:
-            allOf:
-              - $ref: "#/components/schemas/Generico"
-              - pattern: "[a-zA-Z0-9]{1,35}"
       tags:
       - "ordersPolling"
       summary: "Get Events"
       security:
-        - OAuth2: [pix.read]  
+        - OAuth2: [od.all]  
       description: "Recupera novos eventos via polling"
       responses:
         "200":
@@ -776,65 +785,14 @@ paths:
           $ref: "#/components/responses/ServicoIndisponivel"                             
 components:
   securitySchemes:
-    OAuth 2:
+    OAuth2:
       type: oauth2
       flows:
         clientCredentials:
-          tokenUrl: /token
-          bearerFormat: "JWT"
+          tokenUrl: oauth/token
           scopes:
             od.all: "Access to all Open Delivery APIs"      
       description: |
-        Open Delivery suports OAuth 2
-        Get access to data while protecting your account credentials.
-        OAuth2 is also a safer and more secure way to give you access.
-        
-        Generating a Client Credentials token
-
-        To generate a client credentials token, retrieve your client_id and client_secret for your app from the Developer Dashboard and see the example below. Note this endpoint expects requests to be encoded as application/x-www-form-urlencoded or multipart/form-data.
-
-        Example Request
-        ```
-        curl -F "client_secret=$CLIENT_SECRET" \
-            -F "client_id=$CLIENT_ID" \
-            -F "grant_type=client_credentials" \
-            -F "scope=od.all" \
-            /oauth/v1/token
-        ```    
-
-        Example Response
-        ```
-        {
-          "accessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJzdWIiOiJlNjkwYjczZC01OTI4LTRkMTctODE2ZC01Y2Y5YjgyZTJhOWUiLCJhdWQiOiJvcmRlciIsInVzZXJfbmFtZSI6ImU2OTBiNzNkLTU5MjgtNGQxNy04MTZkLTVjZjliODJlMmE5ZSIsInNjb3BlIjpbIm9yZGVyIl0sInRlbmFudElkIjoiNmFjNjkxZDEtMjZjNi00ZmVkLWJmN2ItOTEwMzJkNTM4NWZkIiwiaXNzIjoiaUZvb2QiLCJtZXJjaGFudF9zY29wZSI6WyI2YjQ4N2EyNy1jNGZjLTRmMjYtYjA1ZS0zOTY3YzIzMzE4ODI6b3JkZXIiXSwiZXhwIjoxNjEyMjMwNDU5LCJpYXQiOjE2MTIyMDg4NTksIm1lcmNoYW50X3Njb3BlZCI6dHJ1ZSwiY2xpZW50X2lkIjoiZTY5MGI3M2QtNTkyOC00ZDE3LTgxNmQtNWNmOWI4MmUyYTllIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9DTElFTlQiXX0.lYqdxjHoOksq8COqJ-VZxzd524MhVzH7hkMfp5zGTpqzp26z5XJwOPHAy7L6oyagUgRfxntKeu0Up_JHgJ-Vr0h5Y9wY4XHcK1yxpFXFB5f5ilGDB0hVN3UGa4GBqeVpCbAPQUl4VhbF2byeL9PuO4TfTZmoWyuec9-xEH_nbHg",
-          "tokenType": "Bearer",
-          "expiresIn": 2592000,
-          "scope": "od.all",
-        }
-        ```
-
-        Usage
-        The access_token field will contain the token used to authenticate against the Open Delivery APIs. Once you’ve obtained this token, you can provide it in the “Authorization” header of requests you make to endpoints that require client credentials scopes.
-
-        The expires_in field indicates the lifetime of the access token, provided in seconds. Tokens are valid for 30 days (2,592,000 seconds) and should be cached and re-used across requests until (or shortly before) expiration, not re-generated per request.
-        ```
-        curl \
-          -H 'authorization: Bearer <TOKEN>' \
-          https://api.uber.com/v1/eats/stores"
-        ```          
-
-
-
-#    bearer:
-#      type: http
-#      scheme: bearer
-#      bearerFormat: JWT
-#                        
-#    api_key:
-#      description: >
-#        Usage: Necessary to validate the order event notification sender.
-#      type: apiKey
-#      name: api_key
-#      in: header
 
   examples:
     cobBody1:
@@ -1487,10 +1445,9 @@ components:
   
   requestBodies:
     Token:
-      description: "Request a token"
       required: true
       content:
-        "application/json":
+        "application/x-www-form-urlencoded":
           schema:
             $ref: "#/components/schemas/TokenRequest"
 
