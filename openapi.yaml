@@ -405,6 +405,48 @@ paths:
         "503":
           $ref: "#/components/responses/ServicoIndisponivel"
 
+  /payments:
+    get:
+      parameters:
+        - in: "query"
+          name: "merchantId"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+        - in: "query"
+          name: "periodId"
+          required: false
+          schema:
+            type: "string"
+        - in: "query"
+          name: "beginExpectedExecutionDate"
+          required: false
+          schema:
+            type: "string"
+            format: "date-time"
+        - in: "query"
+          name: "endExpectedExecutionDate"
+          required: false
+          schema:
+            type: "string"
+            format: "date-time"
+      tags:
+        - "payment"
+      security:
+        - OAuth2: [od.all]
+      description: "Endpoint to get payments by merchant"
+      responses:
+        "200":
+          description: "Payment success"
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/SalesByMerchant"
+        "400":
+          description: "Bad request, check the parameters"
+      
+
   /menus:
     get:
       parameters:
@@ -2235,15 +2277,15 @@ components:
                         type: "number"
                       commissionRate:
                         type: "number"
-                        format: "percent"
+                        format: "double"
                       acquirerFeeRate:
                         type: "number"
-                        format: "percent"
+                        format: "double"
                       anticipationFee:
                         type: "number"
                       anticipationFeeRate:
                         type: "number"
-                        format: "percent" #olhar documentação sobre percent
+                        format: "double"
                       totalDebit:
                         type: "number"
                       totalCredit:
