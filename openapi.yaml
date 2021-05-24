@@ -323,19 +323,6 @@ x-tagGroups:
   - name: ""
     tags:
       - authentication
-  - name: Models
-    tags:
-      - menuEntitiesModel
-      - merchantModel
-      - serviceModel
-      - menuModel
-      - itemModel
-      - categoryModel
-      - itemOfferModel
-      - optionGroupModel
-      - availabilityModel
-      - orderModel
-      - eventModel
   - name: Menus
     tags:
       - menuOverview
@@ -354,7 +341,20 @@ x-tagGroups:
   - name: Repository
     tags:
       - repositoryOverview
-
+  - name: Models
+    tags:
+      - menuEntitiesModel
+      - merchantModel
+      - serviceModel
+      - menuModel
+      - itemModel
+      - categoryModel
+      - itemOfferModel
+      - optionGroupModel
+      - availabilityModel
+      - orderModel
+      - eventModel
+      
 paths:
   /oauth/token:
     get:
