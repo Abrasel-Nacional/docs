@@ -15,17 +15,45 @@ info:
 
   description: |-
 
-    # Abstract
-
-    Open Delivery is a standardization of the menus and orders for delivery operations.
-
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
-    
     # Introduction
 
-    Open Delivery is a standardization of the menus and orders for delivery operations.
+    Open Delivery is a set of REST APIs with the goal to provide standart communications between Merchants and Applications.
 
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
+    ### How Open Delivery integrations work
+
+    Open API integrations have two main components: Merchants information and Orders information.
+
+    ### Merchants information API
+    This API defines the merchant info, services and online availability of restaurants ordering as well as their menu options and services offered. The Merchant endpoint is hosted by a Software Service Company (eg. POS applications) and periodically fetched by an Ordering Application (eg. Marketplaces), ensuring up-to-date ordering information is shown to users.
+
+    Contains these top-level entities:
+
+    - Basic Merchant info entities
+    - Service entities
+    - Items entities
+    - Menu entities (Menus, Categories, ItemOffers, OptionGroups)
+    - Availability entities
+
+    ### Merchant updates
+
+    É possivel enviar uma notificação para que Aplicação de Pedidos faça uma nova requisição no endpoint de merchant e atualize o cardápio.
+
+    ### Order events
+
+    Open delivery disponibiliza duas maneiras para que os Serviços de Software recebem os eventos de pedido gerador pela Aplicação de Pedidos:
+
+    Polling (required)
+    Webhook (optional)
+
+    ### Order updates
+
+    After a new order event has been submitted, you leverage asynchronous order updates to send update notifications to users within the Food Ordering user interface.
+
+    For example, you can notify the user that their order "status has moved from "Accepted" to "In Progress," or if the price has changed."
+
+    ### Order Cancellation
+
+
 
     # Open Delivery API Evolution
 
@@ -34,7 +62,6 @@ info:
     The major.minor portion of the semver (for example 3.0) SHALL designate the ODS feature set. Typically, .patch versions address errors in this document, not the feature set. 
 
     Each new minor version of the Open Delivery Specification SHALL allow any Open Delivery document that is valid against any previous minor version of the Specification, within the same major version, to be updated to the new Specification version with equivalent semantics. Such an update MUST only require changing the openapi property to the new minor version.
-
 
 ##    # Error Handling
 #
@@ -180,22 +207,108 @@ tags:
         
         Refresh Token is not available.
 
-  - name: menuOverview
-    x-displayName: Menu Overview
+  - name: merchantOverview
+    x-displayName: Merchant Overview
     description: |-
 
-      Explicações de fluxos do funcionamento do cardápio.
-      
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
+      The Merchant entity será a entidade utilizada pelas aplicações de pedido para obter todos os dados de um merchant e exibilos ao usuário.
+      é responsabilidade do srviço de software do merchant prover o endpoint e responsabilidade  da aplicação de pedidos buscar as informações.
 
-      Cras luctus ultrices arcu. Quisque non tortor euismod, mollis ligula id, scelerisque enim. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec et lacinia purus. Nunc porttitor orci mi, vitae egestas tortor tempus vel. Nam accumsan, justo in imperdiet ornare, nisl ipsum dignissim magna, in vestibulum dolor ante ac elit.
-    
+      ## Usage
+
+      Fluxo + explicações sobre atualizações (TTL + Webhook + Recusas de Pedidos)
+
+      ## Health Check
+
+      Informações sobre o health Check
+
+  - name: merchantStructure
+    x-displayName: Merchant Structure
+    description: |-
+
+      The structure of the Merchant model consists of the following top-level entities:
+
+      - **MerchantInfo**: Information about the merchant.
+      - **Service entities**: Timing, location, and conditions of the merchant service.
+      - **Menu entities**: Details of the merchnat menus.
+
+      The following diagram shows how Service, Merchant Info, and Menu entities represent a single merchant:
+
+      imagem
+
+      ### General guidelines
+
+      **DateTime and Time values**: For properties that require a DateTime or Time value, use the formats specified in DateTime and Time formats. For example, 2017-05-01T06:30:00+05:30 for DateTime and T08:08:00+05:30 for Time.
+
+      **IDs**: Use an @id property to identify all unique entities within an entity type. An @id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
+
+      **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
+
+
+      # MerchantInfo
+
+      A MerchantInfo entity defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the Software Services serves. Typically, this data is static.
+
+      Figure 1: Restaurant entity with both pickup Service and delivery Service entities defined.
+
+      Model with example.
+
+      # Service
+
+      The Service entity defines the capabilities of a delivery organization in a geographic region.
+      A Service entity defines properties such as the service type, hours available, and area served. 
+      Service entity is expected to change.
+
+      Figure 1: Service entity showing its relationship with ServiceArea, ServiceHours, OperationHours, and Fee entities.
+
+      Model with example.
+
+      # Menu
+
+      A Menu entity defines properties such as menu items, offers, and categories.
+
+      Figure 1: Menu entity showing its relationship with MenuSection, Availability, MenuItem, MenuItemOption, and MenuItemOffer.
+      
+
+      ### Item
+
+      Produto é a entidade de catálogo que carrega todas as informações gerais. Elas são:
+      Nome, descrição, código externo, imagem, disponibilidade em turnos, tamanho, restrições alimentares e EAN (European Article Number), utilizado principalmente por mercados.
+      O produto pode ser oferecido em um catálogo como um item principal ou complemento. E, para uma mesma loja, pode ser reutilizado até mesmo em diferentes catálogos.
+
+
+      ### Category
+
+      Categoria é a entidade em que a loja possui para organizar seus itens a fim de facilitar para o usuário encontrar o que deseja comprar. As categorias possuem status de venda como pausada e ativada.
+      
+      ### ItemOffer
+
+      O item pode ser considerado a oferta de um produto.
+      Análogo ao complemento, o item é um produto relacionado à categoria.
+
+      ### OptionGroup and Option
+
+      O grupo de complementos é a entidade utilizada para agrupar customizações de um produto, por exemplo: “Escolha sua bebida:”
+      Um grupo de complemento pode ser compartilhado por vários itens.
+
+      Complementos são as opções de um Grupo de Complemento. Pode ser definido como: “Um produto relacionado a um grupo de complemento”. O complemento possui seu próprio status de venda, sendo possível pausar ou ativar quando necessário. É possível que um complemento seja R\$0,00 independente se é obrigatório ou opcional.
+
+      ### Disponibilidade em turnos
+
+      Para produtos que são vendidos somente em alguns períodos da semana, é possível configurar sua disponibilidade em turnos. Por exemplo:
+      A feijoada só é vendida às quartas-feiras das 10:00 às 16:00
+
+      Sempre disponível
+      Quando um item está selecionado como sempre disponível, ele será visualizado sempre que a loja estiver aberto e o status de venda (Como item principal ou complemento) é ativado.
+
     externalDocs:
       description: Explicação dos fluxos
       url: http://www.google.com.br
 
-  - name: menuEndpoints
-    x-displayName: Menus Endpoints
+      
+
+  - name: merchantEndpoints
+    x-displayName: Merchant API
     description: |-
 
   - name: ordersOverview
@@ -323,10 +436,11 @@ x-tagGroups:
   - name: ""
     tags:
       - authentication
-  - name: Menus
+  - name: Merchant
     tags:
-      - menuOverview
-      - menuEndpoints
+      - merchantOverview
+      - merchantStructure
+      - merchantEndpoints
   - name: Orders
     tags:
       - ordersOverview
@@ -380,32 +494,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServicoIndisponivel"
 
-  /merchants:
-    get:
-      operationId: "merchant"
-
-      tags:
-      - "menuEndpoints"
-      summary: "Get list of merchants from a participant"
-      security:
-        - OAuth2: [od.all]
-      description: |-
-          Endpoint para consultar os merchants de um estabelecimento
-      responses:
-        "200":
-          description: "Dados da cobrança imediata."
-          content:
-            "application/json":
-              schema:
-                $ref: "#/components/schemas/Merchant"
-        "403":
-          $ref: "#/components/responses/AcessoNegado"
-        "404":
-          $ref: "#/components/responses/NaoEncontrado"
-        "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
-
-  /menus:
+  /merchant:
     get:
       parameters:
         - in: "query"
@@ -443,19 +532,21 @@ paths:
             title: "Status da Cobrança"
             description: "Filtro pelo status da cobrança."
       tags:
-      - "menuEndpoints"
-      summary: "Get specific information about Services and Menus of a Merchant"
+      - "merchantEndpoints"
+      summary: "Get Info, Services and Menus of a Merchant"
       security:
         - OAuth2: [od.all]  
       description: |-
-          Endpoint para consultar todos os dados de um merchant específico, comodados básicos, cardápios e serviços
+          Endpoint para consultar todos os dados de um merchant específico, como dados básicos, cardápios e serviços
+
+          Colocar informações sobre o TTL 
       responses:
         "200":
           description: "Lista de cobranças imediatas."
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/Generico"
+                $ref: "#/components/schemas/MenuEntity"
               examples:
                 getCobs1:
                   $ref: "#/components/examples/getCobs1"
@@ -475,7 +566,7 @@ paths:
           schema:
             $ref:  "#/components/schemas/Merchant/properties/@id"
       tags:
-      - "menuEndpoints"
+      - "merchantEndpoints"
       summary: "Get a Health Check on an merchant info"
       security:
         - OAuth2: [od.all]  
@@ -521,7 +612,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServicoIndisponivel"
 
-  "/acknowledge":
+  /acknowledge:
     post:
       parameters: 
         - name: "@id"
@@ -763,7 +854,7 @@ x-webhooks:
       description: Information about a update in the systems
       operationId: newEvent
       tags: 
-        - menuEndpoints
+        - merchantEndpoints
       responses:
         "200":
           description: Return a 200 status to indicate that the data was received successfully
