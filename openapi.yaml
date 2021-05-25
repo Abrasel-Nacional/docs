@@ -2326,15 +2326,15 @@ components:
                         type: "number"
                       commissionRate:
                         type: "number"
-                        format: "percent"
+                        format: "double"
                       acquirerFeeRate:
                         type: "number"
-                        format: "percent"
+                        format: "double"
                       anticipationFee:
                         type: "number"
                       anticipationFeeRate:
                         type: "number"
-                        format: "percent" #olhar documentação sobre percent
+                        format: "double"
                       totalDebit:
                         type: "number"
                       totalCredit:
