@@ -57,7 +57,7 @@ info:
 
     # Open Delivery API Evolution
 
-    The Open Delivery API seeks to respect SemVer (https://semver.org/). In this sense, compatible changes should not generate a new major version.
+    The Open Delivery API seeks to respect [SemVer](https://semver.org/). In this sense, compatible changes should not generate a new major version.
 
     The API version is composed of 4 elements: major, minor, patch and release candidate. The version v[x] in the URL path is the major element of the API version. The evolution of the version is as follows:
 
@@ -76,90 +76,56 @@ info:
     - Addition of new elements in enumerations.
 
 
-##    # Error Handling
-#
-#    A API  retorna códigos de status HTTP para indicar sucesso ou falhas das
-#    requisições.
-#
-#    Códigos `2xx` indicam sucesso. Códigos `4xx` indicam falhas causadas pelas
-#    informações enviadas pelo cliente ou pelo estado atual das entidades. Códigos `5xx`
-#    indicam problemas no serviço no lado da API.
-#
-#    As respostas de erro incluem no corpo detalhes do erro seguindo o
-#    _schema_ da [RFC 7807](https://tools.ietf.org/html/rfc7807).
-#
-#    ## General
-#
-#    Esta seção reúne erros que poderiam ser retornados por quaisquer endpoints listados na API.
-#
-#    ### `RequisicaoInvalida`
-#
-#      * __Significado__: Requisição inválida.
-#      * __HTTP Status Code__: [400 Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1).
-#
-#    ### `AcessoNegado`
-#
-#      * __Significado__: Requisição de participante autenticado que viola alguma regra de autorização.
-#      * __HTTP Status Code__: [403 Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3).
-#
-#    ### `NaoEncontrado`
-#
-#      * __Significado__: Entidade não encontrada.
-#      * __HTTP Status Code__: [404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4).
-#
-#    ### `PermanentementeRemovido`
-#
-#      * __Significado__: Indica que a entidade existia, mas foi permanentemente removida.
-#      * __HTTP Status Code__: [410 Gone](https://tools.ietf.org/html/rfc7231#section-6.5.9).
-#
-#    ### `ErroInternoDoServidor`
-#
-#      * __Significado__: Condição inesperada ao processar requisição.
-#      * __HTTP Status Code__: [500 Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1).
-#
-#    ### `ServicoIndisponivel`
-#
-#      * __Significado__: Serviço não está disponível no momento. Serviço solicitado pode estar em manutenção ou fora da janela de funcionamento.
-#      * __HTTP Status Code__: [503 Service Unavailable](https://tools.ietf.org/html/rfc7231#section-6.6.4).
-#
-#    ### `IndisponibilidadePorTempoEsgotado`
-#
-#      * __Significado__: Indica que o serviço demorou além do esperado para retornar.
-#      * __HTTP Status Code__: [504 Gateway Timeout](https://tools.ietf.org/html/rfc7231#section-6.6.5).
-#
-#
-#    
-#    ## Menu Errors
-#
-#    Esta seção reúne erros retornados pelos endpoints organizados sob a tag `Menu`.
-#
-#    ### `InvalidMenu`
-#
-#    * __Significado__: a cobrança em questão não foi encontrada para a location requisitada.
-#    * __HTTP Status Code__: [404](https://tools.ietf.org/html/rfc7231#section-6.5.4) ou [410](https://tools.ietf.org/html/rfc7231#section-6.5.9).
-#    * __endpoints__: `GET /{pixUrlAccessToken}`, `GET /cobv/{pixUrlAccessToken}`.
-#
-#
-#
-#    ### `InvalidMerchant`
-#
-#    * __Significado__: a cobrança existe, mas a requisição é inválida.
-#    * __HTTP Status Code__: [400](https://tools.ietf.org/html/rfc7231#section-6.5.1).
-#    * __endpoints__: `GET /cobv/{pixUrlAccessToken}`.
-#
-#    __Violações__:
-#      - `codMun` não respeita o schema.
-#      - `codMun` não é um código válido segundo a __[tabela de municípios do IBGE](https://www.ibge.gov.br/explica/codigos-dos-municipios.php)__.
-#      - `DPP` não respeita o schema.
-#      - `DPP` anterior ao momento presente.
-#      - `DPP` superior à validade da cobrança em função dos parâmetros `calendario.dataDeVencimento`
-#      e `calendario.validadeAposVencimento`. Exemplo: `dataDeVencimento` => 2020-12-25,
-#      `validadeAposVencimento` => 10, `DPP` => 2021-01-05. Neste exemplo, o parâmetro `DPP` é
-#      inválido considerando o contexto apresentado porque é uma data em que a cobrança
-#      não poderá ser paga. A cobrança, neste exemplo, não será considerada válida
-#      a partir da data 2021-01-05.
-#
-#    
+    # Error Handling
+
+    The API returns HTTP status codes to indicate success or failure of requests.
+
+    `2xx` codes indicate success. 
+    `4xx` codes indicate failure caused by the information sent by the client or the current state of the entities.
+    `5xx` codes codes indicate service problems on the API side.
+
+    The error responses include in the body details of the error following the
+    _schema_ of [RFC 7807](https://tools.ietf.org/html/rfc7807).
+
+    ## General
+
+    This section gathers errors that could be returned by any endpoints listed in the API.
+
+    ### `InvalidRequest`
+
+      * __Significado__: Invalid request.
+      * __HTTP Status Code__: [400 Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1).
+
+    ### `AccessDenied`
+
+      * __Significado__: Authenticated participant request that violates some authorization rule.
+      * __HTTP Status Code__: [403 Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3).
+
+    ### `NotFound`
+
+      * __Significado__: Entity not found.
+      * __HTTP Status Code__: [404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4).
+
+    ### `PermanentlyRemoved`
+
+      * __Significado__: Indicates that the entity existed, but has been permanently removed.
+      * __HTTP Status Code__: [410 Gone](https://tools.ietf.org/html/rfc7231#section-6.5.9).
+
+    ### `InternalServerError`
+
+      * __Significado__: Unexpected condition when processing requisition.
+      * __HTTP Status Code__: [500 Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1).
+
+    ### `ServiceUnavailable`
+
+      * __Significado__: Service is not currently available. Requested service may be under maintenance or outside the operating window.
+      * __HTTP Status Code__: [503 Service Unavailable](https://tools.ietf.org/html/rfc7231#section-6.6.4).
+
+    ### `UnavailabilityByTime`
+
+      * __Significado__: It indicates that the service took longer than expected to return.
+      * __HTTP Status Code__: [504 Gateway Timeout](https://tools.ietf.org/html/rfc7231#section-6.6.5).
+   
 #    ## Orders Erros
 #    Reúne erros dos endpoints que tratam do gerenciamente dos Webhooks da API.
 #
@@ -435,12 +401,13 @@ tags:
     x-displayName: Repository Overview
     description: |-
 
-      Explicações de fluxos do funcionamento do repositório.
-      
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
-
-      Cras luctus ultrices arcu. Quisque non tortor euismod, mollis ligula id, scelerisque enim. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec et lacinia purus. Nunc porttitor orci mi, vitae egestas tortor tempus vel. Nam accumsan, justo in imperdiet ornare, nisl ipsum dignissim magna, in vestibulum dolor ante ac elit.
+      The goal of the repository is to centrally host the information of Open Delivery participants.
+      Through an adhesion form a restaurant and its software house can perform a registration that will be available in a database of participants.
+      The indexing system will search the URL previously registered at the moment of the adhesion that will be available in the endpoint /repository listing the registered restaurants.
     
+      <div align="center">
+        <img alt="Repository" src="https://i.ibb.co/xMv0NfD/repo-image.png" />
+      </div>
       ## How to Access
 
       Instruções em como acessar o repositório
