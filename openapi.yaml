@@ -57,11 +57,24 @@ info:
 
     # Open Delivery API Evolution
 
-    The Open Delivery Specification is versioned using Semantic Versioning 2.0.0 (semver) and follows the semver specification.
+    The Open Delivery API seeks to respect SemVer (https://semver.org/). In this sense, compatible changes should not generate a new major version.
 
-    The major.minor portion of the semver (for example 3.0) SHALL designate the ODS feature set. Typically, .patch versions address errors in this document, not the feature set. 
+    The API version is composed of 4 elements: major, minor, patch and release candidate. The version v[x] in the URL path is the major element of the API version. The evolution of the version is as follows:
 
-    Each new minor version of the Open Delivery Specification SHALL allow any Open Delivery document that is valid against any previous minor version of the Specification, within the same major version, to be updated to the new Specification version with equivalent semantics. Such an update MUST only require changing the openapi property to the new minor version.
+    Major: incompatible, deal-breaking changes (v1.0.0 → v2.0.0)
+    Minor: compatible, non-breaking changes (v1.1.0 → v1.2.0)
+    Patch: bugfixes, clarifications to specifications, no functional changes (v1.1.1 → v1.1.2)
+    Release candidate: pre-release versions of any future patch, minor or major (v1.0.0-rc.1 → v1.0.0-rc.22)
+    Non-breaking changes and clarifications to specifications may occur at any time. Customers should be prepared to handle these changes without breaking.
+
+    The following changes are expected and considered backward compatible:
+
+    - Addition of new features to the Open Delivery API;
+    - Addition of new optional parameters;
+    - Addition of new fields in Open Delivery API responses;
+    - Change of the order of fields;
+    - Addition of new elements in enumerations.
+
 
 ##    # Error Handling
 #
@@ -482,17 +495,15 @@ paths:
           $ref: "#/components/requestBodies/Token"  
       responses:
         "200":
-          description: "Dados da cobrança imediata."
+          description: "Successful token request."
           content:
             "application/json":
               schema:
                 $ref: "#/components/schemas/TokenResponse"
-        "403":
-          $ref: "#/components/responses/AcessoNegado"
-        "404":
-          $ref: "#/components/responses/NaoEncontrado"
-        "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
+        "401":
+          description: "Bad credentials"
+        "500":
+          description: "Unexpected error"
 
   /merchant:
     get:
