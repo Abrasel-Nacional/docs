@@ -535,6 +535,28 @@ paths:
         "503":
           $ref: "#/components/responses/ServicoIndisponivel"
 
+  /merchantList:
+    get:
+      tags:
+        - "repositoryOverview"
+      summary: "Returns the name and URL of the merchant."
+      security:
+        - OAuth2: [od.all]
+      description: |-
+        Endpoint responsible for returning merchants and their URLs, if registered.
+      responses:
+        "200":
+          description: "Successfully returns the merchant list."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ListMerchant"
+        "400":
+          description: "Invalid Order Supplied."
+        "404":
+          description: "Order Not Found."
+        "500":
+          description: "Internal Server Error."
   /healthCheck:
     get:
       parameters:
@@ -1250,8 +1272,23 @@ components:
         createdAt:
           type: "string"
           format: date-time
-          description:  "Merchant creation date in ISO timestamp format but with type String."         
-
+          description:  "Merchant creation date in ISO timestamp format but with type String."    
+    ListMerchant:
+      type: "array"
+      title: "MerchantList"     
+      required: ["merchantId"]
+      items:
+        type: "object"
+        properties:
+          "merchantId":
+            type: "string"
+            format: "UUID"
+          "name":
+            type: "string"
+            description: "Restaurant Name"
+          "merchantUrl":
+            type: "string"
+            description: "Optional URL Optional merchant URL."
     Address:
       type: "object"
       title: "Address"
