@@ -295,38 +295,38 @@ tags:
 
       "This overview summarizes the Open Delivery Ordering flow and how it interacts with Software Services and Ordering Applications.
 
-      O fluxo de pedido possua as seguintes etapas Macros:
+      The order flow has the following Macro steps:
 
-      ### Recepção de Eventos de Pedidos
+      ### Order Event Reception
 
-      Através dos Eventos de Pedido, a 'Aplicação de Pedidos' comunica ao 'Serviço de Software' a existencia de um novo pedido, bem como os demais eventos do ciclo de vida do pedido.
+      Through Order Events, the 'Order Application' communicates to the 'Software Service' the existence of a new order, as well as the other events of the order lifecycle.
 
-      Open Delivery disponibiliza duas maneiras dos Serviços de Software terem conhecimentos de novos eventos:
+      Open Delivery provides two ways for Software Services to be aware of new events:
 
       - Polling: 
-      O recebimento de eventos através de um polling disponibilizado pela 'Aplicação de Pedidos' é a maneira padrão com o qual o Open Delivery trabalha e sua implementação é orbigatória.
+      Receiving events through polling provided by the 'Order Application' is the standard way Open Delivery works, and its implementation is mandatory.
 
       - Webhook:
-        Opcionalmente é recomendado a implementação de um 'webhook' pelo Serviços de Software para que as Aplicações de Pedidos enviem os novos eventos diretamente, garantindo uma comunicação muito mais veloz.
+        Optionally it is recommended to implement a 'webhook' by the Software Services for the Order Applications to send the new events directly, ensuring a much faster communication.
       
-        Como esta implementação não é obrigatória, recomenda-se que os serviços de software do merchant contatem as Aplicações de Pedido para saberem se é possível trabalhar com esta possibilidade.
+        As this implementation is not mandatory, it is recommended that merchant software services contact the Order Applications to find out if it is possible to work with this possibility.
 
       ### Status Updates
 
-      Após recebido o evento de novo pedido, o merchant precisa notificar a 'Aplicação de Pedidos' do andamento do mesmo.
+      After receiving the new order event, the merchant needs to notify the 'Order Application' of its progress.
 
-      Através das Apis do Open Delivery é possível:
+      Through the Open Delivery API's it is possible:
 
-      - Confirmar o recebimento do pedido
-      - Avisar que um pedido está pronto para retirada
-      - Avisar que um pedido foi despachado
+      - Confirm receipt of order;
+      - Notify that an order is ready for pickup;
+      - Notify that an order has been shipped.
 
-      Sempre que um merchant disparar uma destas ações, a 'Aplicação de Pedido' irá enviar um novo evento para o 'Serviço de Software', informando o novo status do pedido dentro da 'Aplicação de Pedidos'.
+      Whenever a merchant triggers one of these actions, the 'Order Application' will send a new event to the 'Software Service', informing the new order status within the 'Order Application'.
 
-      ### Cancelamento de Pedidos
+      ### Order Cancellation
 
-      Open Delivery disponibiliza APIs para efetuar solicitações de cancelamento, partindo de qualquer uma das partes.
-      Essas solicitações podem ser aceitas ou recusadas dependendo das regras que a empresa possui. "
+      Open Delivery provides API's to make cancellation requests from either party.
+      These requests can be accepted or denied depending on the rules that the company has.
       
   - name: ordersWebhook
     x-displayName: Webhook
@@ -341,39 +341,39 @@ tags:
     x-displayName: Polling
     description: |-
 
-          O recebimento de eventos via Polling funciona seguindo o seguinte fluxo:
+          Receiving events via Polling works as follows:
 
           <div align="center">
             <img alt="Workflow" src="https://user-images.githubusercontent.com/80956588/114452490-ded44480-9bae-11eb-9eaf-1fd8e7c7f142.png" />
           </div>
 
-          ### Consultar novos eventos de pedidos
+          ### Query new order events
 
-          Para receber novos eventos de pedidos, o 'Serviço de Software' deve fazer requests no endpoint de polling regularmente à um determinado intervalo de tempo, determinado pela 'Aplicação de Pedidos'. 
-          Sempre que houver um novo evento o response enviará o código de resposta 200 com a lista de eventos. Caso não existam novos eventos, o response enviará o código de resposta 204.
+          In order to receive new order events, the 'Software Service' must make requests on the polling endpoint regularly at a certain time interval, determined by the 'Order Application'. 
+          Whenever there is a new event the response will send the response code 200 with the list of events. If there are no new events, the response will send the response code 204.
 
-          É importante que o Serviço de Software efetue os request dentro do tempo determinado pela 'Aplicação de Pedidos', pois poderão ser efetuadas bloqueios e penalizações dependendo das regras da aplicação.
+          It is important that the Software Service performs the requests within the timeframe determined by the 'Request Application', as blocking and penalties may occur depending on the application's rules.
           
-          Disponibilidade de novos eventos no polling: A 'Aplicação de Pedidos' poderá ter regras específicas sobre o tempo máximo em que novos eventos ficam disponiveis no polling antes de serem removidos.
+          Availability of new events in polling: The 'Order Application' may have specific rules about the maximum time new events are available in polling before they are removed.
              
-          Sempre verifique com a Aplicação de Pedidos quais as regras para utilização do serviço de polling. 
+          Always check with the Order Application what the rules are for using the polling service. 
 
-          Eventos Duplicados e Data do Pedido:
-          Eventualmente a API pode retornar um mesmo evento mais de uma vez, como por exemplo o evento de PLACED incluindo pedidos antigos. Por esse motivo é importante que o seu aplicativo trate a unicidade dos pedidos e eventos através do "id" e a data através do "createdAt".
+          Duplicate Events and Order Date:
+          Eventually the API may return the same event more than once, for example the PLACED event including old orders. For this reason it is important that your application handles the uniqueness of requests and events through "id" and the date through "createdAt".
 
-          Portanto, ao receber um evento, deve-se verificar o id do evento e validar se esse evento (id) já não foi processado anteriormente. Caso esse evento já tenha sido recebido anteriormente, ele deve ser descartado.
+          Therefore, when receiving an event, you must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
 
-          Atenção: só se deve aceitar um novo pedido ou atualizar o status de um pedido depois de validar se o evento já não foi processado anteriormente.
+          Please note: you should only accept a new order or update the status of an order after validating that the event has not been processed before.
 
-          ### Acknowledgment de eventos
+          ### Acknowledgment Events
 
-          Ao receber novos eventos, o 'Serviço de Software' sempre deve enviar acknowledgement para que a API não envie esse mesmo evento novamente;
+          When receiving new events, the 'Software Service' should always send acknowledgement so that the API does not send that same event again;
 
-          Recomendações importantes:
+          Important recommendations:
 
-          Faça uma request de acknowledgment para cada request de polling com resultados.
-          Caso receba eventos que não utilizados pelo seu aplicativo, envie o acknowledgment desses eventos mesmo assim para que não fique recebendo-os a cada polling novamente. Recomendamos que esse seja o tratamento padrão para todo evento ainda não mapeado no seu aplicativo.
-          Só é preciso enviar acknowledgment do evento uma única vez.
+          Make an acknowledgment request for each polling request with results.
+          If you receive events that are not used by your application, send the acknowledgment of these events anyway so that you are not receiving them every polling again. We recommend that this be the default treatment for all events not yet mapped in your application.
+          You only need to send acknowledgment of the event once.
       
   - name: ordersDetails
     x-displayName: Order Details
@@ -655,11 +655,8 @@ paths:
         - OAuth2: [od.all]  
       description: 
         "Polls events for any orders from merchants associated with the authenticated user.
-
         Each event received from this endpoint must be properly acknowledged, otherwise it will continue to be returned on further requests.
-        
-        
-        No corpo da request, envie um array contendo apenas os ids dos eventos. Cada request aceita uma lista de no máximo 2000 ids de eventos."
+        In the body of the request, send an array containing only the event ids. Each request accepts a list of at most 2000 event ids."
       responses:
         "200":
           description: "lista dos Pix recebidos de acordo com o critério de busca."
@@ -719,7 +716,7 @@ paths:
       - "ordersDetails"
       summary: "Get Order Details"
       security:
-        - OAuth2: [od.all] #falta confirmar segurança
+        - OAuth2: [od.all]
       description: "Endpoint to consult the details of an order."
       responses:
         "200":
@@ -977,129 +974,7 @@ components:
       content:
         "application/json":
           schema:
-            $ref: "#/components/schemas/RequestDenied"
-
-    LoteCobVBody:
-      description: "Dados para geração de lote de cobranças com vencimento."
-      required: true
-      content:
-        "application/json":
-          schema:
-            required: ["descricao","cobsv"]
-            properties:
-              descricao:
-                type: "string"
-                title: "Descrição do lote"
-              cobsv:
-                type: "array"
-                items:
-                  allOf:
-                    - type: "object"
-                      required: ["txid"]
-                      properties:
-                        txid:
-                          $ref: "#/components/schemas/Generico"
-                    - $ref: "#/components/schemas/Generico"
-          examples:
-            exemplo1:
-              $ref: "#/components/examples/loteCobVBody1"
-    LoteCobVBodyRevisado:
-      description: "Dados para geração de lote de cobranças com vencimento."
-      required: true
-      content:
-        "application/json":
-          schema:
-            properties:
-              descricao:
-                type: "string"
-                title: "Descrição do lote"
-              cobsv:
-                type: "array"
-                items:
-                  allOf:
-                    - type: "object"
-                      required: ["txid"]
-                      properties:
-                        txid:
-                          $ref: "#/components/schemas/Generico"
-                    - $ref: "#/components/schemas/Generico"
-          examples:
-            exemplo1:
-              $ref: "#/components/examples/loteCobVBodyRevisado1"
-    CobBodyRevisada:
-      description: "Dados para geração da cobrança."
-      required: true
-      content:
-        "application/json":
-          schema:
-            $ref: "#/components/schemas/Generico"
-          examples:
-            exemplo1:
-              $ref: "#/components/examples/cobBody3"
-            exemplo2:
-              $ref: "#/components/examples/cobBody4"
-            exemplo3:
-              $ref: "#/components/examples/cobBody5"             
-    CobVBodyRevisada:
-      description: "Dados para geração da cobrança."
-      required: true
-      content:
-        "application/json":
-          schema:
-            $ref: "#/components/schemas/Generico"
-          examples:
-            exemplo1:
-              $ref: "#/components/examples/cobBody3"
-            exemplo2:
-              $ref: "#/components/examples/cobBody4"
-            exemplo3:
-              $ref: "#/components/examples/cobBody5"             
-    PayloadLocationBody:
-      description: "Dados para geração da location."
-      required: true
-      content:
-        "application/json":
-          schema:
-            $ref: "#/components/schemas/Generico"
-          examples:
-            exemplo1:
-              $ref: "#/components/examples/payloadLocationBody1"
-    DevolucaoBody:
-      description: "Dados para pedido de devolução."
-      required: true
-      content:
-        "application/json":
-          schema:
-            $ref: "#/components/schemas/Generico"
-          examples:
-            exemplo1:
-              $ref: "#/components/examples/devolucaoSolicitada1"
-    WebhookConfigBody:
-      required: true
-      content:
-        "application/json":
-          schema:
-            $ref: "#/components/schemas/Generico"
-          examples:
-            exemplo1:
-              $ref: "#/components/examples/webhookBody1"
-    WebhookPixBody:
-      description: "Dados para notificação dos Pix."
-      required: true
-      content:
-        "application/json":
-          schema:
-            properties:
-              pix:
-                type: "array"
-                items:
-                  $ref: "#/components/schemas/Generico"
-                example:
-                  - allOf:
-                    - $ref: "#/components/examples/pixWebhook1/value"
-                  - allOf:
-                    - $ref: "#/components/examples/pixWebhook2/value"
-  
+            $ref: "#/components/schemas/RequestDenied"  
   responses:
     RequisicaoInvalida:
       description: "Problemas na requisição."
@@ -1239,8 +1114,6 @@ components:
             type: "object"            
             allOf:
               - $ref: "#/components/schemas/Availability"
-                                     
-
     Merchant:
       type: "object"
       title: "Merchant"
