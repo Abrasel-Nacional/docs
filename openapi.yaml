@@ -467,7 +467,7 @@ tags:
       </div>
       ## How to Access
 
-      Instruções em como acessar o repositório
+      Coming soon.
 
 x-tagGroups:
   - name: ""
@@ -709,6 +709,9 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Order"
+              examples:
+                orderExample:
+                  $ref: "#/components/examples/orderExample"
         "400":
           description: "Invalid Order Supplied."
         "404":
@@ -2425,4 +2428,101 @@ components:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the order."  
-                  
+  examples:
+    orderExample:
+      summary: "Sample Order"
+      value:
+        id: "4818e72f-2304-466f-9fe7-af08f34ac4ed"
+        type: "DELIVERY"
+        displayId: "12345"
+        createdAt: "2021-05-27T19:38:10.332Z"
+        orderTiming: "INSTANT"
+        preparationStartDateTime: "2021-05-27T19:45:10.332Z"
+        merchant:
+          id: "7fb59cb8-5808-40c8-b967-1b3f20ee39cd"
+          name: "Plaza Pizza"
+        items: 
+          id: "d9730653-a8ba-4e85-8dbb-b5597e5ae8d5"
+          index: 0
+          name: "Pepperoni"
+          externalCode: "12345"
+          unit: "UNIT"
+          ean: "978020137962"
+          quantity: 2
+          specialInstructions: "Extra pepperoni"
+          unitPrice: 
+            value: 20.00
+            currency: "R$"
+          optionsPrice:
+            value: 5.00
+            currency: "R$"
+          totalPrice:
+            value: 25.00
+            currency: "R$"
+          options:
+            id: "d9730653-a8ba-4e85-8dbb-b5597e5ae8d5"
+            name: "Beverage"
+            externalCode: "12345"
+            unit: "UNIT"
+            ean: "978020137965"
+            quantity: 1
+            unitPrice:
+              value: 5.00
+              currency: "R$"
+            price:
+              value: 5.00
+              currency: "R$"
+            specialInstructions: "None"
+          otherFees:
+              name: "Delivery"
+              type: "DELIVERY_FEE"
+              receivedBy: "MARKETPLACE"
+              receiverDocument: "1234"
+              price:
+                value: 2.00
+                currency: "R$"
+              observation: "None"
+          discounts:
+            value: 0
+            target: "DELIVERY_FEE"
+            sponsorshipValues:
+              name: "MARKETPLACE"
+              value: 0
+          total:
+            items: 2
+            otherFees: 0
+            discount: 0
+            orderAmount: 30.00
+          payments:
+            prepaid: 30.00
+            pending: 0
+            methods:
+              value: 30.00
+              currency: "R$"
+              method: "FOOD_VOUCHER"
+              methodInfo: "None"
+          customer:
+            id: "d9730653-a8ba-4e85-8dbb-b5697e6ae8d5"
+            phone: 
+              number: "11999999999"
+              extension: "0"
+            documentNumber: "12345"
+            name: "John"
+            ordersCountOnMerchant: 1
+          delivery:
+            deliveredBy: "MERCHANT"
+            deliveryAddress:
+              country: "Brazil"
+              streetName: "Plaza Avenue"
+              formattedAddress: "string"
+              streetNumber: "100"
+              city: "São Paulo"
+              postalCode: "20111-000"
+              coordinates:
+                latitude: -23.5475
+                longitude: -46.63611
+              neighborhood: "Moema"
+              state: "SP"
+              complement: "Apartment 102"
+            deliveryDateTime: "2021-05-27T20:45:10.332Z"
+          extraInfo: "None"
