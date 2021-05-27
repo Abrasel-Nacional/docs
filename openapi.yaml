@@ -26,13 +26,11 @@ info:
     ### Merchants information API
     This API defines the merchant info, services and online availability of restaurants ordering as well as their menu options and services offered. The Merchant endpoint is hosted by a Software Service Company (eg. POS applications) and periodically fetched by an Ordering Application (eg. Marketplaces), ensuring up-to-date ordering information is shown to users.
 
-    Contains these top-level entities:
+    The API contains these top-level entities:
 
     - Basic Merchant info entities
     - Service entities
-    - Items entities
-    - Menu entities (Menus, Categories, ItemOffers, OptionGroups)
-    - Availability entities
+    - Menu entities (Menus, Categories, Items, Offers, OptionGroups and Availability)
 
     ### Merchant updates
 
@@ -207,8 +205,8 @@ tags:
 
       The structure of the Merchant model consists of the following top-level entities:
 
-      - **MerchantInfo**: Information about the merchant.
-      - **Service entities**: Timing, location, and conditions of the merchant service.
+      - **BasicInfo**: Information about the merchant.
+      - **Services entities**: Timing, location, and conditions of the merchant service.
       - **Menu entities**: Details of the merchnat menus.
 
       The following diagram shows how Service, Merchant Info, and Menu entities represent a single merchant:
@@ -224,11 +222,9 @@ tags:
       **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
 
 
-      # MerchantInfo
+      # BasicInfo
 
-      A MerchantInfo entity defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the Software Services serves. Typically, this data is static.
-
-      Figure 1: Restaurant entity with both pickup Service and delivery Service entities defined.
+      A merchant BaiscInfo entity defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the Software Services serves. Typically, this data is static.
 
       Model with example.
 
@@ -244,14 +240,17 @@ tags:
 
       # Menu
 
-      A Menu entity defines properties such as menu items, offers, and categories.
+      A Menu entity defines properties such as menu categories, items, offers and availability .
 
       Figure 1: Menu entity showing its relationship with MenuSection, Availability, MenuItem, MenuItemOption, and MenuItemOffer.
       
+      Each menu item can include a description, image, add-ons, and nutrition information. Offers are used to price the menu item, define times when the item is available, and define times when special prices are active. 
+      
+      Data in a Menu entity is expected to change.
 
       ### Item
 
-      Product is the catalog entity that carries all the general information. They are:
+      A Item entity is the catalog entity that carries all the general item information. They are:
       Name, description, external code, image, availability in shifts, size, food restrictions, and EAN (European Article Number), used mainly by marketplaces.
       The product can be offered in a catalog as a main item or an add-on. And, for the same store, it can even be reused in different catalogs.
 
@@ -262,17 +261,17 @@ tags:
       
       ### ItemOffer
 
-      The item can be considered the offering of a product.
-      Analogous to the complement, the item is a product related to the category.
+      The ItemOffer can be considered the offering of a item.
+      Analogous to the complement, the itemOffer is a item related to the category.
 
       ### OptionGroup and Option
 
       The add-on group is the entity used to group customizations of a product, for example: "Choose your beverage:"
       An add-on group can be shared by several items.
 
-      Complements are the options of a Complement Group. It can be defined as: "A product related to a complement group". The add-on has its own sales status, and can be paused or activated when needed. It is possible for a complement to be R$0.00 regardless of whether it is mandatory or optional.
+      Complements are the options of a Complement Group. It can be defined as: "A item related to a complement group". The add-on has its own sales status, and can be paused or activated when needed. It is possible for a complement to be R$0.00 regardless of whether it is mandatory or optional.
 
-      ### Shift availability
+      ### Availability
 
       For products that are only sold on certain periods of the week, it is possible to configure their availability in shifts. For example:
       Pizza is only sold on Wednesdays from 10:00 AM to 4:00 PM.
@@ -294,12 +293,41 @@ tags:
     x-displayName: Order Overview
     description: |-
 
-      Explicações de fluxos do funcionamento do pedido
+      "This overview summarizes the Open Delivery Ordering flow and how it interacts with Software Services and Ordering Applications.
 
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
+      O fluxo de pedido possua as seguintes etapas Macros:
 
-      Cras luctus ultrices arcu. Quisque non tortor euismod, mollis ligula id, scelerisque enim. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec et lacinia purus. Nunc porttitor orci mi, vitae egestas tortor tempus vel. Nam accumsan, justo in imperdiet ornare, nisl ipsum dignissim magna, in vestibulum dolor ante ac elit.
+      ### Recepção de Eventos de Pedidos
 
+      Através dos Eventos de Pedido, a 'Aplicação de Pedidos' comunica ao 'Serviço de Software' a existencia de um novo pedido, bem como os demais eventos do ciclo de vida do pedido.
+
+      Open Delivery disponibiliza duas maneiras dos Serviços de Software terem conhecimentos de novos eventos:
+
+      - Polling: 
+      O recebimento de eventos através de um polling disponibilizado pela 'Aplicação de Pedidos' é a maneira padrão com o qual o Open Delivery trabalha e sua implementação é orbigatória.
+
+      - Webhook:
+        Opcionalmente é recomendado a implementação de um 'webhook' pelo Serviços de Software para que as Aplicações de Pedidos enviem os novos eventos diretamente, garantindo uma comunicação muito mais veloz.
+      
+        Como esta implementação não é obrigatória, recomenda-se que os serviços de software do merchant contatem as Aplicações de Pedido para saberem se é possível trabalhar com esta possibilidade.
+
+      ### Status Updates
+
+      Após recebido o evento de novo pedido, o merchant precisa notificar a 'Aplicação de Pedidos' do andamento do mesmo.
+
+      Através das Apis do Open Delivery é possível:
+
+      - Confirmar o recebimento do pedido
+      - Avisar que um pedido está pronto para retirada
+      - Avisar que um pedido foi despachado
+
+      Sempre que um merchant disparar uma destas ações, a 'Aplicação de Pedido' irá enviar um novo evento para o 'Serviço de Software', informando o novo status do pedido dentro da 'Aplicação de Pedidos'.
+
+      ### Cancelamento de Pedidos
+
+      Open Delivery disponibiliza APIs para efetuar solicitações de cancelamento, partindo de qualquer uma das partes.
+      Essas solicitações podem ser aceitas ou recusadas dependendo das regras que a empresa possui. "
+      
   - name: ordersWebhook
     x-displayName: Webhook
     description: |-
@@ -313,10 +341,39 @@ tags:
     x-displayName: Polling
     description: |-
 
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
+          O recebimento de eventos via Polling funciona seguindo o seguinte fluxo:
+
           <div align="center">
             <img alt="Workflow" src="https://user-images.githubusercontent.com/80956588/114452490-ded44480-9bae-11eb-9eaf-1fd8e7c7f142.png" />
           </div>
+
+          ### Consultar novos eventos de pedidos
+
+          Para receber novos eventos de pedidos, o 'Serviço de Software' deve fazer requests no endpoint de polling regularmente à um determinado intervalo de tempo, determinado pela 'Aplicação de Pedidos'. 
+          Sempre que houver um novo evento o response enviará o código de resposta 200 com a lista de eventos. Caso não existam novos eventos, o response enviará o código de resposta 204.
+
+          É importante que o Serviço de Software efetue os request dentro do tempo determinado pela 'Aplicação de Pedidos', pois poderão ser efetuadas bloqueios e penalizações dependendo das regras da aplicação.
+          
+          Disponibilidade de novos eventos no polling: A 'Aplicação de Pedidos' poderá ter regras específicas sobre o tempo máximo em que novos eventos ficam disponiveis no polling antes de serem removidos.
+             
+          Sempre verifique com a Aplicação de Pedidos quais as regras para utilização do serviço de polling. 
+
+          Eventos Duplicados e Data do Pedido:
+          Eventualmente a API pode retornar um mesmo evento mais de uma vez, como por exemplo o evento de PLACED incluindo pedidos antigos. Por esse motivo é importante que o seu aplicativo trate a unicidade dos pedidos e eventos através do "id" e a data através do "createdAt".
+
+          Portanto, ao receber um evento, deve-se verificar o id do evento e validar se esse evento (id) já não foi processado anteriormente. Caso esse evento já tenha sido recebido anteriormente, ele deve ser descartado.
+
+          Atenção: só se deve aceitar um novo pedido ou atualizar o status de um pedido depois de validar se o evento já não foi processado anteriormente.
+
+          ### Acknowledgment de eventos
+
+          Ao receber novos eventos, o 'Serviço de Software' sempre deve enviar acknowledgement para que a API não envie esse mesmo evento novamente;
+
+          Recomendações importantes:
+
+          Faça uma request de acknowledgment para cada request de polling com resultados.
+          Caso receba eventos que não utilizados pelo seu aplicativo, envie o acknowledgment desses eventos mesmo assim para que não fique recebendo-os a cada polling novamente. Recomendamos que esse seja o tratamento padrão para todo evento ainda não mapeado no seu aplicativo.
+          Só é preciso enviar acknowledgment do evento uma única vez.
       
   - name: ordersDetails
     x-displayName: Order Details
@@ -596,7 +653,13 @@ paths:
       summary: "Get Events"
       security:
         - OAuth2: [od.all]  
-      description: "Recupera novos eventos via polling"
+      description: 
+        "Polls events for any orders from merchants associated with the authenticated user.
+
+        Each event received from this endpoint must be properly acknowledged, otherwise it will continue to be returned on further requests.
+        
+        
+        No corpo da request, envie um array contendo apenas os ids dos eventos. Cada request aceita uma lista de no máximo 2000 ids de eventos."
       responses:
         "200":
           description: "lista dos Pix recebidos de acordo com o critério de busca."
@@ -626,7 +689,8 @@ paths:
       summary: "Ack Events"
       security:
         - OAuth2: [od.all]  
-      description: "Reconhece eventos recebidos"
+      description: 
+        Acknowledge a set of events, dismissing them from future polling calls.
       responses:
         "200":
           description: "lista dos Pix recebidos de acordo com o critério de busca."
