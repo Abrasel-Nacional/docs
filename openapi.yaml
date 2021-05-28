@@ -193,7 +193,7 @@ tags:
 
       ## Usage
 
-      The merchant must 'choose' a software service, which will be responsible for exposing its data on the endpoint, following the model [link pro MerchantEntity]. This endpoint will be used by the ordering system to get the updated merchant menu.
+      The merchant must 'choose' a software service, which will be responsible for exposing its data on the [endpoint](#operation/getMerchant). This endpoint will be used by the ordering system to get the updated merchant menu.
 
       fluxo
 
@@ -646,6 +646,7 @@ paths:
     get:
       tags:
       - "merchantEndpoints"
+      operationId: "getMerchant"
       summary: "Get Info, Services and Menus of a Merchant"
       security:
         - OAuth2: [od.all]  
