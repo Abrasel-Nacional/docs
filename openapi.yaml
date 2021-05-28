@@ -582,6 +582,9 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/MenuEntity"
+              examples:
+                menuExample:
+                  $ref: "#/components/examples/menuExample"
         "403":
           $ref: "#/components/responses/AcessoNegado"
         "503":
@@ -2526,3 +2529,5 @@ components:
               complement: "Apartment 102"
             deliveryDateTime: "2021-05-27T20:45:10.332Z"
           extraInfo: "None"
+    menuExample:
+      lastUpdate: "2021-05-27T20:45:10.332Z"
