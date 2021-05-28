@@ -576,7 +576,7 @@ tags:
       The indexing system will search the URL previously registered at the moment of the adhesion that will be available in the endpoint /repository listing the registered restaurants.
     
       <div align="center">
-        <img alt="Repository" src="https://i.ibb.co/xMv0NfD/repo-image.png" />
+        <img alt="Repository" src="https://github.com/Abrasel-Nacional/docs/blob/gh-pages/images/repo-image.png" />
       </div>
       ## How to Access
 
@@ -2668,3 +2668,169 @@ components:
           logoURL: "https://logo-image.food-company.com"
           bannerURL: "https://banner-image.food-company.com"
           createdAt: "2021-05-10T20:45:10.332Z"
+        services: [
+          {
+            id: "d9730653-a8ba-4e85-8dbb-b5697e6ae8d7",
+            type: "SERVICE",
+            status: "AVAILABLE",
+            serviceType: "DELIVERY",
+            menuId: "d9730653-b9ba-4e85-8dbb-b5697e6ae8d5",
+            serviceArea: {
+              id: "d9730653-b9ba-4e85-8dbb-b589996ae8d5",
+              type: "SERVICE_AREA",
+              geoMidpointLatitude: -20.2333,
+              geoMidpointLongitude: -20.8383,
+              geoRadius: 1000
+            },
+            serviceAreaFee: {
+              id: "a9930653-b9ba-4e85-8dbb-b589996ae8d5",
+              type: "SERVICE_AREA_FEE",
+              geoMidpointLatitude: -20.2333,
+              geoMidpointLongitude: -20.8383,
+              value: [
+                {
+                  geoRadius: 2000,
+                  price: {
+                    value: 5.00,
+                    currency: "R$"
+                  }
+                }
+              ]
+            },
+            serviceHours: {
+              id: "a9930653-b9ba-4e85-8dbb-b589996ae8d5",
+              type: "SERVICE_HOURS",
+              weekHours: [
+                {
+                  dayOfWeek:
+                    "MONDAY",
+                    "TUESDAY",
+                    "WEDNESDAY",
+                    "THURSDAY",
+                    "FRIDAY" 
+                },
+                timePeriods: {
+                startTime: "10:00:00.000Z",
+                endTime: "18:00:00.000Z"
+              },
+              ],
+              holidayHours: [
+                {
+                  date: "7/4/2021",
+                  timePeriods: {
+                    startTime: "12:00:00.000Z",
+                    endTime: "17:00:00.000Z"
+                  },
+                }
+              ]
+            }
+          }
+        ]
+        items: [
+          {
+            id: "a9930653-b9ba-4e85-8dbb-b589996ae8d5",
+            type: "ITEM",
+            name: "Pepperoni",
+            description: "Pepperoni pizza with cream cheese.",
+            externalCode: "23",
+            imageUrl: "https://images.food-place.com/peperroni.png",
+            nutritionalInfo: {
+              description: "Contains preservatives",
+              calories: "2000 Cal",
+              allergen: ["GLUTEN"],
+              additives: [],
+              suitableDiet: "LOW_LACTOSE",
+              isAlcoholic: "No"
+            }
+          }
+        ]
+        menus: [
+          {
+            id: "a9930653-b9ba-4e85-8dbb-b589996ae8d5",
+            type: "MENU",
+            name: "Pizzas",
+            description: "Pizza Menu",
+            externalCode: "123",
+            disclaimer: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+            disclaimerURL: "https://disclaimer.food-company.com",
+            categoryId: ["a9930653-b9ba-4e85-8dbb-b589996ae8d5", "a9930653-b9ba-4e85-8dbb-b549996ae8d6"]
+          }
+        ]
+        category: [
+          {
+            id: "a9930653-b9ba-4e85-8dbb-b589996ae8e",
+            type: "CATEGORY",
+            index: "0",
+            name: "Pizzas",
+            description: "Pizza menu",
+            imageUrl: "https://menu-pizza.food-company.com",
+            externalCode: "13",
+            status: "AVAILABLE",
+            availabilityId: ["123", "456"],
+            itemOfferId: [
+              "a9930653-b9ba-4e85-8dbb-b589996ae8f", "a9930653-b9bc-4f85-8dbb-b589996ae8e"
+            ]
+          }
+        ]
+        itemOffers: [
+          {
+            id: "a9930653-b9ba-4e85-8dbb-b589996ae8f",
+            type: "ITEM_OFFER",
+            itemId: "a9930653-b9bc-4f85-8dbb-b589996ae8e",
+            index: "0",
+            price: {
+              value: 20.00,
+              originalValue: 20.00,
+              currency: "R$"
+            },
+            availabilityIds: [],
+            optionGroupsIds: ["a9930653-b9ba-4e85-8dbb-b589996ae8f"]
+          }
+        ]
+        optionGroups: [
+          {
+            id: "a9930653-b9ca-4e85-8dbb-b589996ae8a",
+            type: "OPTION_GROUP",
+            index: "0",
+            name: "Extras",
+            description: "Extra things to put on the pizza.",
+            externalCode: "12",
+            status: "AVAILABLE",
+            minPermitted: "0",
+            maxPermitted: "5",
+            options: [
+              {
+                id: "a9530653-b9ca-4e85-8dbb-b589996ae8a",
+                type: "OPTION",
+                itemId: "1",
+                index: "0",
+                price: {
+                  value: 2.00,
+                  originalValue: 2.00,
+                  currency: "R$"
+                },
+                maxPermitted: "2"
+              }
+            ]
+          }
+        ]
+        availability: [
+          {
+            id: "a9530653-b9ca-4e85-8dbb-b589996cf8a",
+            type: "AVAILABILITY",
+            startDate: "05/01/2021",
+            endDate: "05/30/2021",
+            hours: {
+              dayOfWeek:
+                "MONDAY",
+                "TUESDAY",
+                "WEDNESDAY",
+                "THURSDAY",
+                "FRIDAY" 
+            },
+            timePeriods: {
+                startTime: "10:00:00.000Z",
+                endTime: "18:00:00.000Z"
+            }
+          }
+        ]
