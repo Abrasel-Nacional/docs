@@ -292,8 +292,8 @@ tags:
 
       ## Availability
 
-      The `Availability' entity defines horários e dias específicos para controlar a disponibilidade de categorias e ofertas de items dentro do cardápio.
-      Também é possivel configurar horários especiais para feriados.
+      The `Availability' entity defines specific times and days to control the availability of categories and item offerings within the menu.
+      It is also possible to set special times for holidays.
 
       <SchemaDefinition schemaRef="#/components/schemas/Availability" />
  
@@ -677,7 +677,7 @@ paths:
           Colocar informações sobre o TTL 
       responses:
         "200":
-          description: "Lista de cobranças imediatas."
+          description: "Successful merchant return."
           content:
             "application/json":
               schema:
@@ -686,9 +686,9 @@ paths:
                 menuExample:
                   $ref: "#/components/examples/merchantExample"
         "403":
-          $ref: "#/components/responses/AcessoNegado"
+          $ref: "#/components/responses/AccessDenied"
         "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /merchantList:
     get:
@@ -735,9 +735,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Generico"
         "403":
-          $ref: "#/components/responses/AcessoNegado"
+          $ref: "#/components/responses/AccessDenied"
         "503":
-          $ref: "#/components/responses/ServicoIndisponivel"          
+          $ref: "#/components/responses/ServiceUnavailable"          
   
   "/events:polling":
     get:
@@ -758,9 +758,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Generico"
         "403":
-          $ref: "#/components/responses/AcessoNegado"
+          $ref: "#/components/responses/AccessDenied"
         "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /acknowledge:
     post:
@@ -786,9 +786,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Generico"
         "403":
-          $ref: "#/components/responses/AcessoNegado"
+          $ref: "#/components/responses/AccessDenied"
         "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /orders/{orderId}:
     get:
@@ -935,9 +935,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Generico"
         "403":
-          $ref: "#/components/responses/AcessoNegado"
+          $ref: "#/components/responses/AccessDenied"
         "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /orders/{orderId}/readyForPickup:
     post:
@@ -962,9 +962,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/Generico"
         "403":
-          $ref: "#/components/responses/AcessoNegado"
+          $ref: "#/components/responses/AccessDenied"
         "503":
-          $ref: "#/components/responses/ServicoIndisponivel"
+          $ref: "#/components/responses/ServiceUnavailable"
   
   /repository:
     get:
@@ -986,11 +986,11 @@ paths:
                   items:
                     $ref: "#/components/schemas/Repository"
           "403":
-            $ref: "#/components/responses/AcessoNegado"
+            $ref: "#/components/responses/AccessDenied"
           "404":
-            $ref: "#/components/responses/NaoEncontrado"
+            $ref: "#/components/responses/NotFound"
           "503":
-            $ref: "#/components/responses/ServicoIndisponivel"
+            $ref: "#/components/responses/ServiceUnavailable"
 
 x-webhooks:
   menuUpdated:
@@ -1066,20 +1066,20 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Generico'
-    NaoEncontrado:
-      description: "Recurso solicitado não foi encontrado."
+    NotFound:
+      description: "The requested resource was not found."
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Generico'
-    AcessoNegado:
-      description: "Requisição de participante autenticado que viola alguma regra de autorização."
+    AccessDenied:
+      description: "Authenticated participant request that violates some authorization rule."
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Generico'
-    ServicoIndisponivel:
-      description: "Serviço não está disponível no momento. Serviço solicitado pode estar em manutenção ou fora da janela de funcionamento."
+    ServiceUnavailable:
+      description: "Service is not currently available. Requested service may be under maintenance or outside the operating window."
       content:
         application/problem+json:
           schema:
