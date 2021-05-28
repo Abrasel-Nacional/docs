@@ -195,7 +195,9 @@ tags:
 
       The merchant must 'choose' a software service, which will be responsible for exposing its data on the endpoint, following the model [link pro MerchantEntity]. This endpoint will be used by the ordering system to get the updated merchant menu.
 
-      fluxo
+      <div align="center">
+        <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/menu_flow.png" />
+      </div>
 
       The ordering applications can check for merchant updates in the following ways:
       i.	Relaunching constant queries on the /merchant endpoint whenever the TTL expires;
@@ -217,60 +219,66 @@ tags:
       - **Services entities**: Timing, location, and conditions of the merchant service.
       - **Menu entities**: Details of the merchnat menus.
 
-      The following diagram shows how Service, Merchant Info, and Menu properties represent a single merchant:
+      The following diagram shows how Basic Info, Service, and Menu properties represent a single merchant:
 
-      imagem
+      <div align="center">
+        <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/merchant_structure.png" />
+      </div>
 
-      ### General guidelines
+      Full Merchant Model
 
-      **DateTime and Time values**: For properties that require a DateTime or Time value, use the formats specified in DateTime and Time formats. For example, 2017-05-01T06:30:00+05:30 for DateTime and T08:08:00+05:30 for Time.
-
-      **IDs**: Use an @id property to identify all unique entities within an entity type. An @id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
-
-      **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
-
+      <SchemaDefinition schemaRef="#/components/schemas/Merchant" />     
 
       # BasicInfo
 
-      A merchant `BaiscInfo` defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the Software Services serves. 
+      A merchant `BasicInfo` defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the Software Services serves. 
       Typically, this data is static.
 
-      Model with example.
+      <SchemaDefinition schemaRef="#/components/schemas/BasicInfo" />
 
       # Service
 
       The `Service` defines the capabilities of a delivery organization in a geographic region.
-      A `Service` defines properties such as the service type, hours available, and area served. 
+      A `Service` defines properties such as the service type, hours available, and area served.
+      Cada `Service` necessita obrigatoriamente estar vinculada à um `Menu`, através da propriedade `menuId` 
       `Service` is expected to change.
 
       Figure 1: `Service` model showing its relationship with `ServiceArea`, `ServiceHours`, and `ServiceAreaFee` properties.
 
-      Model with example.
+      <SchemaDefinition schemaRef="#/components/schemas/Service" />
 
       # Menu
 
-      A `Menu` defines properties such as categories, items, offers and availability .
+      A `Menu` defines properties such as categories, items, offers and availability. 
+      Um menu para ser exibido pelo Ordering Application necessáriamente necessita estar vinculado à um `Service` através da propriedade `menuId`.
 
       Figure 1: `Menu` model showing its relationship with `Category`, `Availability`, `ItemOffer` and `OptionGroup`.
       
       Data in a Menu entity is expected to change.
 
-      ### Item
+      ## Item
 
       A `Item` propertie is the menu entity that carries all the general item information. They are:
       Name, description, external code, image, nutricional information, and EAN (European Article Number), used mainly by marketplaces.
       The 'Item' can be offered in a menu as a main item or an option. And, for the same store, it can even be reused in different menus.
 
-      ### Category
+      <SchemaDefinition schemaRef="#/components/schemas/Item" />
+
+      ## Category
 
       `Category` is the propertie in which the store has to organize its `ItemsOffers` in order to make it easier for the user to find what he wants to buy. Categories have sales statuses such as activated and deactivated and accept `Availability` too.
       
-      ### ItemOffer
+      <SchemaDefinition schemaRef="#/components/schemas/Category" />
+
+      ## ItemOffer
 
       The `ItemOffer` can be considered the offering of a item, and it is used to set the item price and 'Availability'.
       The `ItemOffer` is a item related to the category.
 
-      ### OptionGroup and Option
+      <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" /> 
+
+
+      ## OptionGroup and Option
 
       The `OptionGroup` is the entity used to group customizations of a product, for example: "Choose your beverage:"
       An `OptionGroup` can be shared by several items.
@@ -279,10 +287,15 @@ tags:
       The `Option` has its own sales status, and can be activated or desactivated when needed. 
       It is possible to set the `Option` price to 0.00 regardless of whether it is mandatory or optional.
 
-      ### Availability
+      <SchemaDefinition schemaRef="#/components/schemas/OptionGroup" />
+
+
+      ## Availability
 
       The `Availability' entity defines horários e dias específicos para controlar a disponibilidade de categorias e ofertas de items dentro do cardápio.
       Também é possivel configurar horários especiais para feriados.
+
+      <SchemaDefinition schemaRef="#/components/schemas/Availability" />
  
 
   - name: merchantEndpoints
@@ -535,7 +548,7 @@ tags:
   - name: itemModel
     x-displayName: Items Model
     description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Item" />
+     
 
   - name: categoryModel
     x-displayName: Categories Model
@@ -651,6 +664,14 @@ paths:
         - OAuth2: [od.all]  
       description: |-
           Endpoint to query all data for a specific merchant, such as basic data, menus, and services
+
+          ### General guidelines
+
+          **DateTime and Time values**: For properties that require a DateTime or Time value, use the formats specified in DateTime and Time formats. For example, 2017-05-01T06:30:00+05:30 for DateTime and T08:08:00+05:30 for Time.
+
+          **IDs**: Use an @id property to identify all unique entities within an entity type. An @id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
+
+          **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
 
           Colocar informações sobre o TTL 
       responses:
