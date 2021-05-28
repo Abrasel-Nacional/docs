@@ -193,23 +193,31 @@ tags:
 
       ## Usage
 
-      Flow + Explanations about updates (TTL + Webhook + Order Denials)
+      The merchant deverá ‘escolher’ um serviço de software, que ficará responsável em expor o seus dados em endpoint, seguindo o model [link pro MerchantEntity]. Este endpoint será utilizada pelos ordering system para obter o cardápio atualizado do merchant.
+
+      fluxo
+
+      As ordering aplications podem verificar atualizações do merchant das seguintes maneiras:
+      i.	Relesando consultas constantes no endpoint /merchant sempre que o TTL expirar.
+      ii.	A ordering Application poderá opcionalmente disponibilizar um webhook, onde o merchant software service poderá enviar uma notificação de atualização do cardápio.
+      iii.	Caso o Software Service recuse um pedido por quaisquer motivos, ao receber a recusa, recomenda-se que a ordering application faça uma nova consulta no endpoint /merchant
+
 
       ## Health Check
 
-      Health Check Information
+      As ordering aplications devem disponibilizar um endpoint para que as software service saiba se o seu cardapio está sendo lido corretamente.
 
   - name: merchantStructure
     x-displayName: Merchant Structure
     description: |-
 
-      The structure of the Merchant model consists of the following top-level entities:
+      The structure of the Merchant model consists of the following top-level properties:
 
       - **BasicInfo**: Information about the merchant.
       - **Services entities**: Timing, location, and conditions of the merchant service.
       - **Menu entities**: Details of the merchnat menus.
 
-      The following diagram shows how Service, Merchant Info, and Menu entities represent a single merchant:
+      The following diagram shows how Service, Merchant Info, and Menu properties represent a single merchant:
 
       imagem
 
@@ -224,66 +232,58 @@ tags:
 
       # BasicInfo
 
-      A merchant BaiscInfo entity defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the Software Services serves. Typically, this data is static.
+      A merchant `BaiscInfo` defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the Software Services serves. 
+      Typically, this data is static.
 
       Model with example.
 
       # Service
 
-      The Service entity defines the capabilities of a delivery organization in a geographic region.
-      A Service entity defines properties such as the service type, hours available, and area served. 
-      Service entity is expected to change.
+      The `Service` defines the capabilities of a delivery organization in a geographic region.
+      A `Service` defines properties such as the service type, hours available, and area served. 
+      `Service` is expected to change.
 
-      Figure 1: Service entity showing its relationship with ServiceArea, ServiceHours, OperationHours, and Fee entities.
+      Figure 1: `Service` model showing its relationship with `ServiceArea`, `ServiceHours`, and `ServiceAreaFee` properties.
 
       Model with example.
 
       # Menu
 
-      A Menu entity defines properties such as menu categories, items, offers and availability .
+      A `Menu` defines properties such as categories, items, offers and availability .
 
-      Figure 1: Menu entity showing its relationship with MenuSection, Availability, MenuItem, MenuItemOption, and MenuItemOffer.
-      
-      Each menu item can include a description, image, add-ons, and nutrition information. Offers are used to price the menu item, define times when the item is available, and define times when special prices are active. 
+      Figure 1: `Menu` model showing its relationship with `Category`, `Availability`, `ItemOffer` and `OptionGroup`.
       
       Data in a Menu entity is expected to change.
 
       ### Item
 
-      A Item entity is the catalog entity that carries all the general item information. They are:
-      Name, description, external code, image, availability in shifts, size, food restrictions, and EAN (European Article Number), used mainly by marketplaces.
-      The product can be offered in a catalog as a main item or an add-on. And, for the same store, it can even be reused in different catalogs.
-
+      A `Item` propertie is the menu entity that carries all the general item information. They are:
+      Name, description, external code, image, nutricional information, and EAN (European Article Number), used mainly by marketplaces.
+      The 'Item' can be offered in a menu as a main item or an option. And, for the same store, it can even be reused in different menus.
 
       ### Category
 
-      Category is the entity in which the store has to organize its items in order to make it easier for the user to find what he wants to buy. Categories have sales statuses such as paused and activated.
+      `Category` is the propertie in which the store has to organize its `ItemsOffers` in order to make it easier for the user to find what he wants to buy. Categories have sales statuses such as activated and deactivated and accept `Availability` too.
       
       ### ItemOffer
 
-      The ItemOffer can be considered the offering of a item.
-      Analogous to the complement, the itemOffer is a item related to the category.
+      The `ItemOffer` can be considered the offering of a item, and it is used to set the item price and 'Availability'.
+      The `ItemOffer` is a item related to the category.
 
       ### OptionGroup and Option
 
-      The add-on group is the entity used to group customizations of a product, for example: "Choose your beverage:"
-      An add-on group can be shared by several items.
+      The `OptionGroup` is the entity used to group customizations of a product, for example: "Choose your beverage:"
+      An `OptionGroup` can be shared by several items.
 
-      Complements are the options of a Complement Group. It can be defined as: "A item related to a complement group". The add-on has its own sales status, and can be paused or activated when needed. It is possible for a complement to be R$0.00 regardless of whether it is mandatory or optional.
+      `Options` are the complements of a OptionGroup. It can be defined as: "A item related to a `OptionGroup`". 
+      The `Option` has its own sales status, and can be activated or desactivated when needed. 
+      It is possible to set the `Option` price to 0.00 regardless of whether it is mandatory or optional.
 
       ### Availability
 
-      For products that are only sold on certain periods of the week, it is possible to configure their availability in shifts. For example:
-      Pizza is only sold on Wednesdays from 10:00 AM to 4:00 PM.
-
-      Always available
-      When an item is selected as always available, it will be displayed whenever the store is open and the sales status (As main or add-on item) is activated.
-
-    externalDocs:
-      description: Explicação dos fluxos
-      url: http://www.google.com.br
-
-      
+      The `Availability' entity defines horários e dias específicos para controlar a disponibilidade de categorias e ofertas de items dentro do cardápio.
+      Também é possivel configurar horários especiais para feriados.
+ 
 
   - name: merchantEndpoints
     x-displayName: Merchant API
@@ -327,77 +327,190 @@ tags:
 
       Open Delivery provides API's to make cancellation requests from either party.
       These requests can be accepted or denied depending on the rules that the company has.
+
+      ### Order Life Cicle
+
+
       
   - name: ordersWebhook
     x-displayName: Webhook
     description: |-
+    
+      Receiving events via Webhook works as follows:
 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce non justo mi. Ut luctus nisl ac magna vulputate posuere. Cras dictum leo at turpis consectetur blandit. Ut id dui in justo iaculis ultricies. Duis at eros eu felis maximus aliquam. Etiam at metus sed nibh feugiat aliquet. Nullam quis nisi erat. Mauris feugiat tempus nulla vitae venenatis. Donec vel orci in metus tristique volutpat a a erat.
-          <div align="center">
-            <img alt="Workflow" src="https://user-images.githubusercontent.com/80956588/113513032-f459c680-953d-11eb-8ac3-9422e9970d0f.png" />
-          </div>
+      <div align="center">
+        <img alt="Workflow" src="https://user-images.githubusercontent.com/80956588/113513032-f459c680-953d-11eb-8ac3-9422e9970d0f.png" />
+      </div>
+
+      Order Event Notification
+      Webhook is sent to notify you that an order has been placed on the Uber Eats marketplace.
+
+      The merchant Software Service that implements this webhook, should return an HTTP 200 response code with an empty response body to acknowledge receipt of the webhook event. 
+      If the Ordering Application does not receive a 200 acknowledgement response, than the webhook event will be resent based on its resent politics.
+
+      Webhook Headers
+      Uber will include security headers for all requests made to your webhook URL.
+
+      Header	Description
+      X-Environment	Indicates if this request is coming from the production or sandbox API.
+      X-App-Id
+      X-App-Signature	SHA256 hash of the request body, using the client secret as the key.
+        
+      Webhook Security
+      Webhook messages are signed so that your app can verify that the sender is Uber. Webhooks requests contain an X-Uber-Signature header. The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.  
+
+      Webhook Event Structure
 
   - name: ordersPolling
     x-displayName: Polling
     description: |-
 
-          Receiving events via Polling works as follows:
+        "Receiving events via Polling works as follows:
 
-          <div align="center">
-            <img alt="Workflow" src="https://user-images.githubusercontent.com/80956588/114452490-ded44480-9bae-11eb-9eaf-1fd8e7c7f142.png" />
-          </div>
+        <div align="center">
+          <img alt="Workflow" src="https://user-images.githubusercontent.com/80956588/114452490-ded44480-9bae-11eb-9eaf-1fd8e7c7f142.png" />
+        </div>
 
-          ### Query new order events
+        ### Query new order events
 
-          In order to receive new order events, the 'Software Service' must make requests on the polling endpoint regularly at a certain time interval, determined by the 'Order Application'. 
-          Whenever there is a new event the response will send the response code 200 with the list of events. If there are no new events, the response will send the response code 204.
+        In order to receive new order events, the 'Software Service' must make requests on the polling endpoint regularly at a certain time interval, determined by the 'Order Application'. 
+        Whenever there is a new event the response will send the response code 200 with the list of events. If there are no new events, the response will send the response code 204.
 
-          It is important that the Software Service performs the requests within the timeframe determined by the 'Request Application', as blocking and penalties may occur depending on the application's rules.
-          
-          Availability of new events in polling: The 'Order Application' may have specific rules about the maximum time new events are available in polling before they are removed.
-             
-          Always check with the Order Application what the rules are for using the polling service. 
+        It is important that the Software Service performs the requests within the timeframe determined by the 'Request Application', as blocking and penalties may occur depending on the application's rules.
+        
+        Availability of new events in polling: The 'Order Application' may have specific rules about the maximum time new events are available in polling before they are removed.
+            
+        Always check with the Order Application what the rules are for using the polling service. 
 
-          Duplicate Events and Order Date:
-          Eventually the API may return the same event more than once, for example the PLACED event including old orders. For this reason it is important that your application handles the uniqueness of requests and events through "id" and the date through "createdAt".
+        Duplicate Events and Order Date:
+        Eventually the API may return the same event more than once, for example the PLACED event including old orders. For this reason it is important that your application handles the uniqueness of requests and events through "id" and the date through "createdAt".
 
-          Therefore, when receiving an event, you must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
+        Therefore, when receiving an event, you must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
 
-          Please note: you should only accept a new order or update the status of an order after validating that the event has not been processed before.
+        Please note: you should only accept a new order or update the status of an order after validating that the event has not been processed before.
 
-          ### Acknowledgment Events
+        ### Acknowledgment Events
 
-          When receiving new events, the 'Software Service' should always send acknowledgement so that the API does not send that same event again;
+        When receiving new events, the 'Software Service' should always send acknowledgement so that the API does not send that same event again;
 
-          Important recommendations:
+        Important recommendations:
 
-          Make an acknowledgment request for each polling request with results.
-          If you receive events that are not used by your application, send the acknowledgment of these events anyway so that you are not receiving them every polling again. We recommend that this be the default treatment for all events not yet mapped in your application.
-          You only need to send acknowledgment of the event once.
+        Make an acknowledgment request for each polling request with results.
+        If you receive events that are not used by your application, send the acknowledgment of these events anyway so that you are not receiving them every polling again. We recommend that this be the default treatment for all events not yet mapped in your application.
+        You only need to send acknowledgment of the event once."
       
   - name: ordersDetails
     x-displayName: Order Details
     description: |-
 
-        Order details parameters and responses.
+      Antes de confirmar ou cancelar um pedido, é necessário obter os detalhes do mesmo para que o usuário do Software Service possa verificar se conseguirá preparar e entregar esse pedido, como por exemplo verificar se tem todos os itens necessários e se tem disponibilidade para efetuar a entrega no endereço informado.
+
+      Através do endpoint GET /orders/{id} pode-se obter todos os detalhes de um pedido.
+
+      Esse endpoint retorna o código 200 e o conteúdo do pedido. Caso seja informado um id inválido na request ou o id de um pedido expirado (dependendo da politica do marketplace) o endpoint retorna 404.
+
+      Nessa seção você encontrará todos os detalhes do payload de um pedido:
 
   - name: ordersStatus
     x-displayName: Status Update
     description: |-
 
-        Update Endpoints
+      Seguindo o ciclo de vida do pedido, o Software Service necessita avisar a Ordering Application dos próximos status do pedido.
+       
+      After acknowledging receipt of a new order event (either via polling or webhook) is expected that the Software Service explicitly POST /accept_pos_order or POST /deny_pos_order within a time window set by the Ordering Application.
+      Otherwise the order can time out and auto-cancel and the merchant can suffer a penalty based on the Ordering Application policy. 
+      Order acceptances should be posted as quickly as possible to minimize Consumer cancellations.
+
+      Quando o pedido estiver pronto, é esperado que seja enviado um request para /readyForPickup.
+
+      Quando o pedido Sair para Entrega, é esperado que seja enviado um request para /dispatch.
+
+      Ao enviar request para estes endpoints, é esperado que a Ordering Application, notifique o consumidor do andamento do pedido.
 
   - name: ordersCancellation
     x-displayName: Cancellation
     description: |-
 
-        Cancellation Endpoints
+        Um pedido pode ser cancelado por vários motivos e a iniciativa de cancelar um pedido pode partir da loja, do cliente ou do iFood. Pode acontecer também do Entregador solicitar o cancelamento em alguns cenários, como por exemplo quando não encontra o cliente no endereço de entrega.
+
+        Regras de cancelamento
+        É esperado que tanto as Ordering Applications, como os Software Services possuam políticas próprias de cancelamento de pedidos e informem aos seus utilizadores.
+
+        Um cancelamento de pedido sempre será um processamento assíncrono, onde uma das partes faz uma requisição de cancelamento e a outra aceita ou recusa este esta "Problemas na requisição."
+
+        Uma requisação de cancelamento sempre deve conter:
+
+        reason: Campo de texto aberto indicando a razão do cancelamento.
+        code: Um enumerador contendo um motivo de cancelamento
+        mode: Campo indicando se o cancelamento ocorreu de forma Automatica ou Manual.
+
+        O canelamento ser originado por:
+
+        Software Service (Merchant):
+
+        Caso o merchant queira cancelar um pedido, deve fazer a solicitação através do endpoint: /orders/{id}/requestCancellation
+
+        Penalidades
+        Evite cancelar pedidos! O excesso de cancelamentos pode resultar em algumas penalidades (dependendo da política da Ordering Application) como por exemplo ter a loja fechada temporariamente na plataforma.
+
+        Validação do Cancelamento
+        A solicitação de Cancelamento não garante que o pedido está cancelado. Ao enviar uma request /orders/{id}/requestCancelation , a Ordering Application enviará como resposta o código 202 (accepted).
+        Isso não significa ainda que o pedido foi cancelado. Significa que a requisição foi aceita e será processada pelo serviço de cancelamento. Como resultado dessa solicitação, o Software Service poderá receber no próximo polling (or webhook) um dos seguintes eventos:
+
+        CANCELLATION_REQUEST_FAILED
+        CANCELLED
+
+        O pedido só deve ser Cancelado quando é gerado o evento de CANCELLED.
+
+        As regras de cancelamento podem variar de acordo com o momento do pedido (antes ou depois da confirmação). Em algumas situações é possível que o serviço de cancelamento consulte o consumidor se ele aceita ou não o cancelamento do pedido.
+
+        Códigos de cancelamento:
+        PROBLEMAS DE SISTEMA
+        PEDIDO EM DUPLICIDADE
+        ITEM INDISPONÍVEL
+        RESTAURANTE SEM MOTOBOY
+        CARDÁPIO DESATUALIZADO
+        PEDIDO FORA DA ÁREA DE ENTREGA
+        CLIENTE GOLPISTA / TROTE
+        FORA DO HORÁRIO DO DELIVERY
+        DIFICULDADES INTERNAS DO RESTAURANTE
+        ÁREA DE RISCO
+        RESTAURANTE ABRIRÁ MAIS TARDE
+        RESTAURANTE FECHOU MAIS CEDO
+
+        Recomenda-se que a Ordering Application faça uma nova request no endpoint /merchant sempre que acontecer uma recusa por parte do merchant.
+
+        Ordering Application
+
+        O cancelamento por parte da Ordering Application pode acontecer por:
+
+        CONSUMER_CANCELLATION_REQUESTED:
+
+        O consumidor pode solicitar o cancelamento de um pedido. 
+        Dependendo da regras de cancelamento aplicadas, essa opção pode não estar habilitada para todos os merchants. 
+        Também pode ser somente permitido em alguns momentos como antes da confirmação do pedido.
+
+        OTHER_CANCELLATION_REASON:
+
+        A Ordering Aplication pode cancelar o pedido por outros motivos que não sejam via consumidor.
+
+        Handshake de Cancelamento
+        
+        Quando a solicitação ocorre a loja receberá um evento de ORDER_CANCELLATION_REQUESTED no polling (ou webhook) e deve se manifestar através dos seguintes endpoints:
+
+        /acceptCancellation
+        /denyCancellation
+
+        Essa request será processada pelo serviço de cancelamento da Ordering Application (de maneira assíncrona) e o Software Service receberá no próximo polling (ou webhook) o(s) seguinte(s) evento(s):
+
+        CANCELLATION_DENIED, ou
+        CANCELLED
 
   - name: payment
     x-displayName: Payment Endpoint
     description: |-
 
-        Conciliation Endpoint
+        As Ordering Application devem oferecer um endpoint para que os merchants possam consultar informações sobre os pagamentos dos pedidos feitos e informações sobre a transferencia dos valores para o merchant.
 
   - name: menuEntitiesModel
     x-displayName: Menu Entities Model
@@ -467,7 +580,7 @@ tags:
       </div>
       ## How to Access
 
-      Coming soon.
+      Work in progress.
 
 x-tagGroups:
   - name: ""
