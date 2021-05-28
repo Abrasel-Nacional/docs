@@ -2629,7 +2629,7 @@ components:
             deliveredBy: "MERCHANT"
             deliveryAddress:
               country: "Brazil"
-              streetName: "Plaza Avenue"
+              streetName: "Gomes de Carvalho Street"
               formattedAddress: "string"
               streetNumber: "100"
               city: "São Paulo"
@@ -2639,8 +2639,45 @@ components:
                 longitude: -46.63611
               neighborhood: "Moema"
               state: "SP"
-              complement: "Apartment 102"
+              complement: "102"
             deliveryDateTime: "2021-05-27T20:45:10.332Z"
           extraInfo: "None"
     menuExample:
       lastUpdate: "2021-05-27T20:45:10.332Z"
+      TTL: 500
+      merchant:
+        id: "d9730653-b9ba-4e85-8dbb-b5697e6ae8d5"
+        type: "MERCHANT"
+        status: "AVAILABLE"
+        name: "Pizza Plaza"
+        document: "18.728.987/0001-20"
+        corporateName: "Food Company"
+        description: "Food company specializing in pizzas and burgers."
+        averageTicket: 90.00
+        averagePreparationTime: 20
+        minOrderValue:
+          value: 20.00
+          currency: "R$"
+        merchantType: "RESTAURANT"
+        merchantCategories: ["HAMBURGUERS", "PIZZA"]
+        address:
+          country: "Brazil"
+          state: "SP"
+          city: "São Paulo"
+          district: ""
+          street: "Plaza Avenue"
+          number: "100"
+          postalCode: "20111-000"
+          complement: "2001"
+          latitude: -23.5480
+          longitude: -46.63630
+        contactEmails: "food@company.com"
+        contactPhones: [
+          {
+            commercialNumber: "11999999999",
+            whatsappNumber: "11998888888"
+          }
+        ]
+        logoURL: "https://logo-image.food-company.com"
+        bannerURL: "https://banner-image.food-company.com"
+        createdAt: "2021-05-10T20:45:10.332Z"
