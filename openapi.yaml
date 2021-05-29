@@ -258,7 +258,10 @@ tags:
 
       A `Menu` defines properties such as categories, items, offers and availability. 
       Um menu para ser exibido pelo Ordering Application necessáriamente necessita estar vinculado à um `Service` através da propriedade `menuId`.
-
+      
+      <div align="center">
+        <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/merchant_menus.png" />
+      </div>
       Figure 1: `Menu` model showing its relationship with `Category`, `Availability`, `ItemOffer` and `OptionGroup`.
       
       Data in a Menu entity is expected to change.
