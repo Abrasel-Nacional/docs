@@ -247,6 +247,9 @@ tags:
       Cada `Service` necessita obrigatoriamente estar vinculada à um `Menu`, através da propriedade `menuId` 
       `Service` is expected to change.
 
+      <div align="center">
+        <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/merchant_services.png" />
+      </div>
       Figure 1: `Service` model showing its relationship with `ServiceArea`, `ServiceHours`, and `ServiceAreaFee` properties.
 
       <SchemaDefinition schemaRef="#/components/schemas/Service" />
