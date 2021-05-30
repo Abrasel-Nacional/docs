@@ -231,7 +231,7 @@ tags:
 
       Full Merchant Model
 
-      <SchemaDefinition schemaRef="#/components/schemas/Merchant" />     
+      <SchemaDefinition schemaRef="#/components/schemas/MerchantDescription" />     
 
       # BasicInfo
 
@@ -283,7 +283,7 @@ tags:
 
       ## ItemOffer
 
-      The `ItemOffer` can be considered the offering of a item, and it is used to set the item price and 'Availability'.
+      The `ItemOffer` can be considered the offering of a item, and it is used to set the item price and `Availability`.
       The `ItemOffer` is a item related to the category.
 
       <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" /> 
@@ -303,7 +303,7 @@ tags:
 
       ## Availability
 
-      The `Availability' entity defines specific times and days to control the availability of categories and item offerings within the menu.
+      The `Availability` entity defines specific times and days to control the availability of categories and item offerings within the menu.
       It is also possible to set special times for holidays.
 
       <SchemaDefinition schemaRef="#/components/schemas/Availability" />
@@ -317,7 +317,19 @@ tags:
     x-displayName: Order Overview
     description: |-
 
-      "This overview summarizes the Open Delivery Ordering flow and how it interacts with Software Services and Ordering Applications.
+      This overview summarizes the Open Delivery Ordering flow and how it interacts with Software Services and Ordering Applications.
+
+      ### Order Events
+
+      <div align="center">
+        <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/order_life_cicle.png" />
+      </div>
+
+      ### Understanding the Order Flow
+
+      <div align="center">
+        <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/order_integrations.png" />
+      </div>
 
       The order flow has the following Macro steps:
 
@@ -347,12 +359,12 @@ tags:
 
       Whenever a merchant triggers one of these actions, the 'Order Application' will send a new event to the 'Software Service', informing the new order status within the 'Order Application'.
 
+       - Para pedidos do tipo Takeout, é possivel opcionalmente assign a pickup area que será informada através de um evento para o merchant.
+      
       ### Order Cancellation
 
       Open Delivery provides API's to make cancellation requests from either party.
       These requests can be accepted or denied depending on the rules that the company has.
-
-      ### Order Life Cicle
 
 
       
@@ -363,36 +375,40 @@ tags:
       Receiving events via Webhook works as follows:
 
       <div align="center">
-        <img alt="Workflow" src="https://user-images.githubusercontent.com/80956588/113513032-f459c680-953d-11eb-8ac3-9422e9970d0f.png" />
+        <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/webhook.png" />
       </div>
 
-      Order Event Notification
-      Webhook is sent to notify you that an order has been placed on the Uber Eats marketplace.
+      ### Order Event Notification
+      Webhook is sent to notify the 'Software Service' that an new order event has happened on the 'Ordering Application'.
 
-      The merchant Software Service that implements this webhook, should return an HTTP 200 response code with an empty response body to acknowledge receipt of the webhook event. 
-      If the Ordering Application does not receive a 200 acknowledgement response, than the webhook event will be resent based on its resent politics.
+      The merchant 'Software Service' that implements this webhook, should return an HTTP 200 response code with an empty response body to acknowledge receipt of the webhook event. 
+      If the 'Ordering Application' does not receive a 200 acknowledgement response, than the webhook event will be resent based on its resent politics.
 
-      Webhook Headers
-      Uber will include security headers for all requests made to your webhook URL.
+      ### Webhook Headers
+      Open Delivery will include security headers for all requests made to the 'Software Service' webhook URL.
 
-      Header	Description
-      X-Environment	Indicates if this request is coming from the production or sandbox API.
-      X-App-Id
-      X-App-Signature	SHA256 hash of the request body, using the client secret as the key.
+      **Header Description**
+
+      | Header            | Description |
+      | ----------------- | ----------- |
+      | X-App-Id          | An Unique Identificator of the 'Ordering Application' |
+      | X-App-Signature   | SHA256 hash of the request body, using the client secret as the key |
+
         
-      Webhook Security
-      Webhook messages are signed so that your app can verify that the sender is Uber. Webhooks requests contain an X-Uber-Signature header. The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.  
+      **Webhook Security** 
 
-      Webhook Event Structure
+      Webhook messages are signed so that the 'Software Service' can verify that the sender is a valid 'Ordering Application'. 
+      Webhooks requests contain an X-App-Signature header. 
+      The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.  
 
   - name: ordersPolling
     x-displayName: Polling
     description: |-
 
-        "Receiving events via Polling works as follows:
+        Receiving events via Polling works as follows:
 
         <div align="center">
-          <img alt="Workflow" src="https://user-images.githubusercontent.com/80956588/114452490-ded44480-9bae-11eb-9eaf-1fd8e7c7f142.png" />
+          <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/polling.png" />
         </div>
 
         ### Query new order events
@@ -1173,24 +1189,25 @@ components:
             - UNAVAILABLE 
         basicInfo:
           type: "object"
-          description:  "A required entity to implement. Describes a merchant. **[BasicInfo](#section/BasicInfo)**"
+          description:  "A required entity to implement. Describes basic info of a merchant."
           allOf:
             - $ref: "#/components/schemas/BasicInfo"
         services:
           type: "array"
           description:  "A required entity to implement. Describes food ordering services details for a merchant."
           items:           
-            $ref: "#/components/schemas/Service" 
+            $ref: "#/components/schemas/Service"
+        menus:
+          type: "array"
+          description:  "A required entity to implement. Describes an array of menus."
+          items:
+            $ref: "#/components/schemas/Menu" 
         items:
           type: "array"
           description:  "A required entity to implement. Describes an array of items. To be used with an `ItemOffer` or an `Option`."
           items:
             $ref: "#/components/schemas/Item" 
-        menus:
-          type: "array"
-          description:  "A required entity to implement. Describes an array of menus."
-          items:
-            $ref: "#/components/schemas/Menu"
+
         categories:
           type: "array"
           description:  "A required entity to implement. Describes an array of sections in the menu where `ItemOffers` will be showed."
@@ -1215,6 +1232,93 @@ components:
             type: "object"            
             allOf:
               - $ref: "#/components/schemas/Availability"
+
+    MerchantDescription:
+      type: "object"
+      title: "MenuEntity"
+      required: ["lastUpdate", "TTL", "merchant","services", "items", "menus", "categories", "itemOffers"]
+      properties:
+        lastUpdate:
+          type: "string"
+          format: "date-time"
+          description:  "The last modified date and time in ISO timestamp format but with type String. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication."
+        TTL:
+          type: "integer"
+          description:  "Time to Live (in seconds). 
+          \nMin: 500
+          Max: 86400. 
+          \nA new request must be done when the TTL expires."
+        "@id":
+          type: "string"
+          format: "UUID"
+          description:  "Unique Identifier. Must be formatted with `Merchant Document + UUID`
+          \n\n This @id must be generated by the company responsible for the merchant's menu and have to be informed in the Order object by the ordering application."
+        "@type":
+          type: "string"
+          enum:
+          - MERCHANT
+        status:
+          type: "string"
+          description:  "Indicates if the entity is Avaliable or Unavaliable. Only use this type when you must disable the entity due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays)."    
+          enum:
+            - AVAILABLE
+            - UNAVAILABLE 
+        basicInfo:
+          type: "object"
+          description:
+            "See: **[BasicInfo](#section/BasicInfo)** 
+            \n\n A required entity to implement. Describes basic info of a merchant."
+            
+        services:
+          type: "array"
+          description:
+            "See: **[Service](#section/Service)**  
+            \n\n A required entity to implement. Describes food ordering services details for a merchant."
+          items:           
+            type: "object"
+        menus:
+          type: "array"
+          description:
+            "See: **[Menu](#section/Menu)**  
+            \n\n A required entity to implement. Describes an array of menus."
+          items:
+            type: "object"
+        items:
+          type: "array"
+          description:
+            "See: **[Item](#section/Menu/Item)**  
+            \n\n A required entity to implement. Describes an array of items. To be used with an `ItemOffer` or an `Option`."
+          items:
+            type: "object"
+        categories:
+          type: "array"
+          description:
+            "See: **[Category](#section/Menu/Category)**  
+            \n\n A required entity to implement. Describes an array of sections in the menu where `ItemOffers` will be showed."
+          items:
+            type: "object"            
+        itemOffers:
+          type: "array"
+          description:
+            "See: **[ItemOffers](#section/Menu/ItemOffer)**
+            \n\n A required entity to implement. Describes an array of offers for the `Items`."
+          items:
+            type: "object"            
+        optionGroups:
+          type: "array"
+          description:
+            "See: **[Options](#section/Menu/OptionGroup-and-Option)** 
+            \n\n An optional entity to implement. Describes additional options of an `ItemOffer`."
+          items:
+            type: "object"
+        availability:
+          type: "array"
+          description:
+            "See: **[Availability](#section/Menu/Availability)**  
+            \n\n An optional entity to implement. Describes the time period during which a `Category` or an `ItemOffer` entity is served."
+          items:
+            type: "object"            
+
     BasicInfo:
       type: "object"
       title: "Merchant"
