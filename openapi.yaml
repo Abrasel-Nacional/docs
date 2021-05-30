@@ -498,7 +498,7 @@ tags:
         code: An enumerator containing a cancellation reason.
         mode: Field indicating whether the cancellation occurred Automatically or Manually.
 
-        The cancellation is caused by:
+        The cancellation can be requested by:
 
         ### Software Service (Merchant):
 
@@ -898,7 +898,7 @@ paths:
         "500":
           description: "Internal Server Error."
 
-  /orders/{orderId}/cancelRequest:
+  /orders/{orderId}/requestCancellation:
     post:
       parameters: 
         - name: "@id"
@@ -921,7 +921,7 @@ paths:
         "500":
           description: "Internal Server Error."
 
-  /orders/{orderId}/cancelAccepted:
+  /orders/{orderId}/acceptCancellation:
     post:
       parameters: 
         - name: "@id"
@@ -942,7 +942,7 @@ paths:
         "500":
           description: "Internal Server Error."
 
-  /orders/{orderId}/cancelDenied:
+  /orders/{orderId}/denyCancellation:
     post:
       parameters: 
         - name: "@id"
