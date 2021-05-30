@@ -552,60 +552,60 @@ tags:
 
         Ordering Applications must provide an endpoint where merchants can view information about payments for orders placed and information about the transfer of funds to the merchant.
 
-  - name: menuEntitiesModel
-    x-displayName: Menu Entities Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Merchant" />
-
-  - name: merchantModel
-    x-displayName: Merchant Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/BasicInfo" />
-
-  - name: serviceModel
-    x-displayName: Service Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Service" />
-
-  - name: menuModel
-    x-displayName: Menu Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Menu" />
-
-  - name: itemModel
-    x-displayName: Items Model
-    description: |
-     
-
-  - name: categoryModel
-    x-displayName: Categories Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Category" />  
-
-  - name: itemOfferModel
-    x-displayName: Items Offers Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" />
-
-  - name: optionGroupModel
-    x-displayName: Option Groups Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/OptionGroup" />
-
-  - name: availabilityModel
-    x-displayName: Availability Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Availability" />
-
-  - name: orderModel
-    x-displayName: Order Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Order" />       
-
-  - name: eventModel
-    x-displayName: Event Model
-    description: |
-      <SchemaDefinition schemaRef="#/components/schemas/Event" /> 
+#  - name: menuEntitiesModel
+#    x-displayName: Menu Entities Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/Merchant" />
+#
+#  - name: merchantModel
+#    x-displayName: Merchant Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/BasicInfo" />
+#
+#  - name: serviceModel
+#    x-displayName: Service Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/Service" />
+#
+#  - name: menuModel
+#    x-displayName: Menu Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/Menu" />
+#
+#  - name: itemModel
+#    x-displayName: Items Model
+#    description: |
+#     
+#
+#  - name: categoryModel
+#    x-displayName: Categories Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/Category" />  
+#
+#  - name: itemOfferModel
+#    x-displayName: Items Offers Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" />
+#
+#  - name: optionGroupModel
+#    x-displayName: Option Groups Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/OptionGroup" />
+#
+#  - name: availabilityModel
+#    x-displayName: Availability Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/Availability" />
+#
+#  - name: orderModel
+#    x-displayName: Order Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/Order" />       
+#
+#  - name: eventModel
+#    x-displayName: Event Model
+#    description: |
+#      <SchemaDefinition schemaRef="#/components/schemas/Event" /> 
 
   - name: repositoryOverview
     x-displayName: Repository Overview
@@ -645,19 +645,19 @@ x-tagGroups:
   - name: Repository
     tags:
       - repositoryOverview
-  - name: Models
-    tags:
-      - menuEntitiesModel
-      - merchantModel
-      - serviceModel
-      - menuModel
-      - itemModel
-      - categoryModel
-      - itemOfferModel
-      - optionGroupModel
-      - availabilityModel
-      - orderModel
-      - eventModel
+#  - name: Models
+#    tags:
+#      - menuEntitiesModel
+#      - merchantModel
+#      - serviceModel
+#      - menuModel
+#      - itemModel
+#      - categoryModel
+#      - itemOfferModel
+#      - optionGroupModel
+#      - availabilityModel
+#      - orderModel
+#      - eventModel
 
 paths:
   /oauth/token:
