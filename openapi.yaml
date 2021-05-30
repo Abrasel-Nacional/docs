@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery
-  version: "1.0.0"
+  version: "1.0.0-rc1 'Alpha'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -238,6 +238,8 @@ tags:
       A merchant `BasicInfo` defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the Software Services serves. 
       Typically, this data is static.
 
+      The following schema lists the properties for the `BasicInfo` type: 
+
       <SchemaDefinition schemaRef="#/components/schemas/BasicInfo" />
 
       # Service
@@ -251,6 +253,8 @@ tags:
         <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/merchant_services.png" />
       </div>
    
+      The following schema lists the properties for the `Service` type: 
+
       <SchemaDefinition schemaRef="#/components/schemas/Service" />
 
       # Menu
@@ -264,18 +268,26 @@ tags:
       
       Data in a Menu entity is expected to change.
 
+      The following schema lists the properties for the `Menu` type: 
+
+      <SchemaDefinition schemaRef="#/components/schemas/Menu" />
+
       ## Item
 
       A `Item` propertie is the menu entity that carries all the general item information. They are:
       Name, description, external code, image, nutricional information, and EAN (European Article Number), used mainly by marketplaces.
       The 'Item' can be offered in a menu as a main item or an option. And, for the same store, it can even be reused in different menus.
 
+      The following schema lists the properties for the `Item` type: 
+
       <SchemaDefinition schemaRef="#/components/schemas/Item" />
 
       ## Category
 
-      `Category` is the propertie in which the store has to organize its `ItemsOffers` in order to make it easier for the user to find what he wants to buy. Categories have sales statuses such as activated and deactivated and accept `Availability` too.
+      A `Category` is the propertie in which the store has to organize its `ItemsOffers` in order to make it easier for the user to find what he wants to buy. Categories have sales statuses such as activated and deactivated and accept `Availability` too.
       
+      The following schema lists the properties for the `Category` type: 
+
       <SchemaDefinition schemaRef="#/components/schemas/Category" />
 
       ## ItemOffer
@@ -283,8 +295,9 @@ tags:
       The `ItemOffer` can be considered the offering of a item, and it is used to set the item price and `Availability`.
       The `ItemOffer` is a item related to the category.
 
-      <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" /> 
+      The following schema lists the properties for the `ItemOffer` type: 
 
+      <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" /> 
 
       ## OptionGroup and Option
 
@@ -295,6 +308,8 @@ tags:
       The `Option` has its own sales status, and can be activated or desactivated when needed. 
       It is possible to set the `Option` price to 0.00 regardless of whether it is mandatory or optional.
 
+      The following schema lists the properties for the `OptionGroup` type: 
+
       <SchemaDefinition schemaRef="#/components/schemas/OptionGroup" />
 
 
@@ -302,6 +317,8 @@ tags:
 
       The `Availability` entity defines specific times and days to control the availability of categories and item offerings within the menu.
       It is also possible to set special times for holidays.
+
+      The following schema lists the properties for the `Availability` type: 
 
       <SchemaDefinition schemaRef="#/components/schemas/Availability" />
  
@@ -325,7 +342,7 @@ tags:
       ### Understanding the Order Flow
 
       <div align="center">
-        <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/order_integrations.png" />
+        <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/order_integrations2.png" />
       </div>
 
       The order flow has the following Macro steps:
@@ -684,7 +701,7 @@ paths:
       tags:
       - "merchantEndpoints"
       operationId: "getMerchant"
-      summary: "Get Info, Services and Menus of a Merchant"
+      summary: "Get information of a Merchant"
       security:
         - OAuth2: [od.all]  
       description: |-
@@ -736,6 +753,7 @@ paths:
           description: "Order Not Found."
         "500":
           description: "Internal Server Error."
+
   /merchantStatus:
     get:
       parameters:
@@ -747,7 +765,7 @@ paths:
       tags:
       - "merchantEndpoints"
       operationId: "getMerchantStatus"
-      summary: "Get a Health Check on and specific merchant"
+      summary: "Get a Health Check on a Merchant"
       security:
         - OAuth2: [od.all]  
       description: |-
@@ -761,6 +779,8 @@ paths:
                 $ref: "#/components/schemas/Generico"
         "403":
           $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"  
         "503":
           $ref: "#/components/responses/ServiceUnavailable"          
   
