@@ -500,7 +500,11 @@ tags:
 
         The cancellation is caused by:
 
-        Software Service (Merchant):
+        ### Software Service (Merchant):
+
+        <div align="center">
+          <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/software_cancel_request.png" />
+        </div>
 
         If the merchant wants to cancel an order, it must make the request through the endpoint: /orders/{id}/requestCancellation
 
@@ -534,7 +538,11 @@ tags:
 
         It is recommended that the *Ordering Application* make a new request on the /merchant endpoint whenever a merchant refuses.
 
-        Ordering Application
+        ### Ordering Application
+
+        <div align="center">
+          <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/orderingApplication_cancel_request.png" />
+        </div>
 
         Cancellation by *Ordering Application* can happen by:
 
