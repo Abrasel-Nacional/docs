@@ -24,7 +24,7 @@ info:
     Open API integrations have two main components: Merchants information and Orders information.
 
     ## Merchant API
-    This API defines the merchant info, services and online availability of restaurants ordering as well as their menu options and services offered. The Merchant endpoint is hosted by a Software Service Company (eg. POS applications) and periodically fetched by an Ordering Application (eg. Marketplaces), ensuring up-to-date ordering information is shown to users.
+    This API defines the merchant info, services and online availability of restaurants ordering as well as their menu options and services offered. The Merchant endpoint is hosted by a Software Service Company (eg. POS applications) and periodically fetched by an *Ordering Application* (eg. Marketplaces), ensuring up-to-date ordering information is shown to users.
 
     The API contains these top-level entities:
 
@@ -169,7 +169,7 @@ tags:
 
         ### Generating a Client Credentials Token
 
-        To generate a client credentials token, retrieve your client_id and client_secret for your app from your Ordering Application Company and see the [endpoint](#operation/getToken) below.
+        To generate a client credentials token, retrieve your client_id and client_secret for your app from your *Ordering Application* Company and see the [endpoint](#operation/getToken) below.
 
         ### Usage
 
@@ -190,8 +190,8 @@ tags:
     x-displayName: Merchant Overview
     description: |-
 
-      The Merchant entity will be the entity used by the ordering applications to fetch all the data from a merchant and display it to the user.
-      It is the responsibility of the merchant software service to provide the endpoint and the responsibility of the ordering application to fetch the information.
+      The Merchant entity will be the entity used by the *ordering applications* to fetch all the data from a merchant and display it to the user.
+      It is the responsibility of the *merchant software service* to provide the endpoint and the responsibility of the *ordering application* to fetch the information.
 
       ## Usage
 
@@ -201,17 +201,17 @@ tags:
         <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/menu_flow.png" />
       </div>
 
-      The ordering applications can check for merchant updates in the following ways:
+      The *ordering applications* can check for merchant updates in the following ways:
       1.	Make a new request on the **[/merchant](#operation/getMerchant)** endpoint whenever the TTL expires;
 
-      2.	The ordering Application can optionally provide a **[webhook](#operation/menuUpdated)** , where the merchant software service can send a menu update notification;
+      2.	The *ordering Application* can optionally provide a **[webhook](#operation/menuUpdated)** , where the *merchant software service* can send a menu update notification;
       
-      3.	If the Software Service **[refuses](#operation/cancelDenied)** an order for any reason, upon receiving the refusal, it is recommended that the ordering application make a new query on the endpoint /merchant.
+      3.	If the Software Service **[refuses](#operation/cancelDenied)** an order for any reason, upon receiving the refusal, it is recommended that the *ordering application* make a new query on the endpoint /merchant.
 
 
       ## Health Check
 
-      The ordering applications must provide an **[endpoint](#operation/getMerchantStatus)** for the software service to know if its menu is being read correctly.
+      The *ordering applications* must provide an **[endpoint](#operation/getMerchantStatus)** for the software service to know if its menu is being read correctly.
 
   - name: merchantStructure
     x-displayName: Merchant Structure
@@ -260,7 +260,7 @@ tags:
       # Menu
 
       A `Menu` is a set of linked properties such as categories, items, offers and availability. 
-      Um menu para ser exibido pelo Ordering Application necessáriamente necessita estar vinculado à um `Service` através da propriedade `menuId`.
+      Um menu para ser exibido pelo *Ordering Application* necessáriamente necessita estar vinculado à um `Service` através da propriedade `menuId`.
       
       <div align="center">
         <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/merchant_menus.png" />
@@ -331,7 +331,7 @@ tags:
     x-displayName: Order Overview
     description: |-
 
-      This overview summarizes the Open Delivery Ordering flow and how it interacts with Software Services and Ordering Applications.
+      This overview summarizes the Open Delivery Ordering flow and how it interacts with Software Services and *Ordering Applications*.
 
       ### Order Events
 
@@ -359,7 +359,7 @@ tags:
       - Webhook:
         Optionally it is recommended to implement a 'webhook' by the Software Services for the Order Applications to send the new events directly, ensuring a much faster communication.
       
-        As this implementation is not mandatory, it is recommended that merchant software services contact the Order Applications to find out if it is possible to work with this possibility.
+        As this implementation is not mandatory, it is recommended that *merchant software services* contact the Order Applications to find out if it is possible to work with this possibility.
 
       ### Status Updates
 
@@ -393,10 +393,10 @@ tags:
       </div>
 
       ### Order Event Notification
-      Webhook is sent to notify the 'Software Service' that an new order event has happened on the 'Ordering Application'.
+      Webhook is sent to notify the 'Software Service' that an new order event has happened on the *Ordering Application*.
 
       The merchant 'Software Service' that implements this webhook, should return an HTTP 200 response code with an empty response body to acknowledge receipt of the webhook event. 
-      If the 'Ordering Application' does not receive a 200 acknowledgement response, than the webhook event will be resent based on its resent politics.
+      If the *Ordering Application* does not receive a 200 acknowledgement response, than the webhook event will be resent based on its resent politics.
 
       ### Webhook Headers
       Open Delivery will include security headers for all requests made to the 'Software Service' webhook URL.
@@ -405,13 +405,13 @@ tags:
 
       | Header            | Description |
       | ----------------- | ----------- |
-      | X-App-Id          | An Unique Identificator of the 'Ordering Application' |
+      | X-App-Id          | An Unique Identificator of the *Ordering Application* |
       | X-App-Signature   | SHA256 hash of the request body, using the client secret as the key |
 
         
       **Webhook Security** 
 
-      Webhook messages are signed so that the 'Software Service' can verify that the sender is a valid 'Ordering Application'. 
+      Webhook messages are signed so that the 'Software Service' can verify that the sender is a valid *Ordering Application*. 
       Webhooks requests contain an X-App-Signature header. 
       The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.  
 
@@ -469,17 +469,17 @@ tags:
     x-displayName: Status Update
     description: |-
 
-      Following the order lifecycle, the Software Service needs to notify the Ordering Application of the upcoming order status.
+      Following the order lifecycle, the Software Service needs to notify the *Ordering Application* of the upcoming order status.
        
-      After acknowledging receipt of a new order event (either via polling or webhook) is expected that the Software Service explicitly POST /accept_pos_order or POST /deny_pos_order within a time window set by the Ordering Application.
-      Otherwise the order can time out and auto-cancel and the merchant can suffer a penalty based on the Ordering Application policy. 
+      After acknowledging receipt of a new order event (either via polling or webhook) is expected that the Software Service explicitly POST /accept_pos_order or POST /deny_pos_order within a time window set by the *Ordering Application*.
+      Otherwise the order can time out and auto-cancel and the merchant can suffer a penalty based on the *Ordering Application* policy. 
       Order acceptances should be posted as quickly as possible to minimize Consumer cancellations.
 
       When the request is ready, it is expected that a request will be sent to /readyForPickup.
 
       When the request goes out for Delivery, it is expected that a request will be sent to /dispatch.
 
-      When sending requests to these endpoints, the Ordering Application is expected to notify the consumer of the progress of the request.
+      When sending requests to these endpoints, the *Ordering Application* is expected to notify the consumer of the progress of the request.
 
   - name: ordersCancellation
     x-displayName: Cancellation
@@ -488,7 +488,7 @@ tags:
         An order can be canceled for several reasons and the initiative to cancel an order can come from the store, the customer, or the marketplace. It may also happen that the delivery person requests the cancellation in some scenarios, such as when the customer is not found at the delivery address.
 
         Cancellation Rules
-        It is expected that both Ordering Applications and Software Services will have their own order cancellation policies and inform their users.
+        It is expected that both *Ordering Applications* and Software Services will have their own order cancellation policies and inform their users.
 
         A request cancellation will always be an asynchronous processing, where one party makes a cancellation request and the other accepts or refuses this "Request problems."
 
@@ -505,10 +505,10 @@ tags:
         If the merchant wants to cancel an order, it must make the request through the endpoint: /orders/{id}/requestCancellation
 
         Penalties
-        Avoid order cancellations! Excessive cancellations can result in some penalties (depending on the Ordering Application's policy) such as having the store temporarily closed on the platform.
+        Avoid order cancellations! Excessive cancellations can result in some penalties (depending on the *Ordering Application's* policy) such as having the store temporarily closed on the platform.
 
         Cancellation Validation
-        The Cancellation request does not guarantee that the order is cancelled. When sending a request /orders/{id}/requestCancellation, the Ordering Application will send the code 202 (accepted) in response.
+        The Cancellation request does not guarantee that the order is cancelled. When sending a request /orders/{id}/requestCancellation, the *Ordering Application* will send the code 202 (accepted) in response.
         This does not yet mean that the request has been cancelled. It means that the request has been accepted and will be processed by the cancellation service. As a result of this request, the Software Service may receive at the next polling (or webhook) one of the following events:
 
         CANCELLATION_REQUEST_FAILED
@@ -532,11 +532,11 @@ tags:
         RESTAURANT WILL OPEN LATER
         RESTAURANT CLOSED EARLY
 
-        It is recommended that the Ordering Application make a new request on the /merchant endpoint whenever a merchant refuses.
+        It is recommended that the *Ordering Application* make a new request on the /merchant endpoint whenever a merchant refuses.
 
         Ordering Application
 
-        Cancellation by Ordering Application can happen by:
+        Cancellation by *Ordering Application* can happen by:
 
         CONSUMER_CANCELLATION_REQUESTED:
 
@@ -555,7 +555,7 @@ tags:
         /acceptCancellation
         /denyCancellation
 
-        This request will be processed by the Ordering Application's cancellation service (asynchronously) and the Software Service will receive in the next polling (or webhook) the following event(s):
+        This request will be processed by the *Ordering Application's* cancellation service (asynchronously) and the Software Service will receive in the next polling (or webhook) the following event(s):
 
         CANCELLATION_DENIED, or
         CANCELLED
@@ -564,7 +564,7 @@ tags:
     x-displayName: Payment Endpoint
     description: |-
 
-        Ordering Applications must provide an endpoint where merchants can view information about payments for orders placed and information about the transfer of funds to the merchant.
+        *Ordering Applications* must provide an endpoint where merchants can view information about payments for orders placed and information about the transfer of funds to the merchant.
 
 #  - name: menuEntitiesModel
 #    x-displayName: Menu Entities Model
@@ -1011,7 +1011,43 @@ paths:
           $ref: "#/components/responses/AccessDenied"
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
-  
+  /payment:
+    get:
+      operationId: "payment"
+      tags:
+        - "payment"
+      summary: "Payment endpoint"
+      description: |-
+        This endpoint is responsible for the payments.
+      parameters:
+        - name: "@id"
+          in: "query"
+          schema:
+            type: "string"
+            format: "UUID"
+        - name: "startDate"
+          in: "query"
+          schema:
+            type: "string"
+            format: "date-time"
+        - name: "endDate"
+          in: "query"
+          schema:
+            type: "string"
+            format: "date-time"    
+      responses:
+        "200":
+          description: "Successfully returns payments"
+          content:
+            "application/json":
+              schema:
+                $ref:  "#/components/schemas/SalesByMerchant"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
   /repository:
     get:
         operationId: "merchant"
@@ -1193,7 +1229,7 @@ components:
           type: "string"
           format: "UUID"
           description:  "Unique Identifier. Must be formatted with `Merchant Document + UUID`
-          \n\n This @id must be generated by the company responsible for the merchant's menu and have to be informed in the Order object by the ordering application."
+          \n\n This @id must be generated by the company responsible for the merchant's menu and have to be informed in the Order object by the *ordering application*."
         "@type":
           type: "string"
           enum:
@@ -1269,7 +1305,7 @@ components:
           type: "string"
           format: "UUID"
           description:  "Unique Identifier. Must be formatted with `Merchant Document + UUID`
-          \n\n This @id must be generated by the company responsible for the merchant's menu and have to be informed in the Order object by the ordering application."
+          \n\n This @id must be generated by the company responsible for the merchant's menu and have to be informed in the Order object by the *ordering application*."
         "@type":
           type: "string"
           enum:
