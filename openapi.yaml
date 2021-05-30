@@ -250,8 +250,7 @@ tags:
       <div align="center">
         <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/merchant_services.png" />
       </div>
-      Figure 1: `Service` model showing its relationship with `ServiceArea`, `ServiceHours`, and `ServiceAreaFee` properties.
-
+   
       <SchemaDefinition schemaRef="#/components/schemas/Service" />
 
       # Menu
@@ -262,8 +261,6 @@ tags:
       <div align="center">
         <img alt="Repository" src="https://abrasel-nacional.github.io/docs/images/merchant_menus.png" />
       </div>
-
-      Figure 1: `Menu` model showing its relationship with `Category`, `Availability`, `Item`, `ItemOffer` and `OptionGroup`.
       
       Data in a Menu entity is expected to change.
 
