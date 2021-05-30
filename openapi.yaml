@@ -31,7 +31,6 @@ info:
 
     See: **[Merchant Guide](#tag/merchantOverview)**
 
-
     This API defines the merchant info, services and online availability of restaurants ordering as well as their menu options and services offered. The Merchant endpoint is hosted by a Software Service Company (eg. POS applications) and periodically fetched by an *Ordering Application* (eg. Marketplaces), ensuring up-to-date ordering information is shown to users.
 
     The API contains these top-level entities:
@@ -221,7 +220,7 @@ tags:
 
       ## Health Check
 
-      The *ordering applications* must provide an **[endpoint](#operation/getMerchantStatus)** for the software service to know if its menu is being read correctly.
+      The *ordering applications* must provide an **[endpoint](#operation/getMerchantStatus)** for the software service know if the merchant information available at the /merchant endpoint is being correctly read by the Ordering Application.
 
   - name: merchantStructure
     x-displayName: Merchant Structure
@@ -239,7 +238,7 @@ tags:
         <img src="https://abrasel-nacional.github.io/docs/images/merchant_structure.png" />
       </div>
 
-      Full Merchant Model
+      The following schema lists the properties for the `Merchant` model:
 
       <SchemaDefinition schemaRef="#/components/schemas/MerchantDescription" />     
 
@@ -1231,7 +1230,7 @@ components:
     Merchant:
       type: "object"
       title: "MenuEntity"
-      required: ["lastUpdate", "TTL", "merchant","services", "items", "menus", "categories", "itemOffers"]
+      required: ["lastUpdate", "TTL", "@id", "@type", "status", "basicInfo", "services", "items", "menus", "categories", "itemOffers"]
       properties:
         lastUpdate:
           type: "string"
