@@ -991,7 +991,43 @@ paths:
           $ref: "#/components/responses/AccessDenied"
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
-  
+  /payment:
+    get:
+      operationId: "payment"
+      tags:
+        - "payment"
+      summary: "Payment endpoint"
+      description: |-
+        This endpoint is responsible for the payments.
+      parameters:
+        - name: "@id"
+          in: "query"
+          schema:
+            type: "string"
+            format: "UUID"
+        - name: "startDate"
+          in: "query"
+          schema:
+            type: "string"
+            format: "date-time"
+        - name: "endDate"
+          in: "query"
+          schema:
+            type: "string"
+            format: "date-time"    
+      responses:
+        "200":
+          description: "Successfully returns payments"
+          content:
+            "application/json":
+              schema:
+                $ref:  "#/components/schemas/SalesByMerchant"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
   /repository:
     get:
         operationId: "merchant"
