@@ -854,12 +854,8 @@ paths:
       description: 
         Acknowledge a set of events, dismissing them from future polling calls.
       responses:
-        "200":
-          description: "lista dos Pix recebidos de acordo com o critério de busca."
-          content:
-            "application/json":
-              schema:
-                $ref: "#/components/schemas/Error"
+        "202":
+          description: "Accepted. The request may be processed asynchronously"
         "403":
           $ref: "#/components/responses/AccessDenied"
         "503":
