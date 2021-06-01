@@ -1598,7 +1598,7 @@ components:
             description: "Restaurant Name"
           "merchantUrl":
             type: "string"
-            description: "Optional URL Optional merchant URL."
+            description: "Optional merchant URL."
     Address:
       type: "object"
       title: "Address"
