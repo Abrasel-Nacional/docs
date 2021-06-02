@@ -68,6 +68,24 @@ info:
     
     **Open Delivery** also provides a way for the merchant **Software Service** to check informantion about payments and transfers done by the **Ordering Application**.
 
+    # Repository
+
+    The goal of the repository is to centrally host the information of **Open Delivery** participants and generate statistic data for the project.
+    Through an opt in form in the project landing page, is expected that the **Software Services** and **Ordering Application** perform a registration that will be available in a database of participants.
+    Once registered, the repository will run an indexing system wich will call an **[endpoint](#operation/getRepository)** based on the Base URL previously registered at the moment of the adhesion, listing the registered companies under that **Participant**.
+    
+    <div align="center">
+      <img src="https://abrasel-nacional.github.io/docs/images/repo-image.png" />
+    </div>
+
+    ## How Access
+
+    To be able to make the necessary information available, the Merchant Software Service must join the Open Delivery directory via the landing page [www.opendelivery.org.br](https://www.opendelivery.org.br).
+      
+    <div align="center">
+      <img src="https://abrasel-nacional.github.io/docs/images/repo-chart.png" />
+    </div>
+
     # Open Delivery API Evolution
 
     The **Open Delivery** API seeks to respect [SemVer](https://semver.org/). In this sense, compatible changes should not generate a new major version.
@@ -670,24 +688,9 @@ tags:
 #      <SchemaDefinition schemaRef="#/components/schemas/Event" /> 
 
   - name: repositoryOverview
-    x-displayName: Repository Overview
+    x-displayName: Repository endpoint
     description: |-
-
-      The goal of the repository is to centrally host the information of **Open Delivery** participants and generate statistic data for the project.
-      Through an opt in form in the project landing page, is expected that the **Software Services** and **Ordering Application** perform a registration that will be available in a database of participants.
-      Once registered, the repository will run an indexing system wich will call an **[endpoint](#operation/getRepository)** based on the Base URL previously registered at the moment of the adhesion, listing the registered companies under that **Participant**.
-    
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/repo-image.png" />
-      </div>
-      
-      ## How to Access
-      
-      To be able to make the necessary information available, the Merchant Software Service must join the Open Delivery program via the landing page [www.opendelivery.org.br](https://www.opendelivery.org.br).
-      
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/repo-chart.png" />
-      </div>
+      This endpoint is responsible for the respository.
 
 x-tagGroups:
   - name: ""
@@ -1120,9 +1123,9 @@ paths:
               schema:
                 $ref: "#/components/schemas/ListMerchant"
         "400":
-          description: "Invalid Order Supplied."
+          description: "Bad request."
         "404":
-          description: "Order Not Found."
+          description: "Merchant list not found."
         "500":
           description: "Internal Server Error."            
 
@@ -1586,7 +1589,7 @@ components:
     ListMerchant:
       type: "array"
       title: "MerchantList"     
-      required: ["merchantId"]
+      required: ["merchantId", "name"]
       items:
         type: "object"
         properties:
@@ -2811,7 +2814,7 @@ components:
     Repository:
       type: "object"
       title: "Repository"
-      required: ["@id","@type"]
+      required: ["document", "corporateName", "postalCode", "email", "website", "baseApiUrl", "TTL"]
       properties:
         document:
           type: "string"
