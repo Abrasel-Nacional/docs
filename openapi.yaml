@@ -2815,7 +2815,7 @@ components:
       properties:
         document:
           type: "string"
-          description:  "Document"
+          description:  "Company registration document"
           pattern: "/^\\d{14}$/"
         corporateName:
           type: "string"
@@ -2837,7 +2837,7 @@ components:
           description:  "Base URL of the endpoints with the company's data. It will be used by the indexing system to search the establishments under the responsibility of the menu software (see endpoint) and to search public menus (see endpoint)."
         hostCompanyDocument:    
           type: "string"
-          description:  "Document"
+          description:  "Registration document of the main company"
           pattern: "/^\\d{14}$/"
         TTL:
           type: "integer"
