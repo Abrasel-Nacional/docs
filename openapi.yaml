@@ -2297,7 +2297,7 @@ components:
           description: "Order creation date in ISO timestamp format." 
         orderTiming:
             type: "string"
-            description: Order Timing. Currently, only `INSTANT` is accepted."
+            description: "Order Timing. Currently, only `INSTANT` is accepted."
             enum:
               - "INSTANT"
         preparationStartDateTime:
@@ -2314,6 +2314,7 @@ components:
                   - $ref: "#/components/schemas/BasicInfo/properties/name"
         items:
           type: "array"
+          description: "Order items."
           items:
             type: "object"
             required: ["@id"]
@@ -2325,22 +2326,28 @@ components:
                 type: "number"
               name:
                 type: "string"
+                description: "Product name"
               externalCode:
                 type: "string"
+                description: "External product code."
               unit:
                 type: "string"
                 enum:
                   - "UNIT"
               ean:
                 type: "string"
+                description: "EAN is the barcode standard used on items."
               quantity:
                 type: "number"
+                description: "Amount of items."
               specialInstructions:
                 type: "string"
+                description: "Special instructions about the items."
               unitPrice:
                 type: "object"
                 allOf:
                   - $ref: "#/components/schemas/Price"
+                description: "Price per unit."
               optionsPrice:
                 type: "object"
                 allOf:
@@ -2381,8 +2388,10 @@ components:
                         - $ref: "#/components/schemas/Price"
                     specialInstructions:
                       type: "string"
+                      description: "More instructions, if needed."
         otherFees:
           type: "array"
+          description: "Other fees that may apply."
           items:
             type: "object"
             properties:
@@ -2502,10 +2511,12 @@ components:
                 extension:
                   type: "string"
             documentNumber:
+              description: "Consumer document."
               type: "string"
             name:
               type: "string"
             ordersCountOnMerchant:
+              description: "Number of orders that are with the merchant."
               type: "number"
         delivery:
           type: "object"
@@ -2618,6 +2629,7 @@ components:
     SalesByMerchant:
           type: "array"
           required: ["@id"]
+          description: "Sales made by merchant."
           items:
             type: "object"
             properties:
@@ -2679,6 +2691,7 @@ components:
                         type: "number"
                       acquirerFee:
                         type: "number"
+                        description: "Acquirer-related fee."
                       deliveryCommission:
                         type: "number"
                       commissionRate:
@@ -2687,6 +2700,7 @@ components:
                       acquirerFeeRate:
                         type: "number"
                         format: "double"
+                        description: "Acquirer-related fee rate."
                       anticipationFee:
                         type: "number"
                       anticipationFeeRate:
