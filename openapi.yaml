@@ -1381,7 +1381,7 @@ components:
     MerchantDescription:
       type: "object"
       title: "MenuEntity"
-      required: ["lastUpdate", "TTL", "merchant","services", "items", "menus", "categories", "itemOffers"]
+      required: ["lastUpdate", "TTL", "@id", "@type", "status", "basicInfo", "services", "items", "menus", "categories", "itemOffers"]
       properties:
         lastUpdate:
           type: "string"
