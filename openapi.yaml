@@ -30,8 +30,6 @@ info:
 
     ## Merchant API
 
-    See: **[Merchant Guide](#tag/merchantOverview)**
-
     This API defines all the necessary merchant information for the **Ordering Application** to display correctly for the costumer.
     The Merchant endpoint is hosted by the merchant chosen **Software Service** Company (eg. POS applications) and periodically fetched by an **Ordering Application** (eg. Marketplaces), ensuring up-to-date ordering information is shown to costumers.
 
@@ -41,9 +39,9 @@ info:
     - **Service** properties
     - **Menu** properties (Menus, Categories, Items, Offers, OptionGroups and Availability)
 
-    ## Order API
+    See: **[Merchant Guide](#tag/merchantOverview)**
 
-    See: **[Orders Guide](#tag/ordersOverview)**
+    ## Order API
     
     ### Order Events
 
@@ -62,11 +60,13 @@ info:
 
     Requests to cancel an order can be made at any time, subject to acceptance or rejection depending on the cancellation rules of the companies.
 
-    ## Payment API
+     See: **[Orders Guide](#tag/ordersOverview)**
 
-    See: **[Payments](#tag/payment)**
+    ## Payment API
     
     **Open Delivery** also provides a way for the merchant **Software Service** to check informantion about payments and transfers done by the **Ordering Application**.
+
+    See: **[Payments Guide](#tag/payment)**
 
     # Repository
 
@@ -85,6 +85,8 @@ info:
     <div align="center">
       <img src="https://abrasel-nacional.github.io/docs/images/repo-chart.png" />
     </div>
+
+    See: **[Repository Guide](#tag/repositoryOverview)**
 
     # Open Delivery API Evolution
 
