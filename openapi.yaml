@@ -1432,7 +1432,7 @@ components:
           type: "array"
           description:
             "See: **[Item](#section/Menu/Item)**  
-            \n\n A required entity to implement. Describes an array of items. To be used with an `ItemOffer` or an `Option`."
+            \n\n A required entity to implement. Describes an array of items. To be used with an `ItemOffer` or an `OptionGroups`."
           items:
             type: "object"
         categories:
@@ -1467,6 +1467,7 @@ components:
     BasicInfo:
       type: "object"
       title: "Merchant"
+      required: ["name", "document", "merchantType", "merchantCategories", "address", "contactEmails", "contactPhones", "logoURL"]
       properties:   
         name:
           type: "string"
@@ -1656,7 +1657,7 @@ components:
     Service:
       type: "object"
       title: "Service"
-      required: ["@id","@type"]
+      required: ["@id","@type", "status", "serviceType", "menuId", "serviceHours"]
       properties:
         "@id":
           type: "string"
@@ -1701,7 +1702,7 @@ components:
     ServiceArea:
       type: "object"
       title: "Service Area"
-      required: ["@id","@type"]
+      required: ["@id","@type", "geoMidpointLatitude", "geoMidpointLongitude", "geoRadius"]
       properties:
         "@id":
           type: "string"
@@ -1731,7 +1732,7 @@ components:
     ServiceAreaFee:
       type: "object"
       title: "Service Area Fee"
-      required: ["@id","@type"]
+      required: ["@id","@type", "value", "geoMidpointLatitude", "geoMidpointLongitude"]
       properties:
         "@id":
           type: "string"
@@ -1758,7 +1759,7 @@ components:
     ServiceAreaFeeValue:
       type: "object"
       title: "Service Area Fee Value"
-      required: ["@id","@type"]
+      required: ["@id","@type", "price"]
       properties:
         geoRadius:    
           type: "integer"
@@ -1772,7 +1773,7 @@ components:
     Price:
       type: "object"
       title: "Price"
-      required: ["@id","@type"]
+      required: ["@id","@type", "value", "currency"]
       properties:
         value:    
           type: "number"
