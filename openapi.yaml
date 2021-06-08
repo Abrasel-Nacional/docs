@@ -1467,7 +1467,7 @@ components:
     BasicInfo:
       type: "object"
       title: "Merchant"
-      required: ["name", "document", "merchantType", "merchantCategories", "address", "contactEmails", "contactPhones", "logoURL"]
+      required: ["name", "document", "corporateName", "description", "averagePreparationTime", "minOrderValue","merchantType", "merchantCategories", "address", "contactEmails", "contactPhones", "logoURL"]
       properties:   
         name:
           type: "string"
@@ -1486,7 +1486,7 @@ components:
           description:  "Merchant Description"          
         averageTicket:
           type: "number"
-          description:  "Average Ticket. Can be used to show the price range of items available at the merchant."          
+          description:  "Average Ticket. Can be used to show the price range of items available at the merchant. It is not mandatory, but recommended to be used."          
         averagePreparationTime:
           type: "number"
           description:  "Average amount of time preparing an order takes, in minutes." 
@@ -1608,7 +1608,7 @@ components:
     Address:
       type: "object"
       title: "Address"
-      required: ["country"]
+      required: ["country", "state", "city", "district", "street", "number", "postalCode", "complement", "latitude", "longitude"]
       properties:
         "country":
           type: "string"
@@ -1645,7 +1645,7 @@ components:
     ContactPhones:
       type: "object"
       title: "Contact Phones"
-      required: ["@id","@type"]
+      required: ["@id","@type", "commercialNumber"]
       properties:
         "commercialNumber":
           type: "string"
@@ -1702,7 +1702,7 @@ components:
     ServiceArea:
       type: "object"
       title: "Service Area"
-      required: ["@id","@type", "geoMidpointLatitude", "geoMidpointLongitude", "geoRadius"]
+      required: ["@id","@type", "geoMidpointLatitude", "geoMidpointLongitude"]
       properties:
         "@id":
           type: "string"
@@ -1714,19 +1714,19 @@ components:
           - "SERVICE_AREA"
         polygon:
           type: "array"
+          description: "If the `polygon` is chosen to be used, `geoRadius` is not required.\n\n\n\nA polygon or multipolygon expressed as a series of three or more space delimited points. It is recommended that the first and last points be the same, but it is not required.\n\n\n\nEach point in a polygon or multipolygon is defined by a latitude point followed by a longitude point. You also must specify the points in a counter-clockwise direction."
           items:
             type: "string"
             pattern: "^([+-]?([0-9]*[.])?[0-9]+[ ]+){2}([+-]?([0-9]*[.])?[0-9]+[ ]*)*$"
-            description: "A polygon or multipolygon expressed as a series of three or more space delimited points. It is recommended that the first and last points be the same, but it is not required.\n\n\n\nEach point in a polygon or multipolygon is defined by a latitude point followed by a longitude point. You also must specify the points in a counter-clockwise direction."
+        geoRadius:    
+          type: "integer"
+          description:  "If the `geoRadius` is chosen to be used, `polygon` is not required. Indicates the approximate radius (in meters) of the CIRCLE area."
         geoMidpointLatitude:    
           type: "number"
           description:  "Indicates the latitude coordinate at the center of the CIRCLE area."
         geoMidpointLongitude:    
           type: "number"
-          description:  "Indicates the longitude coordinate at the center of the CIRCLE area."
-        geoRadius:    
-          type: "integer"
-          description:  "Indicates the approximate radius (in meters) of the CIRCLE area."              
+          description:  "Indicates the longitude coordinate at the center of the CIRCLE area."              
 
           
     ServiceAreaFee:
@@ -1759,7 +1759,7 @@ components:
     ServiceAreaFeeValue:
       type: "object"
       title: "Service Area Fee Value"
-      required: ["@id","@type", "price"]
+      required: ["@id","@type", "price", "geoRadius"]
       properties:
         geoRadius:    
           type: "integer"
@@ -1803,7 +1803,7 @@ components:
     ServiceHours:
       type: "object"
       title: "Service Hours"
-      required: ["@id","@type"]
+      required: ["@id","@type", "weekHours"]
       properties:
         "@id":
           type: "string"
@@ -1831,7 +1831,7 @@ components:
     Hours:
       type: "object"
       title: "Hours"
-      required: ["@id","@type"]
+      required: ["@id","@type", "dayOfWeek", "timePeriods"]
       properties:
         dayOfWeek: 
           type: string
@@ -1854,7 +1854,7 @@ components:
     TimePeriods:
       type: "object"
       title: "Time Periods"
-      required: ["@id","@type"]
+      required: ["@id","@type", "startTime", "endTime"]
       properties:
         startTime: 
           type: string
@@ -1869,7 +1869,7 @@ components:
     HolidayHours:
       type: "object"
       title: "Holiday Hours"
-      required: ["@id","@type"]
+      required: ["@id","@type", "date", "timePeriods"]
       properties:
         date:
           type: string
