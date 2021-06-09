@@ -1786,7 +1786,7 @@ components:
     ItemPrice:
       type: "object"
       title: "Item Price"
-      required: ["@id","@type"]
+      required: ["@id","@type", "value", "originalValue", "currency"]
       properties:
         value:    
           type: "number"
@@ -1884,7 +1884,7 @@ components:
     Item:
       type: "object"
       title: "Item"
-      required: ["@id","@type"]
+      required: ["@id","@type", "name", "description", "externalCode", "imageUrl", "nutritionalInfo", "unit"]
       properties:
         "@id":
           type: "string"
@@ -1931,7 +1931,7 @@ components:
     NutritionalInfo:
       type: "object"
       title: "Contact Phones"
-      required: ["@id","@type"]
+      required: ["@id","@type", "description", "calories", "allergen", "additives"]
       properties:
         description:
           type: "string"
@@ -2038,7 +2038,7 @@ components:
     Menu:
       type: "object"
       title: "Menu"
-      required: ["@id","@type"]
+      required: ["@id","@type", "name", "description", "externalCode", "disclaimer", "disclaimerURL", "categoryId"]
       properties:
         "@id":
           type: "string"
@@ -2076,7 +2076,7 @@ components:
     Category:
       type: "object"
       title: "Category"
-      required: ["@id","@type"]
+      required: ["@id","@type", "index", "name", "description", "imageUrl", "externalCode", "status", "availabilityId"]
       properties:
         "@id":
           type: "string"
@@ -2129,7 +2129,7 @@ components:
     ItemOffer:
       type: "object"
       title: "ItemOffer"
-      required: ["@id","@type"]
+      required: ["@id","@type", "itemId", "index", "price", "availabilityIds"]
       properties:
         "@id":
           type: "string"
