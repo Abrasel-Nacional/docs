@@ -163,40 +163,6 @@ info:
 
       * __Meaning__: Indicates that the service took longer than expected to return.
       * __HTTP Status Code__: [504 Gateway Timeout](https://tools.ietf.org/html/rfc7231#section-6.6.5).
-   
-#    ## Orders Erros
-#    Reúne erros dos endpoints que tratam do gerenciamente dos Webhooks da API.
-#
-#    ### `WebhookOperacaoInvalida`
-#    * __Meaning__: a presente requisição busca criar um webhook sem respeitar o schema ou,
-#    ainda, apresenta semântica inválida.
-#    * __HTTP Status Code__: [400](https://tools.ietf.org/html/rfc7231#section-6.5.1).
-#    * __endpoints__: `PUT /webhook/{chave}`.
-#
-#    __Violações__ para o endpoint `PUT /webhook/{chave}`:
-#      - o parâmetro {chave} não corresponde a uma chave DICT válida.
-#      - o parâmetro {chave} não corresponde a uma chave DICT pertencente a este usuário recebedor.
-#      - Campo webhook.webhookUrl não respeita o schema.
-#
-#    ### `WebhookNaoEncontrado`
-#
-#    * __Meaning__: o webhook denotado por {chave} não encontra-se estabelecido.
-#    * __HTTP Status Code__: [404](https://tools.ietf.org/html/rfc7231#section-6.5.4).
-#    * __endpoints__: `GET /webhook/{chave}`,  `DELETE /webhook/{chave}`
-#
-#    ### `WebhookConsultaInvalida`
-#
-#    * __Meaning__: os parâmetros de consulta à lista de webhooks ativados não respeitam o schema
-#    ou não fazem sentido semanticamente.
-#    * __HTTP Status Code__: [400](https://tools.ietf.org/html/rfc7231#section-6.5.1).
-#    * __endpoints__: `GET /webhook`.
-#
-#    __Violações__ específicas para o endpoint `GET /webhook`:
-#      - algum dos parâmetros informados para a consulta não respeita o _schema_.
-#      - o _timestamp_ representado pelo parâmetro `fim` é anterior ao timestamp
-#      representado pelo parâmetro `inicio`.
-#      - o parâmetro `paginacao.paginaAtual` é negativo.
-#      - o parâmetro `paginacao.itensPorPagina` é negativo.
 
 tags:
   - name: authentication
@@ -315,6 +281,15 @@ tags:
 
       <SchemaDefinition schemaRef="#/components/schemas/Menu" />
 
+      ## Category
+
+      A `Category` is the propertie in which the merchant has to organize its `ItemsOffers` in order 
+      to make it easier for the user to find what he wants to buy. Categories have statuses and accepts `Availability` entities.
+      
+      The following schema lists the properties for the `Category` type: 
+
+      <SchemaDefinition schemaRef="#/components/schemas/Category" />
+
       ## Item
 
       A `Item` propertie is the menu entity that carries all the general item information, like:
@@ -325,14 +300,6 @@ tags:
 
       <SchemaDefinition schemaRef="#/components/schemas/Item" />
 
-      ## Category
-
-      A `Category` is the propertie in which the merchant has to organize its `ItemsOffers` in order to make it easier for the user to find what he wants to buy. Categories have statuses and accepts `Availability` entities.
-      
-      The following schema lists the properties for the `Category` type: 
-
-      <SchemaDefinition schemaRef="#/components/schemas/Category" />
-
       ## ItemOffer
 
       The `ItemOffer` can be considered the offering of a item, and it is used to set the item price and `Availability`.
@@ -340,7 +307,7 @@ tags:
 
       The following schema lists the properties for the `ItemOffer` type: 
 
-      <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" /> 
+      <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" />
 
       ## OptionGroup and Option
 
@@ -1346,13 +1313,7 @@ components:
           type: "array"
           description:  "A required entity to implement. Describes an array of menus."
           items:
-            $ref: "#/components/schemas/Menu" 
-        items:
-          type: "array"
-          description:  "A required entity to implement. Describes an array of items. To be used with an `ItemOffer` or an `Option`."
-          items:
-            $ref: "#/components/schemas/Item" 
-
+            $ref: "#/components/schemas/Menu"
         categories:
           type: "array"
           description:  "A required entity to implement. Describes an array of sections in the menu where `ItemOffers` will be showed."
@@ -1365,6 +1326,11 @@ components:
           items:
             type: "object"            
             $ref: "#/components/schemas/ItemOffer"
+        items:
+          type: "array"
+          description:  "A required entity to implement. Describes an array of items. To be used with an `ItemOffer` or an `Option`."
+          items:
+            $ref: "#/components/schemas/Item"
         optionGroups:
           type: "array"
           description:  "An optional entity to implement. Describes additional options of an `ItemOffer`."
@@ -1884,7 +1850,7 @@ components:
     Item:
       type: "object"
       title: "Item"
-      required: ["@id","@type", "name", "description", "externalCode", "imageUrl", "nutritionalInfo", "unit"]
+      required: ["@id","@type", "name", "description", "externalCode", "imageUrl", "unit"]
       properties:
         "@id":
           type: "string"
@@ -1897,7 +1863,7 @@ components:
         name:
           type: "string"
           description:  "Item name"
-          maxLength: 500
+          maxLength: 150
         description:
           type: "string"
           description:  "Item Description"
@@ -1919,10 +1885,10 @@ components:
             - $ref: "#/components/schemas/NutritionalInfo"
         serving:
           type: "integer"
-          description:  "Number of servings available for the item."   
+          description:  "Field to show the number of people the portion serves."   
         unit:
           type: "string"
-          description:  "Measure Unit of the Item"
+          description:  "Measure Unit of the Item"  
         ean:
           type: "string"
           description:  "EAN (European Article Number)"
@@ -1931,7 +1897,7 @@ components:
     NutritionalInfo:
       type: "object"
       title: "Contact Phones"
-      required: ["@id","@type", "description", "calories", "allergen", "additives"]
+      required: ["@id","@type", "description", "calories"]
       properties:
         description:
           type: "string"
@@ -2038,7 +2004,7 @@ components:
     Menu:
       type: "object"
       title: "Menu"
-      required: ["@id","@type", "name", "description", "externalCode", "disclaimer", "disclaimerURL", "categoryId"]
+      required: ["@id","@type", "name", "description", "externalCode", "disclaimer", "categoryId"]
       properties:
         "@id":
           type: "string"
@@ -2092,7 +2058,7 @@ components:
         name:
           type: "string"
           description:  "Category name."
-          maxLength: 500
+          maxLength: 150
         description:
           type: "string"
           description:  "Category description."
@@ -2143,7 +2109,7 @@ components:
           type: "string"
           description:  "The @id value of the `Item` entity correlated to this `ItemOffer` entity."
         index:
-          type: "string"
+          type: integer
           description:  "ItemOffer display index."  
         price:
           type: "object"
@@ -2166,7 +2132,7 @@ components:
     OptionGroup:
       type: "object"
       title: "Option Group"
-      required: ["@id","@type"]
+      required: ["@id","@type", "index", "name", "description", "externalCode", "status", "minPermitted", "maxPermitted"]
       properties:
         "@id":
           type: "string"
@@ -2177,12 +2143,12 @@ components:
           enum:
           - "OPTION_GROUP"
         index:
-          type: "string"
+          type: integer
           description:  "Option Group display index."              
         name:
           type: "string"
           description:  "Option Group Name"
-          maxLength: 500
+          maxLength: 150
         description:
           type: "string"
           description:  "Option Group Description"
@@ -2196,10 +2162,10 @@ components:
             - AVAILABLE
             - UNAVAILABLE
         minPermitted:
-          type: "string"
+          type: integer
           description:  "The minimum number of options which should be selected in the option group."
         maxPermitted:
-          type: "string"
+          type: integer
           description:  "The maximum number of options which should be selected in the option group."
         options:
           type: array
@@ -2227,7 +2193,7 @@ components:
           type: "string"
           description:  "The @id value of the `Item` entity correlated to this `Option` entity."
         index:
-          type: "string"
+          type: integer
           description:  "Option display index"  
         price:
           type: "object"
@@ -2235,7 +2201,7 @@ components:
           allOf:
             - $ref: "#/components/schemas/ItemPrice"
         maxPermitted:
-          type: "string"
+          type: integer
           description:  "The maximum quantity of this option which can be selected in the option group."      
           
     Availability:
@@ -2258,10 +2224,11 @@ components:
           type: "string"
           description:  "Availability end date. If not informed, the availabilty is always avaliable."
         hours:
-            type: "object"
+            type: "array"
             description:  "Hours"
-            allOf:
-              - $ref: "#/components/schemas/Hours"   
+            items:
+              allOf:
+                - $ref: "#/components/schemas/Hours"   
 
     AckEvents:
       type: "object"
