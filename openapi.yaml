@@ -1433,7 +1433,8 @@ components:
     BasicInfo:
       type: "object"
       title: "Merchant"
-      required: ["name", "document", "corporateName", "description", "averagePreparationTime", "minOrderValue","merchantType", "merchantCategories", "address", "contactEmails", "contactPhones", "logoURL"]
+      required: ["name", "document", "corporateName", "description", "averagePreparationTime", 
+      "minOrderValue","merchantType", "merchantCategories", "address", "contactEmails", "contactPhones", "logoURL"]
       properties:   
         name:
           type: "string"
@@ -1800,9 +1801,11 @@ components:
       required: ["@id","@type", "dayOfWeek", "timePeriods"]
       properties:
         dayOfWeek: 
-          type: string
+          type: array
           description: "Day of the week for which these service hours are valid"
-          enum:
+          items:
+            type: "string"
+            enum:
             - "MONDAY"
             - "TUESDAY"
             - "WEDNESDAY"
@@ -2986,26 +2989,26 @@ components:
       value:
         lastUpdate: "2021-05-27T20:45:10.332Z"
         TTL: 500
-        id: "d9730653-b9ba-4e85-8dbb-b5697e6ae8d5"
+        id: "22815773000169-dbc7e35a-c936-4665-9e13-eb55eb8b6824"
         type: "MERCHANT"
         status: "AVAILABLE"
         basicInfo:
           name: "Pizza Plaza"
-          document: "18.728.987/0001-20"
+          document: "22815773000169"
           corporateName: "Food Company"
-          description: "Food company specializing in pizzas and burgers."
+          description: "Food company specializing in pizzas."
           averageTicket: 90.00
           averagePreparationTime: 20
           minOrderValue:
             value: 20.00
           currency: "R$"
           merchantType: "RESTAURANT"
-          merchantCategories: ["HAMBURGUERS", "PIZZA"]
+          merchantCategories: ["PIZZA", "FAMILY_MEALS", "PREMIUM"]
           address:
             country: "Brazil"
             state: "SP"
             city: "São Paulo"
-            district: ""
+            district: "Moema"
             street: "Plaza Avenue"
             number: "100"
             postalCode: "20111-000"
@@ -3024,20 +3027,20 @@ components:
           createdAt: "2021-05-10T20:45:10.332Z"
         services: [
           {
-            id: "d9730653-a8ba-4e85-8dbb-b5697e6ae8d7",
+            id: "22815773000169-f078e8e2-3044-4eec-b4a8-8359810de123",
             type: "SERVICE",
             status: "AVAILABLE",
             serviceType: "DELIVERY",
-            menuId: "d9730653-b9ba-4e85-8dbb-b5697e6ae8d5",
+            menuId: "22815773000169-f627ccdc-6789-456f-a782-148538d5035b",
             serviceArea: {
-              id: "d9730653-b9ba-4e85-8dbb-b589996ae8d5",
+              id: "22815773000169-01339e6d-520b-429e-bc7c-dcfd2df42278",
               type: "SERVICE_AREA",
               geoMidpointLatitude: -20.2333,
               geoMidpointLongitude: -20.8383,
               geoRadius: 1000
             },
             serviceAreaFee: {
-              id: "a9930653-b9ba-4e85-8dbb-b589996ae8d5",
+              id: "22815773000169-e74643e5-53e3-41ef-a2c3-1e2db96eb1ee",
               type: "SERVICE_AREA_FEE",
               geoMidpointLatitude: -20.2333,
               geoMidpointLongitude: -20.8383,
@@ -3052,21 +3055,19 @@ components:
               ]
             },
             serviceHours: {
-              id: "a9930653-b9ba-4e85-8dbb-b589996ae8d5",
+              id: "22815773000169-fb093d8c-2ca5-40fb-afcf-472fbdae81cc",
               type: "SERVICE_HOURS",
               weekHours: [
                 {
-                  dayOfWeek:
-                    "MONDAY",
-                    "TUESDAY",
+                  dayOfWeek: ["MONDAY", "TUESDAY",
                     "WEDNESDAY",
                     "THURSDAY",
-                    "FRIDAY" 
+                    "FRIDAY" ]
                 },
                 timePeriods: {
                 startTime: "10:00:00.000Z",
                 endTime: "18:00:00.000Z"
-              },
+                },
               ],
               holidayHours: [
                 {
@@ -3082,95 +3083,202 @@ components:
         ]
         items: [
           {
-            id: "a9930653-b9ba-4e85-8dbb-b589996ae8d5",
+            id: "22815773000169-502ecf11-0509-48ed-b63c-6211c48fd9b9",
             type: "ITEM",
             name: "Pepperoni",
-            description: "Pepperoni pizza with cream cheese.",
+            description: "Pepperoni flavored pizza with LOTS of pepperoni.",
             externalCode: "23",
             imageUrl: "https://images.food-place.com/peperroni.png",
             nutritionalInfo: {
               description: "Contains preservatives",
               calories: "2000 Cal",
               allergen: ["GLUTEN"],
-              additives: [],
-              suitableDiet: "LOW_LACTOSE",
-              isAlcoholic: "No"
-            }
+            },
+            serving: 8,
+            unit: "8 pieces"
+          },
+          {
+            id: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
+            type: "ITEM",
+            name: "Mozzarella",
+            description: "Delicious mozzarella pizza.",
+            externalCode: "24",
+            imageUrl: "https://images.food-place.com/mozzarella.png",
+            nutritionalInfo: {
+              description: "Contains preservatives",
+              calories: "2500 Cal",
+              allergen: ["GLUTEN"],
+            },
+            serving: 8,
+            unit: "8 pieces"
+          },
+          {
+            id: "22815773000169-2c0f3447-5309-49cc-a167-4eac5c664470",
+            type: "ITEM",
+            name: "Banana",
+            description: "Banana Pizza with cream.",
+            externalCode: "25",
+            imageUrl: "https://images.food-place.com/banana.png",
+            nutritionalInfo: {
+              description: "Contains preservatives",
+              calories: "2500 Cal",
+              allergen: ["GLUTEN"],
+            },
+            serving: 4,
+            unit: "4 pieces"
           }
         ]
         menus: [
           {
-            id: "a9930653-b9ba-4e85-8dbb-b589996ae8d5",
+            id: "22815773000169-f627ccdc-6789-456f-a782-148538d5035b",
             type: "MENU",
             name: "Pizzas",
-            description: "Pizza Menu",
+            description: "Pizza menu",
             externalCode: "123",
             disclaimer: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-            disclaimerURL: "https://disclaimer.food-company.com",
-            categoryId: ["a9930653-b9ba-4e85-8dbb-b589996ae8d5", "a9930653-b9ba-4e85-8dbb-b549996ae8d6"]
+            categoryId: ["22815773000169-92fad022-2c28-4239-a026-989f5b555cb7", 
+            "22815773000169-6bb71850-1d40-49f9-8046-b13e068c0cca"]
           }
         ]
         category: [
           {
-            id: "a9930653-b9ba-4e85-8dbb-b589996ae8e",
+            id: "22815773000169-92fad022-2c28-4239-a026-989f5b555cb7",
             type: "CATEGORY",
-            index: "0",
-            name: "Pizzas",
-            description: "Pizza menu",
+            index: 0,
+            name: "Large Salted Pizza - Two flavors.",
+            description: "Choose two flavors.",
             imageUrl: "https://menu-pizza.food-company.com",
             externalCode: "13",
             status: "AVAILABLE",
-            availabilityId: ["123", "456"],
+            availabilityId: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
             itemOfferId: [
-              "a9930653-b9ba-4e85-8dbb-b589996ae8f", "a9930653-b9bc-4f85-8dbb-b589996ae8e"
+              "22815773000169-f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9"
+            ]
+          },
+          {
+            id: "22815773000169-6bb71850-1d40-49f9-8046-b13e068c0cca",
+            type: "CATEGORY",
+            index: 1,
+            name: "Small Sweeted Pizza - One Flavor",
+            description: "Choose one flavor.",
+            imageUrl: "https://menu-pizza.food-company.com",
+            externalCode: "13",
+            status: "AVAILABLE",
+            availabilityId: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
+            itemOfferId: [
+              "22815773000169-377b99ba-5413-43d1-b875-7cdcaa72860e"
             ]
           }
         ]
         itemOffers: [
           {
-            id: "a9930653-b9ba-4e85-8dbb-b589996ae8f",
+            id: "22815773000169-f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9",
             type: "ITEM_OFFER",
-            itemId: "a9930653-b9bc-4f85-8dbb-b589996ae8e",
-            index: "0",
+            itemId: "22815773000169-502ecf11-0509-48ed-b63c-6211c48fd9b9",
+            index: 0,
             price: {
-              value: 20.00,
-              originalValue: 20.00,
+              value: 50.00,
+              originalValue: 50.00,
               currency: "R$"
             },
-            availabilityIds: [],
-            optionGroupsIds: ["a9930653-b9ba-4e85-8dbb-b589996ae8f"]
+            availabilityIds: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
+            optionGroupsIds: ["22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"]
+          },
+          {
+            id: "22815773000169-377b99ba-5413-43d1-b875-7cdcaa72860e",
+            type: "ITEM_OFFER",
+            itemId: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
+            index: 1,
+            price: {
+              value: 30.00,
+              originalValue: 30.00,
+              currency: "R$"
+            },
+            availabilityIds: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
+            optionGroupsIds: ["22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"]
+          },
+          {
+            id: "22815773000169-aac4af68-302a-448f-a4d1-94f63d43a89d",
+            type: "ITEM_OFFER",
+            itemId: "22815773000169-2c0f3447-5309-49cc-a167-4eac5c664470",
+            index: 2,
+            price: {
+              value: 25.00,
+              originalValue: 25.00,
+              currency: "R$"
+            },
+            availabilityIds: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
+            optionGroupsIds: ["22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87af"]
           }
         ]
         optionGroups: [
           {
-            id: "a9930653-b9ca-4e85-8dbb-b589996ae8a",
+            id: "22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3",
             type: "OPTION_GROUP",
-            index: "0",
-            name: "Extras",
-            description: "Extra things to put on the pizza.",
+            index: 0,
+            name: "Choose two salted flavor",
+            description: "Choose two flavors.",
             externalCode: "12",
             status: "AVAILABLE",
-            minPermitted: "0",
-            maxPermitted: "5",
+            minPermitted: 2,
+            maxPermitted: 2,
             options: [
               {
-                id: "a9530653-b9ca-4e85-8dbb-b589996ae8a",
+                id: "22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87a",
                 type: "OPTION",
-                itemId: "1",
-                index: "0",
+                itemId: "22815773000169-502ecf11-0509-48ed-b63c-6211c48fd9b9",
+                index: 0,
                 price: {
-                  value: 2.00,
-                  originalValue: 2.00,
+                  value: 50.00,
+                  originalValue: 50.00,
                   currency: "R$"
                 },
-                maxPermitted: "2"
+                maxPermitted: 2
+              },
+              {
+                id: "22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87a",
+                type: "OPTION",
+                itemId: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
+                index: 1,
+                price: {
+                  value: 30.00,
+                  originalValue: 30.00,
+                  currency: "R$"
+                },
+                maxPermitted: 2
+              },
+              
+            ]
+          },
+           {
+            id: "22815773000169-c524c066-96fa-458d-b78c-3712661529b3",
+            type: "OPTION_GROUP",
+            index: 0,
+            name: "Choose one sweeted flavor",
+            description: "Choose sweeted flavors.",
+            externalCode: "12",
+            status: "AVAILABLE",
+            minPermitted: 1,
+            maxPermitted: 1,
+            options: [
+              {
+                id: "22815773000169-2419d582-357f-4149-9089-12321537f147",
+                type: "OPTION",
+                itemId: "22815773000169-2c0f3447-5309-49cc-a167-4eac5c664470",
+                index: 0,
+                price: {
+                  value: 25.00,
+                  originalValue: 25.00,
+                  currency: "R$"
+                },
+                maxPermitted: 1
               }
             ]
           }
         ]
         availability: [
           {
-            id: "a9530653-b9ca-4e85-8dbb-b589996cf8a",
+            id: "22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029",
             type: "AVAILABILITY",
             startDate: "05/01/2021",
             endDate: "05/30/2021",
