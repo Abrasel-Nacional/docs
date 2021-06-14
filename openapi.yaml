@@ -3083,34 +3083,52 @@ components:
         ]
         items: [
           {
+            id: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198",
+            type: "ITEM",
+            name: "Medium - 2 flavors",
+            description: "Medium two-flavored pizza.",
+            externalCode: "23",
+            imageUrl: "https://www.food-place.com/images/medium-pizza.png",
+            serving: 8,
+            unit: "8 pieces"
+          },
+          {
+            id: "22815773000169-b728fd88-4af0-43f7-956f-95c251f01ddd",
+            type: "ITEM",
+            name: "Small - 1 flavor",
+            description: "Small one-flavored pizza.",
+            externalCode: "23",
+            imageUrl: "https://www.food-place.com/images/small-pizza.png",
+            serving: 4,
+            unit: "4 pieces"
+          },
+          {
             id: "22815773000169-502ecf11-0509-48ed-b63c-6211c48fd9b9",
             type: "ITEM",
-            name: "Pepperoni",
+            name: "1/2 Pepperoni",
             description: "Pepperoni flavored pizza with LOTS of pepperoni.",
             externalCode: "23",
-            imageUrl: "https://images.food-place.com/peperroni.png",
+            imageUrl: "https://www.food-place.com/images/peperroni.png",
             nutritionalInfo: {
               description: "Contains preservatives",
               calories: "2000 Cal",
               allergen: ["GLUTEN"],
             },
-            serving: 8,
-            unit: "8 pieces"
+            unit: "0"
           },
           {
             id: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
             type: "ITEM",
-            name: "Mozzarella",
+            name: "1/2 Mozzarella",
             description: "Delicious mozzarella pizza.",
             externalCode: "24",
-            imageUrl: "https://images.food-place.com/mozzarella.png",
+            imageUrl: "https://www.food-place.com/images/mozzarella.png",
             nutritionalInfo: {
               description: "Contains preservatives",
               calories: "2500 Cal",
               allergen: ["GLUTEN"],
             },
-            serving: 8,
-            unit: "8 pieces"
+            unit: "0"
           },
           {
             id: "22815773000169-2c0f3447-5309-49cc-a167-4eac5c664470",
@@ -3118,14 +3136,13 @@ components:
             name: "Banana",
             description: "Banana Pizza with cream.",
             externalCode: "25",
-            imageUrl: "https://images.food-place.com/banana.png",
+            imageUrl: "https://www.food-place.com/images/banana.png",
             nutritionalInfo: {
               description: "Contains preservatives",
               calories: "2500 Cal",
               allergen: ["GLUTEN"],
             },
-            serving: 4,
-            unit: "4 pieces"
+            unit: "0"
           }
         ]
         menus: [
@@ -3145,9 +3162,9 @@ components:
             id: "22815773000169-92fad022-2c28-4239-a026-989f5b555cb7",
             type: "CATEGORY",
             index: 0,
-            name: "Large Salted Pizza - Two flavors.",
-            description: "Choose two flavors.",
-            imageUrl: "https://menu-pizza.food-company.com",
+            name: "Salted Pizza",
+            description: "Salted pizza flavors.",
+            imageUrl: "https://www.food-company.com/images/salted_pizza.png",
             externalCode: "13",
             status: "AVAILABLE",
             availabilityId: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
@@ -3159,9 +3176,9 @@ components:
             id: "22815773000169-6bb71850-1d40-49f9-8046-b13e068c0cca",
             type: "CATEGORY",
             index: 1,
-            name: "Small Sweeted Pizza - One Flavor",
-            description: "Choose one flavor.",
-            imageUrl: "https://menu-pizza.food-company.com",
+            name: "Sweeted Pizza",
+            description: "Sweeted pizza flavors.",
+            imageUrl: "https://www.food-company.com/images/sweeted_pizza.png",
             externalCode: "13",
             status: "AVAILABLE",
             availabilityId: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
@@ -3174,11 +3191,11 @@ components:
           {
             id: "22815773000169-f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9",
             type: "ITEM_OFFER",
-            itemId: "22815773000169-502ecf11-0509-48ed-b63c-6211c48fd9b9",
+            itemId: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198",
             index: 0,
             price: {
-              value: 50.00,
-              originalValue: 50.00,
+              value: 43.00,
+              originalValue: 43.00,
               currency: "R$"
             },
             availabilityIds: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
@@ -3195,20 +3212,7 @@ components:
               currency: "R$"
             },
             availabilityIds: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
-            optionGroupsIds: ["22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"]
-          },
-          {
-            id: "22815773000169-aac4af68-302a-448f-a4d1-94f63d43a89d",
-            type: "ITEM_OFFER",
-            itemId: "22815773000169-2c0f3447-5309-49cc-a167-4eac5c664470",
-            index: 2,
-            price: {
-              value: 25.00,
-              originalValue: 25.00,
-              currency: "R$"
-            },
-            availabilityIds: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
-            optionGroupsIds: ["22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87af"]
+            optionGroupsIds: ["22815773000169-c524c066-96fa-458d-b78c-3712661529b3"]
           }
         ]
         optionGroups: [
@@ -3216,8 +3220,8 @@ components:
             id: "22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3",
             type: "OPTION_GROUP",
             index: 0,
-            name: "Choose two salted flavor",
-            description: "Choose two flavors.",
+            name: "Choose your salted pizza flavor",
+            description: "Choose your salted pizza flavor.",
             externalCode: "12",
             status: "AVAILABLE",
             minPermitted: 2,
@@ -3233,7 +3237,7 @@ components:
                   originalValue: 50.00,
                   currency: "R$"
                 },
-                maxPermitted: 2
+                maxPermitted: 1
               },
               {
                 id: "22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87a",
@@ -3241,11 +3245,11 @@ components:
                 itemId: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
                 index: 1,
                 price: {
-                  value: 30.00,
-                  originalValue: 30.00,
+                  value: 43.00,
+                  originalValue: 43.00,
                   currency: "R$"
                 },
-                maxPermitted: 2
+                maxPermitted: 1
               },
               
             ]
@@ -3254,8 +3258,8 @@ components:
             id: "22815773000169-c524c066-96fa-458d-b78c-3712661529b3",
             type: "OPTION_GROUP",
             index: 0,
-            name: "Choose one sweeted flavor",
-            description: "Choose sweeted flavors.",
+            name: "Choose your sweeted pizza flavor",
+            description: "Choose your sweeted pizza flavor.",
             externalCode: "12",
             status: "AVAILABLE",
             minPermitted: 1,
@@ -3267,8 +3271,8 @@ components:
                 itemId: "22815773000169-2c0f3447-5309-49cc-a167-4eac5c664470",
                 index: 0,
                 price: {
-                  value: 25.00,
-                  originalValue: 25.00,
+                  value: 30.00,
+                  originalValue: 30.00,
                   currency: "R$"
                 },
                 maxPermitted: 1
