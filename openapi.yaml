@@ -435,7 +435,7 @@ tags:
       > Merchants **Software Service** should make an acknowledgment request for each polling request with results.  
       > If it receives events that are not used by the itself, it needs to send the acknowledgment of these events anyway so that it is not receiving them every polling again.   
       > **Open Delivery** recommends that this be the default treatment for all events not yet mapped in the **Software Service** application.  
-      > **Software Services** only needs to send acknowledgment of the event once."
+      > **Software Services** only needs to send acknowledgment of the event once.
         
   - name: ordersWebhook
     x-displayName: Webhook (Optional)
@@ -785,6 +785,7 @@ paths:
       parameters:
       - name: "x-polling-merchants"
         in: "header"
+        required: true
         schema:
           type: array
           description: Subset of merchants to fetch events from. Must either be omitted or non-empty.
@@ -792,6 +793,7 @@ paths:
             $ref: "#/components/schemas/Merchant/properties/@id"
       - name: "eventType"
         in: "query"
+        required: true
         schema:
           type: array
           description: Desired event types. All other events not selected by group will be automatically acknowledged and omitted from the response. Must either be omitted or non-empty.
@@ -801,7 +803,7 @@ paths:
       - "ordersPolling"
       summary: "Get New Events"
       security:
-        - OAuth2: [od.all]  
+        - OAuth2: [od.all] 
       description: 
         "Polls events for any orders from merchants associated with the authenticated user.
         Each event received from this endpoint must be properly acknowledged, otherwise it will continue to be returned on further requests.
@@ -1790,7 +1792,7 @@ components:
         value:    
           type: "number"
           description:  "Price value. 4 decimals places are accepted"
-          example: 20
+          example: 40
         currency:
           type: "string"
           pattern: "^[A-Z]{3}$"
@@ -2350,13 +2352,13 @@ components:
     AckEvents:
       type: "object"
       title: "Ack Events"
-      required: [""]
+      required: ["@id", "orderId", "eventType"]
       properties:
         "@id":
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the event."
-        "orderId":
+        orderId:
             $ref: "#/components/schemas/Order/properties/@id"  
         eventType:
             $ref: "#/components/schemas/Event/properties/eventType"              
@@ -2364,7 +2366,8 @@ components:
     Order:
       type: "object"
       title: "Order"
-      required: ["@id","@type"]
+      required: ["@id","@type", "displayId", "createdAt", "orderTiming", 
+      "preparationStartDateTime", "merchant", "items", "total", "payments", "customer"]
       properties:
         "@id":
           type: "string"
@@ -2381,7 +2384,7 @@ components:
         createdAt:
           type: "string"
           format: date-time
-          description: "Order creation date in ISO timestamp format." 
+          description: "Order creation date in ISO timestamp format."
         orderTiming:
             type: "string"
             description: "Order Timing. Currently, only `INSTANT` is accepted."
@@ -2392,10 +2395,13 @@ components:
             description: "Order preparation start time."
         merchant:
             type: "object"
+            required: ["@id", "name"]
+            description: "Merchant information."
             properties:
               "@id":
                 allOf:
                   - $ref: "#/components/schemas/Merchant/properties/@id"
+                example: "22815773000169-32f6467d-d7a6-4725-9a8c-69a3d5d6aa20"
               name:
                 allOf:
                   - $ref: "#/components/schemas/BasicInfo/properties/name"
@@ -2404,13 +2410,15 @@ components:
           description: "Order items."
           items:
             type: "object"
-            required: ["@id"]
+            required: ["@id", "index", "name", "unit", "quantity", "unitPrice", "totalPrice", "externalCode"]
             properties:
               "@id":
                 type: "string"
                 format: "UUID"
+                description: "A unique identifier of the order."
               index:
                 type: "number"
+                description: "Item's position."
               name:
                 type: "string"
                 description: "Product name"
@@ -2419,6 +2427,7 @@ components:
                 description: "External product code."
               unit:
                 type: "string"
+                description: "Measure unit of the item."
                 enum:
                   - "UNIT"
               ean:
@@ -2439,36 +2448,43 @@ components:
                 type: "object"
                 allOf:
                   - $ref: "#/components/schemas/Price"
+                description: "Pricing options."
               totalPrice:
                 type: "object"
                 allOf:
                   - $ref: "#/components/schemas/Price"
               options:
                 type: "array"
+                description: "Options related to the item."
                 items:
                   type: "object"
-                  required: ["@id"]
+                  required: ["@id", "index", "name", "externalCode", "unit", "quantity", "unitPrice", "price"]
                   properties:
                     index:
                       type: "number"
+                      description: "Option's position."
                     "@id":
                       type: "string"
                       format: "UUID"
                     name:
                       type: "string"
+                      description: "Options name"
                     externalCode:
                       type: "string"
+                      description: "External product code."
                     unit:
                       type: "string"
+                      description: "Measure unit of the item."
                     ean:
                       type: "string"
-                      description: ""
+                      description: "EAN is the barcode standard used on items."
                     quantity:
                       type: "number"
                     unitPrice:
                       type: "object"
                       allOf:
                         - $ref: "#/components/schemas/Price"
+                      description: "Price per unit."
                     price:
                       type: "object"
                       allOf:
@@ -2481,9 +2497,11 @@ components:
           description: "Other fees that may apply."
           items:
             type: "object"
+            required: ["name", "type", "receivedBy", "receiverDocument", "price"]
             properties:
               name:
                 type: "string"
+                description: "Name related to the other fees."
               type:
                 type: "string"
                 enum:
@@ -2504,10 +2522,13 @@ components:
                   - $ref: "#/components/schemas/Price"
               observation:
                 type: "string"
+                description: "Any extra comments."
         discounts:
           type: "array"
+          description: "Any discounts that may apply."
           items:
             type: "object"
+            required: ["value", "target", "sponsorshipValues"]
             properties:
               value:
                 type: "number"
@@ -2521,9 +2542,11 @@ components:
                 type: "string"
                 description: "Only mandatory if target field is equal `ITEM`."
               sponsorshipValues:
+                description: "Values sponsored by either party."
                 type: "array"
                 items:
                   type: "object"
+                  required: ["name", "value"]
                   properties:
                     name:
                       type: "string"
@@ -2535,6 +2558,8 @@ components:
                       format: "decimal"
         total:
           type: "object"
+          required: ["items", "otherFees", "orderAmount", "discount"]
+          description: "Order total."
           properties:
             items:
               type: "number"
@@ -2546,6 +2571,8 @@ components:
               type: "number"
         payments:
           type: "object"
+          required: ["prepaid", "pending", "methods"]
+          description: "All the description of the payment, such as methods, pre-payments, change, etc."
           properties:
             prepaid:
               type: "number"
@@ -2553,8 +2580,10 @@ components:
               type: "number"
             methods:
               type: "array"
+              description: "What was the payment method, was it online or on delivery, etc."
               items:
                 type: "object"
+                required: ["value", "currency", "type", "method"]
                 properties:
                   value:
                     type: "number"
@@ -2585,13 +2614,16 @@ components:
                     description: "Only mandatory for `CASH` method."
         customer:
           type: "object"
-          required: ["@id"]
+          required: ["@id", "phone", "documentNumber", "name", "ordersCountOnMerchant"]
+          description: "Customer related information."
           properties:
             "@id":
               type: "string"
               format: "UUID"
+              description: "A unique identifier related to the consumer."
             phone:
               type: "object"
+              required: ["number"]
               properties:
                 number:
                   type: "string"
@@ -2602,11 +2634,14 @@ components:
               type: "string"
             name:
               type: "string"
+              description: "Consumer's name."
             ordersCountOnMerchant:
               description: "Number of orders that are with the merchant."
               type: "number"
         delivery:
           type: "object"
+          description: "If `delivery` is chosen as the delivery method, `takeout` is not required."
+          required: ["deliveredBy", "deliveryAddress", "deliveryDateTime"]
           properties:
             deliveredBy:
               type: "string"
@@ -2615,6 +2650,8 @@ components:
                 - "MARKETPLACE"
             deliveryAddress:
               type: "object"
+              required: ["country", "streetName", "formattedAddress", "streetNumber", "city", 
+              "postalCode", "coordinates", "neighborhood", "state"]
               properties:
                 country:
                   type: "string"
@@ -2630,6 +2667,7 @@ components:
                   type: "string"
                 coordinates:
                   type: "object"
+                  required: ["latitude", "longitude"]
                   properties:
                     latitude:
                       type: "number"
@@ -2647,6 +2685,8 @@ components:
               description: "Delivery date in ISO timestamp format." 
         takeout:
           type: "object"
+          description: "If `takeout` is chosen as the delivery method, `delivery` is not required."
+          required: ["mode", "takeoutDateTime"]
           properties:
             mode:
               type: "string"
@@ -2659,6 +2699,7 @@ components:
               description: "Takeout date in ISO timestamp format."
         extraInfo:
           type: "string"
+          description: "Extra information, if necessary."
     OrderConfirmed:
       type: "object"
       title: "Order Confirmed"
@@ -2868,11 +2909,13 @@ components:
 
     EventMetadataCancel:
       description: Metadata
+      required: ["metadata"]
       allOf:
         - $ref: '#/components/schemas/Event'
         - type: object
         - properties:
             metadata: 
+              required: ["reason", "code", "clientId"]
               type: object
               description: "Information related to the Event Type"
               properties:
@@ -2896,6 +2939,7 @@ components:
 
     EventMetadataConfirm:
       description: Metadata
+      required: ["metadata"]
       allOf:
         - $ref: '#/components/schemas/Event'
         - type: object
@@ -2903,6 +2947,7 @@ components:
             metadata: 
               type: object
               description: "Information related to the Event Type"
+              required: ["expectedPreparationStartTime", "clientId"]
               properties:
                 expectedPreparationStartTime:
                   type: "string"
@@ -2981,52 +3026,66 @@ components:
     orderExample:
       summary: "Sample Order"
       value:
-        id: "4818e72f-2304-466f-9fe7-af08f34ac4ed"
+        id: "22815773000169-4818e72f-2304-466f-9fe7-af08f34ac4ed"
         type: "DELIVERY"
         displayId: "12345"
         createdAt: "2021-05-27T19:38:10.332Z"
         orderTiming: "INSTANT"
         preparationStartDateTime: "2021-05-27T19:45:10.332Z"
         merchant:
-          id: "7fb59cb8-5808-40c8-b967-1b3f20ee39cd"
+          id: "22815773000169-7fb59cb8-5808-40c8-b967-1b3f20ee39cd"
           name: "Plaza Pizza"
         items: [
           {
-            id: "d9730653-a8ba-4e85-8dbb-b5597e5ae8d5",
+            id: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198",
             index: 0,
-            name: "Pepperoni",
-            externalCode: "12345",
+            name: "Medium - 2 flavors",
+            externalCode: "22",
             unit: "UNIT",
-            ean: "978020137962",
-            quantity: 2,
-            specialInstructions: "Extra pepperoni",
+            quantity: 1,
+            specialInstructions: "Do not put onions.",
             unitPrice: {
-              value: 20.00,
+              value: 43.00,
               currency: "R$"
             },
             optionsPrice: {
-              value: 5.00,
+              value: 50.00,
               currency: "R$"
             },
             totalPrice: {
-              value: 25.00,
+              value: 50.00,
               currency: "R$"
             },  
           options: [
             {
-              id: "d9730653-a8ba-4e85-8dbb-b5597e5ae8d5",
-              name: "Beverage",
-              externalCode: "12345",
+              id: "22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87a",
+              name: "1/2 Pepperoni",
+              externalCode: "23",
               unit: "UNIT",
-              ean: "978020137965",
               quantity: 1,
               unitPrice: {
-                value: 5.00,
+                value: 50.00,
                 currency: "R$"
               },
-            price: {
-              value: 5.00,
-              currency: "R$"
+              price: {
+                value: 50.00,
+                currency: "R$"
+            },
+              specialInstructions: "None"
+            },
+            {
+              id: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
+              name: "1/2 Mozzarella",
+              externalCode: "24",
+              unit: "UNIT",
+              quantity: 1,
+              unitPrice: {
+                value: 30.00,
+                currency: "R$"
+              },
+              price: {
+                value: 30.00,
+                currency: "R$"
             },
               specialInstructions: "None"
             }
@@ -3040,7 +3099,7 @@ components:
             receivedBy: "MARKETPLACE",
             receiverDocument: "1234",
             price: {
-              value: 2.00,
+              value: 5.00,
               currency: "R$"
             },
             observation: "None"
@@ -3057,23 +3116,23 @@ components:
           }
         ] 
         total:
-          items: 2
-          otherFees: 0
+          items: 1
+          otherFees: 5.00
           discount: 0
-          orderAmount: 30.00
+          orderAmount: 55.00
         payments:
-          prepaid: 30.00
+          prepaid: 55.00
           pending: 0
           methods: [
             {
-              value: 30.00,
+              value: 55.00,
               currency: "R$",
               method: "FOOD_VOUCHER",
               methodInfo: "None"
             }
           ]
         customer:
-          id: "d9730653-a8ba-4e85-8dbb-b5697e6ae8d5"
+          id: "22815773000169-d9730653-a8ba-4e85-8dbb-b5697e6ae8d5"
           phone: 
             number: "11999999999"
             extension: "0"
