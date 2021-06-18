@@ -782,6 +782,7 @@ paths:
   
   "/events:polling":
     get:
+      operationId: pollingEvents
       parameters:
       - name: "x-polling-merchants"
         in: "header"
@@ -796,7 +797,20 @@ paths:
         required: true
         schema:
           type: array
-          description: Desired event types. All other events not selected by group will be automatically acknowledged and omitted from the response. Must either be omitted or non-empty.
+          description: |-
+            Desired event types. All other events not selected by group will be automatically acknowledged and omitted from the response. 
+            Must either be omitted or non-empty.
+
+            **Event Types definitions:**
+            > `CANCELLATION_REQUESTED` : The cancellation of the order is requested.\
+            > `CANCELLATION_REQUEST_DENIED` : The cancellation request is denied.\
+            > `CANCELLED` : When the order is actually cancelled.\
+            > `CONFIRMED` : Order confirmed.\
+            > `CONCLUDED` : Order completed.\
+            > `CREATED` : Order created.\
+            > `DISPATCHED` : Order went out for delivery.\
+            > `PICKUP_AREA_ASSIGNED` : Designated area to pick up the order.\
+            > `READY_FOR_PICKUP`: Order ready for pickup.
           items:
             $ref: "#/components/schemas/Event/properties/eventType"      
       tags:
@@ -2410,7 +2424,7 @@ components:
           description: "Order items."
           items:
             type: "object"
-            required: ["@id", "index", "name", "unit", "quantity", "unitPrice", "totalPrice", "externalCode"]
+            required: ["@id", "name", "unit", "quantity", "unitPrice", "totalPrice", "externalCode"]
             properties:
               "@id":
                 type: "string"
@@ -2458,7 +2472,7 @@ components:
                 description: "Options related to the item."
                 items:
                   type: "object"
-                  required: ["@id", "index", "name", "externalCode", "unit", "quantity", "unitPrice", "price"]
+                  required: ["@id", "name", "externalCode", "unit", "quantity", "unitPrice", "price"]
                   properties:
                     index:
                       type: "number"
@@ -2559,16 +2573,20 @@ components:
         total:
           type: "object"
           required: ["items", "otherFees", "orderAmount", "discount"]
-          description: "Order total."
+          description: "Set of attributes to total the order."
           properties:
             items:
               type: "number"
+              description: "Total items purchased in the order."
             otherFees:
               type: "number"
+              description: "Other fees that may apply to the order."
             discount:
               type: "number"
+              description: "Any discounts that may apply. If there isn't one, you can put 0, for example."
             orderAmount:
               type: "number"
+              description: "Order total."
         payments:
           type: "object"
           required: ["prepaid", "pending", "methods"]
@@ -2576,11 +2594,13 @@ components:
           properties:
             prepaid:
               type: "number"
+              description: "Amount paid in advance."
             pending:
               type: "number"
+              description: "Amount that is still to be paid."
             methods:
               type: "array"
-              description: "What was the payment method, was it online or on delivery, etc."
+              description: "The payment method used. Whether it was online, on delivery, credit card, voucher, cash, etc."
               items:
                 type: "object"
                 required: ["value", "currency", "type", "method"]
@@ -2592,6 +2612,7 @@ components:
                       - $ref: "#/components/schemas/Price/properties/currency"
                   type:
                     type: "string"
+                    description: "Online if the payment was made through some platform, or offline if it was paid on delivery or in cash, for example."
                     enum:
                       - "ONLINE"
                       - "OFFLINE"
@@ -2602,12 +2623,18 @@ components:
                       - "DEBIT"
                       - "MEAL_VOUCHER"
                       - "FOOD_VOUCHER"
-                      - "WALLET"
+                      - "DIGITAL_WALLET"
                       - "PIX"
                       - "CASH"
+                      - "CREDIT_DEBIT"
+                      - "COUPON"
+                      - "REDEEM"
+                      - "PREPAID_REDEEM"
                       - "OTHER"
                   methodInfo:
                     type: "string"
+                    description: "Additional information regarding the payment method. 
+                    Additional information regarding the payment method. Recommended if `method` is `OTHER`."
                   changeFor:
                     type: "number"
                     format: "decimal"
@@ -2640,8 +2667,8 @@ components:
               type: "number"
         delivery:
           type: "object"
-          description: "If `delivery` is chosen as the delivery method, `takeout` is not required."
-          required: ["deliveredBy", "deliveryAddress", "deliveryDateTime"]
+          description: "If the chosen `@type` is `delivery`, `takeout` is not required."
+          required: ["deliveredBy", "deliveryAddress", "deliveryDateTime", "estimatedDeliveryDateTime"]
           properties:
             deliveredBy:
               type: "string"
@@ -2679,13 +2706,17 @@ components:
                   type: "string"
                 complement:
                   type: "string"
+            estimatedDeliveryDateTime:
+              type: "string"
+              format: date-time
+              description: "Estimated delivery date in ISO timestamp format."
             deliveryDateTime:
               type: "string"
               format: date-time
               description: "Delivery date in ISO timestamp format." 
         takeout:
           type: "object"
-          description: "If `takeout` is chosen as the delivery method, `delivery` is not required."
+          description: "If the chosen `@type` is `takeout`, `delivery` is not required."
           required: ["mode", "takeoutDateTime"]
           properties:
             mode:
@@ -2884,7 +2915,7 @@ components:
           description:  "A unique identifier of the event."  
         eventType:
             type: "string"
-            description: "The event type"
+            description: "The event type. **[Click here](#operation/pollingEvents)** for definitions of each type."
             enum:
               - "CREATED"
               - "CONFIRMED"
