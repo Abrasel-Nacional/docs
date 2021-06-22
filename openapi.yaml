@@ -802,15 +802,16 @@ paths:
             Must either be omitted or non-empty.
 
             **Event Types definitions:**
-            > `CANCELLATION_REQUESTED` : The cancellation of the order is requested.\
-            > `CANCELLATION_REQUEST_DENIED` : The cancellation request is denied.\
-            > `CANCELLED` : When the order is actually cancelled.\
-            > `CONFIRMED` : Order confirmed.\
-            > `CONCLUDED` : Order completed.\
             > `CREATED` : Order created.\
+            > `CONFIRMED` : Order confirmed.\
             > `DISPATCHED` : Order went out for delivery.\
+            > `READY_FOR_PICKUP`: Order ready for pickup.\
             > `PICKUP_AREA_ASSIGNED` : Designated area to pick up the order.\
-            > `READY_FOR_PICKUP`: Order ready for pickup.
+            > `CONCLUDED` : Order completed.\
+            > `CANCELLATION_REQUESTED` : Sent by the Software Service to the Ordering Application.\
+            > `CANCELLATION_REQUEST_DENIED` : It must be sent from the Ordering Application to the Software Service.\
+            > `CANCELLED` : When the order is actually cancelled.\
+            > `ORDER_CANCELLATION_REQUEST`: It must be sent from the Ordering Application to the Software Service.
           items:
             $ref: "#/components/schemas/Event/properties/eventType"      
       tags:
@@ -985,11 +986,11 @@ paths:
     post:
       parameters: 
         - name: "@id"
-          in: "query"
+          in: "path"
+          required: true
           schema:
-            allOf:
-              - $ref: "#/components/schemas/Error"
-              - pattern: "[a-zA-Z0-9]{1,35}"
+            type: "string"
+            format: "UUID"
       tags:
       - "ordersStatus"
       summary: "Ready For Pickup"
@@ -1009,11 +1010,11 @@ paths:
     post:
       parameters: 
         - name: "@id"
-          in: "query"
+          in: "path"
+          required: true
           schema:
-            allOf:
-              - $ref: "#/components/schemas/Error"
-              - pattern: "[a-zA-Z0-9]{1,35}"
+            type: "string"
+            format: "UUID"
       tags:
       - "ordersStatus"
       operationId: "dispatchOrder"
@@ -2668,7 +2669,7 @@ components:
         delivery:
           type: "object"
           description: "If the chosen `@type` is `delivery`, `takeout` is not required."
-          required: ["deliveredBy", "deliveryAddress", "deliveryDateTime", "estimatedDeliveryDateTime"]
+          required: ["deliveredBy", "deliveryAddress", "estimatedDeliveryDateTime"]
           properties:
             deliveredBy:
               type: "string"
@@ -2734,6 +2735,7 @@ components:
     OrderConfirmed:
       type: "object"
       title: "Order Confirmed"
+      required: ["createdAt"]
       properties:
         reason:
           type: "string"
@@ -2926,6 +2928,7 @@ components:
               - "CANCELLATION_REQUESTED"
               - "CANCELLATION_REQUEST_DENIED"
               - "CANCELLED"
+              - "ORDER_CANCELLATION_REQUEST"
         orderId:
           allOf:
             - $ref: "#/components/schemas/Order/properties/@id"
