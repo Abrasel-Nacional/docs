@@ -62,11 +62,11 @@ info:
 
      See: **[Orders Guide](#tag/ordersOverview)**
 
-    ## Payment API
+    ## Sales Report API
     
-    **Open Delivery** also provides a way for the merchant **Software Service** to check informantion about payments and transfers done by the **Ordering Application**.
+    **Open Delivery** also provides a way for the merchant **Software Service** to check informantion about sales and transfers done by the **Ordering Application**.
 
-    See: **[Payments Guide](#tag/payment)**
+    See: **[Sales Report Guide](#tag/SalesReport)**
 
     # Repository
 
@@ -595,11 +595,11 @@ tags:
         CANCELLATION_DENIED or CANCELLED
 
 
-  - name: payment
-    x-displayName: Payment Endpoint
+  - name: salesReport
+    x-displayName: Sales Report Endpoint
     description: |-
 
-        **Ordering Application** must provide an endpoint where merchants can view information about payments for orders placed and information about the transfer of funds to the merchant.
+        **Ordering Application** must provide an endpoint where merchants can view information about sales for orders placed and information about the transfer of funds to the merchant.
 
 #  - name: menuEntitiesModel
 #    x-displayName: Menu Entities Model
@@ -678,9 +678,9 @@ x-tagGroups:
       - ordersDetails
       - ordersStatus
       - ordersCancellation
-  - name: Payments
+  - name: Sales Report
     tags:
-      - payment
+      - salesReport
   - name: Repository
     tags:
       - repositoryOverview
@@ -907,8 +907,10 @@ paths:
       responses:
         "200":
           description: "Order confirmed."
-        "500":
-          description: "Internal Server Error."
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /orders/{orderId}/requestCancellation:
     post:
@@ -1029,14 +1031,14 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /payment:
+  /salesReport:
     get:
-      operationId: "payment"
+      operationId: "salesReport"
       tags:
-        - "payment"
-      summary: "Payment endpoint"
+        - "salesReport"
+      summary: "Sales Report endpoint"
       description: |-
-        This endpoint is responsible for the payments.
+        This endpoint is responsible for the sales report.
       parameters:
         - name: "@id"
           in: "query"
@@ -1058,7 +1060,7 @@ paths:
             format: "date-time"    
       responses:
         "200":
-          description: "Successfully returns payments"
+          description: "Successfully returns the report."
           content:
             "application/json":
               schema:
@@ -1257,7 +1259,7 @@ components:
     TokenRequest:
       type: "object"
       title: "TokenRequest"
-      required: [""]
+      required: ["clientId", "clientSecret", "grantType"]
       properties:
         clientId:
           type: "string"
@@ -2738,16 +2740,18 @@ components:
     OrderConfirmed:
       type: "object"
       title: "Order Confirmed"
-      required: ["createdAt"]
+      required: ["createdAt", "orderExternalCode"]
       properties:
         reason:
           type: "string"
+          description: "Free field for more information about the order confirmation, such as which employee accepted the order, for example."
         createdAt: 
           type: "string"
           format: date-time
           description: "Order creation date in ISO timestamp format."
         orderExternalCode:
           type: "string"
+          description: "External order code, which can be used by merchant or marketplace."
     RequestCancelled:
       type: "object"
       title: "Request Cancelled"
@@ -2755,6 +2759,7 @@ components:
       properties:
         reason:
           type: "string"
+          description: "Open text field indicating the reason for the cancellation."
         code:
           type: "string"
           enum:
@@ -2775,10 +2780,12 @@ components:
             - "MANUAL"
         out_of_stock_items:
           type: "array"
+          description: "Items that are not in the merchant's inventory."
           items:
             type: string
         invalid_items:
           type: "array"
+          description: "Items that do not exist in the merchant's inventory."
           items:
             type: string
     RequestDenied:
@@ -2788,10 +2795,12 @@ components:
       properties:
         reason:
           type: "string"
+          description: "Open text field indicating the reason for the cancellation."
         code:
           type: "string"
           enum:
             - "DISH_ALREADY_DONE"
+            - "OUT_FOR_DELIVERY"
     SalesByMerchant:
           type: "array"
           description: "Sales made by merchant."
@@ -2806,9 +2815,11 @@ components:
               orderDate:
                 type: "string"
                 format: "date-time"
+                description: "Date the order was placed."
               lastProcessingDate:
                 type: "string"
                 format: "date-time"
+                description: "Last date that the request was processed."
               orderStatus:
                 type: "string"
                 enum:
@@ -2817,25 +2828,40 @@ components:
                 type: "string"
               documentNumber:
                 type: "string"
+                description: "Company registration document."
               businessModelOrder:
                 type: "string"
                 enum:
                   - "MARKETPLACE"
               payment:
                 type: "object"
-                required: ["type", "method", "brand", "liability", "cardNumber", "billing", "transfer"]
+                required: ["type", "method", "liability", "billing", "transfer"]
                 properties:
                   type:
                     type: "string"
+                    description: "How the payment was made. Payment online, via apps, or in cash (offline)."
                     enum:
                       - "ONLINE"
+                      - "OFFLINE"
                   method:
                     type: "string"
+                    description: "Method used to pay the order."
                     enum:
                       - "CREDIT"
+                      - "DEBIT"
+                      - "MEAL_VOUCHER"
+                      - "FOOD_VOUCHER"
+                      - "DIGITAL_WALLET"
+                      - "PIX"
                       - "CASH"
+                      - "CREDIT_DEBIT"
+                      - "COUPON"
+                      - "REDEEM"
+                      - "PREPAID_REDEEM"
+                      - "OTHER"
                   brand:
                     type: "string"
+                    description: "Brand name of the credit card or other means of payment that has a brand."
                   liability:
                     type: "string"
                     enum:
@@ -2891,7 +2917,7 @@ components:
                         format: "date-time"
                       expectedBankAccount:
                         type: "object"
-                        required: ["bankNumber", "bankName", "branchCode", "branchCodeDigit", "accountNumber", "accountNumberDigit"]
+                        required: ["bankNumber", "bankName", "branchCode", "accountNumber", "accountNumberDigit"]
                         properties:
                           bankNumber:
                             type: "string"
