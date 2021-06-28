@@ -2836,6 +2836,7 @@ components:
               payment:
                 type: "object"
                 required: ["type", "method", "liability", "billing", "transfer"]
+                description: "All payment information related to the orders."
                 properties:
                   type:
                     type: "string"
@@ -2870,6 +2871,7 @@ components:
                     type: "string"
                   billing:
                     type: "object"
+                    description: "Information related to order collections."
                     required: ["gmv", "totalBag", "deliveryFee", "benefitMarkeplace", 
                     "benefitMerchant", "commission", "acquirerFee", "deliveryCommission", "commissionRate", "acquirerFeeRate",
                     "anticipationFee", "anticipationFeeRate", "totalDebit", "totalCredit"]
@@ -2879,38 +2881,50 @@ components:
                         description: "Gross Merchandise Value"
                       totalBag:
                         type: "number"
+                        description: "Total order in cart."
                       deliveryFee:
                         type: "number"
+                        description: "Delivery fee."
                       benefitMarkeplace:
                         type: "number"
+                        description: "Marketplace-related benefits."
                       benefitMerchant:
                         type: "number"
+                        description: "Merchant-related benefits."
                       commission:
                         type: "number"
+                        description: "Sales-related commission."
                       acquirerFee:
                         type: "number"
                         description: "Acquirer-related fee."
                       deliveryCommission:
                         type: "number"
+                        description: "Commission related to the delivery of the order."
                       commissionRate:
                         type: "number"
                         format: "double"
+                        description: "Commission Fee."
                       acquirerFeeRate:
                         type: "number"
                         format: "double"
                         description: "Acquirer-related fee rate."
                       anticipationFee:
                         type: "number"
+                        description: "Possible fee received in advance."
                       anticipationFeeRate:
                         type: "number"
                         format: "double"
+                        description: "Anticipation fee rate."
                       totalDebit:
                         type: "number"
+                        description: "Total debit of the order."
                       totalCredit:
                         type: "number"
+                        description: "Total credit of the order."
                   transfer:
                     type: "object"
                     required: ["expectedTransferDate", "expectedBankAccount"]
+                    description: "Related to transferring the order values."
                     properties:
                       expectedTransferDate:
                         type: "string"
@@ -2921,16 +2935,22 @@ components:
                         properties:
                           bankNumber:
                             type: "string"
+                            description: "Bank registration number."
                           bankName:
                             type: "string"
+                            description: "Bank name."
                           branchCode:
                             type: "string"
+                            description: "Branch number."
                           branchCodeDigit:
                             type: "string"
+                            description: "Branch code, if required."
                           accountNumber:
                             type: "string"
+                            description: "Account number."
                           accountNumberDigit:
                             type: "string"
+                            description: "Digit of the account number."
 
     Event:
       type: "object"
