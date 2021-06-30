@@ -2823,7 +2823,16 @@ components:
               orderStatus:
                 type: "string"
                 enum:
+                  - "CREATED"
+                  - "CONFIRMED"
+                  - "DISPATCHED"
+                  - "READY_FOR_PICKUP"
+                  - "PICKUP_AREA_ASSIGNED"
                   - "CONCLUDED"
+                  - "CANCELLATION_REQUESTED"
+                  - "CANCELLATION_REQUEST_DENIED"
+                  - "CANCELLED"
+                  - "ORDER_CANCELLATION_REQUEST"
               companyName:
                 type: "string"
               documentNumber:
