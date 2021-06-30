@@ -2822,6 +2822,7 @@ components:
                 description: "Last date that the request was processed."
               orderStatus:
                 type: "string"
+                description: "The event type. **[Click here](#operation/pollingEvents)** for definitions of each type."
                 enum:
                   - "CREATED"
                   - "CONFIRMED"
