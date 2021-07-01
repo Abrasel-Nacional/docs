@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery
-  version: "1.0.0-rc1 'Alpha'"
+  version: "1.0.0-rc1 'Beta'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -14,6 +14,12 @@ info:
     altText:  Open Delivery logo
 
   description: |-
+
+    # Github repository
+    
+    In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's github and open a new issue.
+    
+    Git: https://github.com/Abrasel-Nacional/Open-Delivery-Homologacao
 
     # Introduction
 
@@ -68,7 +74,7 @@ info:
 
     See: **[Sales Report Guide](#tag/SalesReport)**
 
-    # Repository
+    # Open Delivery Repository
 
     The goal of the repository is to centrally host the information of **Open Delivery** participants and generate statistic data for the project.
     Through an opt in form in the project landing page, is expected that the **Software Services** and **Ordering Application** perform a registration that will be available in a database of participants.
@@ -2809,7 +2815,7 @@ components:
             required: ["@id", "orderDate", "lastProcessingDate", 
             "orderStatus", "companyName", "documentNumber", "payment", "businessModelOrder"]
             properties:
-              "@id":
+              "@orderId":
                 type: "string"
                 format: "UUID"
               orderDate:
