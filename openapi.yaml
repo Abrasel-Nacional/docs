@@ -19,8 +19,8 @@ info:
     
     In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's github and open a new issue.
     
-    Git: https://github.com/Abrasel-Nacional/Open-Delivery-Homologacao
-
+    Git: https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test
+    
     # Introduction
 
     **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and ordering applications, establishing a single communication standard for all, through a set of REST APIs.
