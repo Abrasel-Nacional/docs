@@ -1,14 +1,13 @@
 openapi: 3.0.3
 info:
-  title: Open Delivery
+  title: Open Delivery API
   version: "1.0.0-rc1 'Beta'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
   contact:
-    name: Suporte Open Delivery
-    email: suporte@opendelivery.org.br
     url: https://www.opendelivery.org.br
+    x-technical: Programmers.
   x-logo:
     url: https://gui-camargo.github.io/OD/logo-open-delivery_small.png
     altText:  Open Delivery logo
@@ -17,10 +16,10 @@ info:
 
     # Github repository
     
-    In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's github and open a new issue.
+    In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
     
     Git: https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test
-    
+
     # Introduction
 
     **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and ordering applications, establishing a single communication standard for all, through a set of REST APIs.
