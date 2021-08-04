@@ -2978,7 +2978,7 @@ components:
           CONFIRMED: '#/components/schemas/EventMetadataConfirm'
           READY_FOR_PICKUP: '#/components/schemas/EventMetadata'
           DISPATCHED: '#/components/schemas/EventMetadata'
-          PICKUP_AREA_ASSIGNED: '#/components/schemas/EventMetadata'
+          PICKUP_AREA_ASSIGNED: '#/components/schemas/EventMetadataPickup'
           CONCLUDED: '#/components/schemas/EventMetadata'
           ORDER_CANCELLATION_REQUESTED: '#/components/schemas/EventMetadataCancel'
           CANCELLATION_REQUESTED: '#/components/schemas/EventMetadataCancel'
@@ -3044,6 +3044,21 @@ components:
       description: Metadata
       allOf:
         - $ref: '#/components/schemas/Event'
+
+    EventMetadataPickup:
+      description: Metadata
+      allOf:
+        - $ref: '#/components/schemas/Event'
+        - type: object
+        - properties:
+            metadata: 
+              type: object
+              description: "Information related to the Event Type"
+              required: ["pickupArea"]
+              properties:
+                pickupArea:
+                  type: "string"
+                  description: "Information about the pickup area that the merchant needs to deliver the order. Eg: Parking Lot Number"
 
     EventMetadataConfirm:
       description: Metadata
