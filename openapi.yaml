@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "1.0.0-rc1 'Beta'"
+  version: "1.0.0-rc2 'Beta'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -14,11 +14,15 @@ info:
 
   description: |-
 
-    # Github repository
+    # Github Repository
     
     In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
     
-    Git: https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test
+    https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test
+
+    ### Changelog
+
+    https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md
 
     # Introduction
 
@@ -83,7 +87,7 @@ info:
       <img src="https://abrasel-nacional.github.io/docs/images/repo-image.png" />
     </div>
 
-    ## How Access
+    ## How to Access
 
     To be able to make the necessary information available, the Merchant Software Service must join the Open Delivery directory via the landing page [www.opendelivery.org.br](https://www.opendelivery.org.br).
       
@@ -115,11 +119,16 @@ info:
 
     # General guidelines
 
-    **DateTime and Time values**: For properties that require a DateTime or Time value, use the formats specified in DateTime and Time formats. For example, 2017-05-01T06:30:00+05:30 for DateTime and T08:08:00+05:30 for Time.
+    - **DateTime, Date and Time values**: For properties that require a DateTime, Date or Time value, use the formats specified in date-time, date and time formats (following the [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14) specifications)
+     For example:
+     
+     **2017-05-01T06:30:00Z** for date-time (As defined by date-time - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))\
+     **2017-05-01** for date (As defined by full-date - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))\
+     **08:08:00Z** for time (As defined by full-time - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))
 
-    **IDs**: Use an @id property to identify all unique entities within an entity type. An @id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
+    - **IDs**: Use an @id property to identify all unique entities within an entity type. An @id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
 
-    **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
+    - **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
 
 
     # Error Handling
@@ -732,10 +741,13 @@ paths:
       - "merchantEndpoints"
       operationId: "getMerchant"
       summary: "Get information of a Merchant"
-      security:
-        - OAuth2: [od.all]  
+      #security:
+      #   - apiKey: []
+      #     appId: [] 
       description: |-
           Endpoint to get all data of a specific merchant, such as basic info, menus, and services.
+
+          #### Autorization: See  this [Issue](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/8) for mor information. 
       responses:
         "200":
           description: "Successful merchant return."
@@ -1131,7 +1143,9 @@ x-webhooks:
       summary: New Merchant Update Notification
       description: 
           Information about a update in the systems.  
-          This webhook notification has no request body.  
+          
+          
+          Optionally it is possible to inform in the body of the request one (and only one) entity that has undergone a change.  
 
           > It is expected that once the notification is received, the **Ordering System** will make a new request to the **[/merchant](#operation/getMerchant)** endpoint to update the merchant information.
 
@@ -1140,6 +1154,11 @@ x-webhooks:
         - merchantEndpoints
       security:
         - OAuth2: [od.all]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MerchantUpdate"
       responses:
         "200":
           description: Return a 200 status to indicate that the data was received successfully
@@ -1190,13 +1209,26 @@ x-webhooks:
 components:
 
   securitySchemes:
+    
     OAuth2:
       type: oauth2
+      description:  "asldifuhsadkfhaslkfhsalkfhaskljfhçsakldjhflçsakjhflksda"
       flows:
         clientCredentials:
           tokenUrl: oauth/token
           scopes:
-            od.all: "Access to all **Open Delivery** APIs"      
+            od.all: "Access to all **Open Delivery** APIs"
+
+    # apiKey:
+    #   type: apiKey
+    #   description:  "sdloihsdkfjhsdakfjhsakjfhsaklfhsadklfhsadlkfjhsadk"
+    #   in: header
+    #   name: X-API-KEY
+    # appId:
+    #   type: apiKey
+    #   in: header
+    #   name: X-APP-ID
+        
   
   requestBodies:
     Token:
@@ -1235,6 +1267,7 @@ components:
         "application/json":
           schema:
             $ref: "#/components/schemas/RequestDenied"  
+  
   responses:
     RequisicaoInvalida:
       description: "Problemas na requisição."
@@ -1260,6 +1293,7 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Error'
+  
   schemas:
     TokenRequest:
       type: "object"
@@ -1616,6 +1650,7 @@ components:
           "merchantUrl":
             type: "string"
             description: "Optional merchant URL."
+    
     Address:
       type: "object"
       title: "Address"
@@ -1760,8 +1795,7 @@ components:
           type: "number"
           description:  "Indicates the longitude coordinate at the center of the CIRCLE area."
           example: -20.8383              
-
-          
+  
     ServiceAreaFee:
       type: "object"
       title: "Service Area Fee"
@@ -1843,7 +1877,6 @@ components:
           description:  "The 3-letter ISO 4217 currency code."
           example: "R$"
      
-
     ServiceHours:
       type: "object"
       title: "Service Hours"
@@ -1905,7 +1938,6 @@ components:
           allOf:
             - $ref: "#/components/schemas/TimePeriods"
  
-
     TimePeriods:
       type: "object"
       title: "Time Periods"
@@ -1921,7 +1953,6 @@ components:
           format: time
           description: "Indicates the specific time of day in ISO format beyond which users' orders cannot be placed."
           example: "18:00:00.000Z"            
-
 
     HolidayHours:
       type: "object"
@@ -1990,8 +2021,7 @@ components:
           example: "0" 
         ean:
           type: "string"
-          description:  "EAN (European Article Number)"
-                 
+          description:  "EAN (European Article Number)"             
 
     NutritionalInfo:
       type: "object"
@@ -2146,7 +2176,6 @@ components:
             type: "string"
             format: "UUID"
           example: ["22815773000169-92fad022-2c28-4239-a026-989f5b555cb7", "22815773000169-6bb71850-1d40-49f9-8046-b13e068c0cca"]
-
 
     Category:
       type: "object"
@@ -2674,7 +2703,7 @@ components:
               type: "string"
               description: "Consumer's name."
             ordersCountOnMerchant:
-              description: "Number of orders that are with the merchant."
+              description: "Total number of orders that the consumer already placed within the merchant."
               type: "number"
         delivery:
           type: "object"
@@ -2693,30 +2722,53 @@ components:
               properties:
                 country:
                   type: "string"
-                streetName:
+                  pattern: "^[A-Z]{2}$"
+                  description:  "Two-letter ISO 3166-1 alpha-2 country code."
+                  example: "Brazil"
+                state:
                   type: "string"
-                formattedAddress:
-                  type: "string"
-                streetNumber:
-                  type: "string"
+                  description:  "State"
+                  example: "SP"
                 city:
                   type: "string"
+                  description:  "City"
+                  example: "São Paulo"
+                neighborhood:
+                  type: "string"
+                  description:  "Neighborhood / District"
+                  example: "Moema"
+                streetName:
+                  type: "string"
+                  description:  "Street" 
+                  example: "Plaza Avenue"
+                streetNumber:
+                  type: "string"
+                  description:  "Number"
+                  example: "100" 
+                complement:
+                  type: "string"
+                  description:  "Complement"
+                  example: "2001" 
+                formattedAddress:
+                  type: "string"
+                  description:  "Full Formated Address Text"
+                  example: "Plaza Avenue, 100, Moema - São Paulo, SP - Brazil"
                 postalCode:
                   type: "string"
+                  description:  "Postal Code"
+                  example: "20111-000" 
                 coordinates:
                   type: "object"
                   required: ["latitude", "longitude"]
                   properties:
                     latitude:
                       type: "number"
+                      description:  "Latitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be at least 5 decimal places."
+                      example: -23.548 
                     longitude:
-                      type: number
-                neighborhood:
-                  type: "string"
-                state:
-                  type: "string"
-                complement:
-                  type: "string"
+                      type: "number"
+                      description:  "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be at least 5 decimal places."
+                      example: -46.6363
             estimatedDeliveryDateTime:
               type: "string"
               format: date-time
@@ -2742,6 +2794,7 @@ components:
         extraInfo:
           type: "string"
           description: "Extra information, if necessary."
+    
     OrderConfirmed:
       type: "object"
       title: "Order Confirmed"
@@ -2757,6 +2810,7 @@ components:
         orderExternalCode:
           type: "string"
           description: "External order code, which can be used by merchant or marketplace."
+    
     RequestCancelled:
       type: "object"
       title: "Request Cancelled"
@@ -2793,6 +2847,7 @@ components:
           description: "Items that do not exist in the merchant's inventory."
           items:
             type: string
+    
     RequestDenied:
       type: "object"
       title: "Request Cancelled"
@@ -2806,6 +2861,7 @@ components:
           enum:
             - "DISH_ALREADY_DONE"
             - "OUT_FOR_DELIVERY"
+    
     SalesByMerchant:
           type: "array"
           description: "Sales made by merchant."
@@ -3034,7 +3090,7 @@ components:
                   type: "string"
                   description: "Cancelation reason code"
                   enum:
-                    - ORDER_CANCELLATION_REQUESTED
+                    - CONSUMER_CANCELLATION_REQUESTED
                     - OTHER_CANCELLATION_REASON
                 clientId:
                   type: "string"
@@ -3075,7 +3131,7 @@ components:
                 expectedPreparationStartTime:
                   type: "string"
                   format: "date-time"
-                  description: "Expected preparation start time after Order Confirmation"
+                  description: "Expected preparation start time after Order Confirmation. This can be used by the Ordering Application to inform the merchant to delay the start of the preparation for any reason."
                 clientId:
                   type: "string"
                   description: "The URL to get the order details"  
@@ -3143,8 +3199,120 @@ components:
           description:  "Reading attempt status"
           enum:
             - SUCCESS
-            - FAIL                 
+            - FAIL
+        moreInfo:
+          type: "string"
+          description:  "Open field to provide any relevant information to the caller. Eg: Error messages or causes."                     
+    
+    MerchantUpdate:
+      type: object
+      required: [""]
+      discriminator:
+        propertyName: entityType
+        mapping:
+          SERVICE: '#/components/schemas/ServiceUpdate'
+          MENU: '#/components/schemas/MenuUpdate'
+          CATEGORY: '#/components/schemas/CategoryUpdate'
+          ITEM_OFFER: '#/components/schemas/ItemOfferUpdate'
+          OPTION_GROUP: '#/components/schemas/OptionGroupUpdate'
+          OPTION: '#/components/schemas/OptionUpdate'
+          AVAILABILITY: '#/components/schemas/AvailabilityUpdate'
+      properties:
+        entityType:
+            type: "string"
+            description: "The entity type of the updated object."
 
+    ServiceUpdate:
+      description: Updated Service Object
+      allOf:
+        - $ref: '#/components/schemas/MerchantUpdate'
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `Service` entity objects"
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/Service'
+
+    MenuUpdate:
+      description: Updated Menu Object
+      allOf:
+        - $ref: '#/components/schemas/MerchantUpdate'
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `Service` entity objects"
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/Menu'
+
+    CategoryUpdate:
+      description: Updated Category Object
+      allOf:
+        - $ref: '#/components/schemas/MerchantUpdate'
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `Service` entity objects"
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/Category'
+
+    ItemOfferUpdate:
+      description: Updated ItemOffer Object
+      allOf:
+        - $ref: '#/components/schemas/MerchantUpdate'
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `Service` entity objects"
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/ItemOffer'
+
+    OptionGroupUpdate:
+      description: Updated OptionGroup Object
+      allOf:
+        - $ref: '#/components/schemas/MerchantUpdate'
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `Service` entity objects"
+              type: array
+              items:
+                allOf:                   
+                  - $ref: '#/components/schemas/OptionGroup'
+
+    OptionUpdate:
+      description: Updated Option Object
+      allOf:
+        - $ref: '#/components/schemas/MerchantUpdate'
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `Service` entity objects"
+              type: array
+              items:
+                allOf:                   
+                  - $ref: '#/components/schemas/Option'
+
+    AvailabilityUpdate:
+      description: Updated Availability Object
+      allOf:
+        - $ref: '#/components/schemas/MerchantUpdate'
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `Service` entity objects"
+              type: array
+              items:
+                allOf:                   
+                  - $ref: '#/components/schemas/Availability'                    
+           
   examples:
     orderExample:
       summary: "Sample Order"
