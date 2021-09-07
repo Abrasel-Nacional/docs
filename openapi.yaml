@@ -2193,7 +2193,7 @@ components:
           - "CATEGORY"
           example: "CATEGORY"
         index:
-          type: "string"
+          type: integer
           description:  "Category display index."
           example: 0
         name:
@@ -2471,7 +2471,7 @@ components:
                 format: "UUID"
                 description: "A unique identifier of the order."
               index:
-                type: "number"
+                type: integer
                 description: "Item's position."
               name:
                 type: "string"
@@ -2515,7 +2515,7 @@ components:
                   required: ["@id", "name", "externalCode", "unit", "quantity", "unitPrice", "price"]
                   properties:
                     index:
-                      type: "number"
+                      type: integer
                       description: "Option's position."
                     "@id":
                       type: "string"
