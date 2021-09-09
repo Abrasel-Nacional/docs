@@ -1253,7 +1253,6 @@ components:
     
     OAuth2:
       type: oauth2
-      description:  "asldifuhsadkfhaslkfhsalkfhaskljfhçsakldjhflçsakjhflksda"
       flows:
         clientCredentials:
           tokenUrl: oauth/token
