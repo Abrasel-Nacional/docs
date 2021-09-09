@@ -902,6 +902,37 @@ paths:
           description: "Order Not Found."
         "500":
           description: "Internal Server Error."
+   
+  /merchantUpdate:
+    post:
+      summary: New Merchant Update Notification
+      description: 
+          Information about a update in the systems.   
+          
+          Optionally it is possible to inform in the body of the request one (and only one) entity that has undergone a change.  
+
+          > It is expected that once the notification is received, the **Ordering System** will make a new request to the **[/merchant](#operation/getMerchant)** endpoint to update the merchant information.
+
+      operationId: menuUpdate
+      tags: 
+        - merchantEndpoints
+      security:
+        - OAuth2: [od.all]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MerchantUpdate"
+      responses:
+        "200":
+          description: Return a 200 status to indicate that the data was received successfully
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"     
+ 
         
   /orders/{orderId}/confirm:
     post:
@@ -1141,13 +1172,23 @@ x-webhooks:
   menuUpdated:
     post:
       summary: New Merchant Update Notification
-      description: 
+      description:
+      
+          " ``` 
+
+          POST /merchantUpdate
+
+            ```
+
+           > POST /merchantUpdate 
+           
+
           Information about a update in the systems.  
-          
-          
+         
+         
           Optionally it is possible to inform in the body of the request one (and only one) entity that has undergone a change.  
 
-          > It is expected that once the notification is received, the **Ordering System** will make a new request to the **[/merchant](#operation/getMerchant)** endpoint to update the merchant information.
+          > It is expected that once the notification is received, the **Ordering System** will make a new request to the **[/merchant](#operation/getMerchant)** endpoint to update the merchant information."
 
       operationId: menuUpdated
       tags: 
