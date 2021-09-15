@@ -775,6 +775,8 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/MerchantStatus"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/AccessDenied"
         "404":
@@ -832,6 +834,8 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Event"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/AccessDenied"
         "503":
@@ -852,7 +856,9 @@ paths:
         "202":
           description: "Accepted. The request may be processed asynchronously"
         "400":
-          $ref: "#/components/responses/BadRequest" 
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound" 
         "403":
           $ref: "#/components/responses/AccessDenied"
         "503":
@@ -884,11 +890,13 @@ paths:
                 orderExample:
                   $ref: "#/components/examples/orderExample"
         "400":
-          description: "Invalid Order Supplied."
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
         "404":
-          description: "Order Not Found."
-        "500":
-          description: "Internal Server Error."
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
   
   /orders/{orderId}/confirm:
     post:
@@ -911,8 +919,12 @@ paths:
       responses:
         "200":
           description: "Order confirmed."
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
@@ -937,8 +949,14 @@ paths:
       responses:
         "200":
           description: "Order cancellation requested."
-        "500":
-          description: "Internal Server Error."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /orders/{orderId}/acceptCancellation:
     post:
@@ -959,8 +977,14 @@ paths:
       responses:
         "200":
           description: "Order cancellation confirmed."
-        "500":
-          description: "Internal Server Error."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   /orders/{orderId}/denyCancellation:
     post:
@@ -983,8 +1007,14 @@ paths:
       responses:
         "200":
           description: "Denied cancellation order confirmed."
-        "500":
-          description: "Internal Server Error." 
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
   
 
@@ -1007,8 +1037,12 @@ paths:
       responses:
         "200":
           description: "Accepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
@@ -1030,8 +1064,12 @@ paths:
       responses:
         "200":
           description: "Accepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
@@ -1069,10 +1107,12 @@ paths:
             "application/json":
               schema:
                 $ref:  "#/components/schemas/SalesByMerchant"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/AccessDenied"
         "404":
-          $ref: "#/components/responses/NotFound"
+          $ref: "#/components/responses/NotFound" 
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
   /repository:
@@ -1107,7 +1147,7 @@ paths:
         - "repositoryOverview"
       summary: "Returns the name and URL of the merchant."
       security:
-        - OAuth2: [od.all]
+        []
       description: |-
         Endpoint responsible for returning merchants and their URLs, if registered.
       responses:
@@ -1118,11 +1158,11 @@ paths:
               schema:
                 $ref: "#/components/schemas/ListMerchant"
         "400":
-          description: "Bad request."
+          $ref: "#/components/responses/BadRequest"
         "404":
-          description: "Merchant list not found."
-        "500":
-          description: "Internal Server Error."            
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"         
 
 x-webhooks:
   /menuUpdated:
@@ -1151,6 +1191,8 @@ x-webhooks:
       responses:
         "200":
           description: Return a 200 status to indicate that the data was received successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/AccessDenied"
         "404":
@@ -1188,6 +1230,8 @@ x-webhooks:
       responses:
         "200":
           description: Return a 200 status to indicate that the data was received successfully                     
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/AccessDenied"
         "404":
