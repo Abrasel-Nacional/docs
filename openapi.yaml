@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "1.0.0-rc3 'Beta'"
+  version: "1.0.0-rc4 'Beta'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
