@@ -209,17 +209,6 @@ tags:
       
       3.	If the **Software Service** **[refuses](#operation/cancelDenied)** an order for any reason, upon receiving the refusal, it is recommended that the **Ordering Application** make a new request on the **[/merchant](#operation/getMerchant)** endpoint.
 
-      ### Merchant Update Notification
-
-      **[Webhook](#operation/menuUpdated)** is sent to notify the **Ordering Application** that an new update has happened on the merchant information.
-
-      The **Ordering Application** that implements this webhook, should return an HTTP 200 response code with an empty response body to acknowledge receipt of the webhook event. 
-      If the merchant **Software Service** does not receive a 200 acknowledgement response, than the webhook event will be resent based on the **Software Service** policies.
-
-      ## Health Check
-
-      The **Ordering Application** must provide an **[endpoint](#operation/getMerchantStatus)** to let the merchant **Software Service** knows if its merchant information is being correctly read by the **Ordering Application**.
-
   - name: merchantStructure
     x-displayName: Merchant Structure
     description: |-
@@ -334,6 +323,22 @@ tags:
     x-displayName: Merchant API
     description: |-
 
+  - name: merchantStatus
+    x-displayName: Merchant Status
+    description: |-
+      ## Health Check
+
+      The **Ordering Application** must provide an **[endpoint](#operation/getMerchantStatus)** to let the merchant **Software Service** knows if its merchant information is being correctly read by the **Ordering Application**.
+
+  - name: merchantUpdate
+    x-displayName: Merchant Update
+    description: |-
+      ### Merchant Update Notification
+
+      **[Webhook](#operation/menuUpdated)** is sent to notify the **Ordering Application** that an new update has happened on the merchant information.
+
+      The **Ordering Application** that implements this webhook, should return an HTTP 200 response code with an empty response body to acknowledge receipt of the webhook event. 
+      If the merchant **Software Service** does not receive a 200 acknowledgement response, than the webhook event will be resent based on the **Software Service** policies.
 
   - name: ordersOverview
     x-displayName: Order Overview
@@ -459,6 +464,7 @@ tags:
       | Header            | Description |
       | ----------------- | ----------- |
       | X-App-Id          | An Unique Identificator of the **Ordering Application** |
+      | X-App-MerchanId   | An Unique Identificator of the **Merchant** receiving the order |      
       | X-App-Signature   | SHA256 hash of the request body, using the client secret as the key |
 
         
@@ -659,6 +665,15 @@ tags:
     description: |-
       This endpoint is responsible for the respository.
 
+  - name: logisticOverview
+    x-displayName: Logistic Overview
+    description: |-
+      Endpoints related to the communication with logistic services companies.
+
+  - name: logisticEndpoints
+    x-displayName: Logistic Endpoints
+    description: |-
+
 x-tagGroups:
   - name: ""
     tags:
@@ -668,6 +683,10 @@ x-tagGroups:
       - merchantOverview
       - merchantStructure
       - merchantEndpoints
+  - name: Merchant Updates and Status
+    tags:
+      - merchantUpdate
+      - merchantStatus   
   - name: Orders
     tags:
       - ordersOverview
@@ -682,7 +701,11 @@ x-tagGroups:
   - name: Repository
     tags:
       - repositoryOverview
-#  - name: Models
+# - name: Logistics (ALPHA)
+#   tags:
+#   - logisticOverview
+#   - logisticEndpoints      
+# - name: Models
 #    tags:
 #      - menuEntitiesModel
 #      - merchantModel
@@ -697,14 +720,22 @@ x-tagGroups:
 #      - eventModel
 
 paths:
+
   /oauth/token:
-    get:
+    post:
       operationId: "getToken"
       tags:
       - "authentication"
       summary: "Get Access Token"
       description: |-
-          Requests new access token for accessing **Ordering Application** API resources.          
+        Requests new access token for accessing **Ordering Application** API resources.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div>                     
       requestBody:
           $ref: "#/components/requestBodies/Token"  
       responses:
@@ -718,6 +749,8 @@ paths:
           description: "Bad credentials"
         "500":
           description: "Unexpected error"
+            
+
 
   /merchant:
     get:
@@ -733,6 +766,14 @@ paths:
 
          >  This endpoint can optionally require an **apiKey** for authentication.
          >  Check with the Software Service that hosts the endpoint whether authentication is required or not.
+        
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **SOFTWARE SERVICE**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETOA_SS.png" />
+        </div>
       responses:
         "200":
           description: "Successful merchant return."
@@ -751,7 +792,6 @@ paths:
           $ref: "#/components/responses/ServiceUnavailable"
 
   
-
   /merchantStatus:
     get:
       parameters:
@@ -761,13 +801,20 @@ paths:
           schema:
             $ref:  "#/components/schemas/Merchant/properties/@id"
       tags:
-      - "merchantEndpoints"
+      - "merchantStatus"
       operationId: "getMerchantStatus"
       summary: "Health Check on a Merchant"
       security:
         - OAuth2: [od.all]  
       description: |-
-          Get specific merchant info reading status provided by the **Ordering Application**.
+        Get specific merchant info reading status provided by the **Ordering Application**.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
+        </div>              
       responses:
         "200":
           description: "Merchant Status"
@@ -784,6 +831,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"          
   
+
   "/events:polling":
     get:
       operationId: pollingEvents
@@ -817,16 +865,25 @@ paths:
             > `CANCELLED` : When the order is actually cancelled.\
             > `ORDER_CANCELLATION_REQUEST`: It must be sent from the Ordering Application to the Software Service.
           items:
-            $ref: "#/components/schemas/Event/properties/eventType"      
+            $ref: "#/components/schemas/Event/properties/eventType" 
+
+
       tags:
       - "ordersPolling"
       summary: "Get New Events"
       security:
         - OAuth2: [od.all] 
-      description: 
+      description: |-
         "Polls events for any orders from merchants associated with the authenticated user.
         Each event received from this endpoint must be properly acknowledged, otherwise it will continue to be returned on further requests.
         In the body of the request, send an array containing only the event ids. Each request accepts a list of at most 2000 event ids."
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
+        </div>         
       responses:
         "200":
           description: "List of events."
@@ -850,8 +907,15 @@ paths:
       summary: "Acknowledge Events"
       security:
         - OAuth2: [od.all]  
-      description: 
+      description: |-
         Acknowledge a set of events, dismissing them from future polling calls.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div>            
       responses:
         "202":
           description: "Accepted. The request may be processed asynchronously"
@@ -878,7 +942,15 @@ paths:
       summary: "Get Order Details"
       security:
         - OAuth2: [od.all]
-      description: "Endpoint to consult the details of an order."
+      description: |-
+        Endpoint to consult the details of an order.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
+        </div>          
       responses:
         "200":
           description: "Order returning success."
@@ -915,7 +987,15 @@ paths:
       summary: "Confirm"
       security:
         - OAuth2: [od.all]  
-      description: "Confirms receipt of order."
+      description: |-
+        Confirms receipt of order.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div>          
       responses:
         "200":
           description: "Order confirmed."
@@ -945,7 +1025,15 @@ paths:
       summary: "Request order cancellation"
       security:
         - OAuth2: [od.all]  
-      description: "Request order cancellation."
+      description: |-
+        Request order cancellation.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div>            
       responses:
         "200":
           description: "Order cancellation requested."
@@ -973,7 +1061,15 @@ paths:
       summary: "Accept order cancellation"
       security:
         - OAuth2: [od.all]  
-      description: "Accept order cancellation"
+      description: |-
+        Accept order cancellation"
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div> 
       responses:
         "200":
           description: "Order cancellation confirmed."
@@ -1003,7 +1099,15 @@ paths:
       summary: "Deny order cancellation"
       security:
         - OAuth2: [od.all]  
-      description: "Order Cancellation denied."
+      description: |-
+        Order Cancellation denied.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div>            
       responses:
         "200":
           description: "Denied cancellation order confirmed."
@@ -1015,8 +1119,6 @@ paths:
           $ref: "#/components/responses/NotFound" 
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
-
-  
 
   /orders/{orderId}/readyForPickup:
     post:
@@ -1033,7 +1135,15 @@ paths:
       operationId: "orderReady"
       security:
         - OAuth2: [od.all]  
-      description: "Informs you that the order is ready for pickup"
+      description: |-
+        Informs you that the order is ready for pickup
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div>         
       responses:
         "200":
           description: "Accepted"
@@ -1060,7 +1170,16 @@ paths:
       operationId: "dispatchOrder"
       summary: "Dispatch"
       security:
-        - OAuth2: [od.all]  
+        - OAuth2: [od.all]
+      description: |-
+        Dispatch an Order.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div>             
       responses:
         "200":
           description: "Accepted"
@@ -1073,6 +1192,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
+
   /salesReport:
     get:
       operationId: "salesReport"
@@ -1081,6 +1201,13 @@ paths:
       summary: "Sales Report endpoint"
       description: |-
         This endpoint is responsible for the sales report.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
+        </div> 
       parameters:
         - name: "@id"
           in: "query"
@@ -1115,6 +1242,8 @@ paths:
           $ref: "#/components/responses/NotFound" 
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
+  
+
   /repository:
     get:
         operationId: "getRepository"
@@ -1150,6 +1279,13 @@ paths:
         []
       description: |-
         Endpoint responsible for returning merchants and their URLs, if registered.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **SOFTWARE SERVICE**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETOA_SS.png" />
+        </div>            
       responses:
         "200":
           description: "Successfully returns the merchant list."
@@ -1163,24 +1299,88 @@ paths:
           $ref: "#/components/responses/NotFound" 
         "503":
           $ref: "#/components/responses/ServiceUnavailable"         
+  
+  
+  /logistics/price:
+    get:
+      tags:
+        - "logisticEndpoints"
+      summary: "Quote a delivery price"
+      security:
+        []
+      description: |-
+        Simulates a new delivery solicitation to know prices and delivery times.
+      responses:
+        "200":
+          description: "Successfully returns the merchant list."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ListMerchant"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"   
+
+  /logistics/delivery:
+    post:
+      parameters: 
+        - name: "@id"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      requestBody:
+          $ref: "#/components/requestBodies/CancelDenied"
+      tags:
+      - "logisticEndpoints"
+      operationId: "newDelivery"
+      summary: "Ask for new delivery"
+      security:
+        - OAuth2: [od.all]  
+      description: "Ask for new delivery"
+      responses:
+        "200":
+          description: "Denied cancellation order confirmed."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
 
 x-webhooks:
+
   /menuUpdated:
     post:
       summary: New Merchant Update Notification
-      description: 
+      description: |-
 
-          " > POST /merchantUpdate 
+        > POST /merchantUpdate 
 
-          Information about a update in the systems.  
 
-          Optionally it is possible to inform in the body of the request one (and only one) entity that has undergone a change.  
+        Information about a update in the systems.
 
-          > It is expected that once the notification is received, the **Ordering System** will make a new request to the **[/merchant](#operation/getMerchant)** endpoint to update the merchant information. "
 
+        Optionally it is possible to inform in the body of the request, one (and only one) entity type that has undergone a change.  
+
+        > Once the notification is received, if the body of the request does not contain any entity type specified, then the **Ordering System** is expected to make a new request to the **[/merchant](#operation/getMerchant)** endpoint to update all the merchant information. 
+        
+        <br /><br />  
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**  
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div> 
       operationId: menuUpdated
       tags: 
-        - merchantEndpoints
+        - merchantUpdate
       security:
         - OAuth2: [od.all]
       requestBody:
@@ -1211,6 +1411,12 @@ x-webhooks:
           format: "UUID"
           description: "An unique Identificator of the Ordering Application"
       - in: "header"
+        name: "X-App-MerchanId"
+        required: true
+        schema:
+          $ref:  "#/components/schemas/Merchant/properties/@id"
+          description: "An unique Identificator of the Merchant "
+      - in: "header"
         name: "X-App-Signature"
         required: true
         schema:
@@ -1218,10 +1424,57 @@ x-webhooks:
           format: "SHA256"
           description: "SHA256 hash of the request body, using the client secret as the key"
       summary: New Order Event Notification
-      description: Information about a new event in the systems
+      description: |-
+        Information about a new event in the systems
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **SOFTWARE SERVICE**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTOA_SS.png" />
+        </div> 
       operationId: newEvent
       tags: 
         - ordersWebhook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "200":
+          description: Return a 200 status to indicate that the data was received successfully                     
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"   
+
+  newLogisticEvent:
+    post:
+      parameters:
+      - in: "header"
+        name: "X-App-Id"
+        required: true
+        schema:
+          type: "string"
+          format: "UUID"
+          description: "An unique Identificator of the Ordering Application"
+      - in: "header"
+        name: "X-App-Signature"
+        required: true
+        schema:
+          type: "string"
+          format: "SHA256"
+          description: "SHA256 hash of the request body, using the client secret as the key"
+      summary: New Logistic Event Notification
+      description: Information about a new event in the systems
+      operationId: newLogisticEvent
+      tags: 
+        - logisticEndpoints
       requestBody:
         content:
           application/json:
@@ -1267,6 +1520,8 @@ components:
 
           To generate a client credentials token, the merchant **Software Service** must retrieve the **clientId** and **clientSecret** from a **Ordering Application** Company and access the [/oauth/token](#operation/getToken) endpoint.
 
+          > The **Ordering Application** MUST provide one `clientId` and `clientSecret` credentials for each individual merchant it will work with, even if these merchants use the same **Software Service**.
+
           ### Usage
 
           The **accessToken** field will contain the token used to authenticate against the **Open Delivery** APIs. Once you’ve obtained this token, you can provide it in the “Authorization” header of requests you make to endpoints that require client credentials scopes.
@@ -1295,6 +1550,7 @@ components:
         "application/x-www-form-urlencoded":
           schema:
             $ref: "#/components/schemas/TokenRequest"
+       
 
     AckEvents:
       required: true
@@ -1369,7 +1625,7 @@ components:
           type: "string"
           description:  "The OAuth grant type. Currently, the only supported grant type is `client_credentials`." 
           enum:
-            - "clientCredentials"
+            - "client_credentials"
 
     TokenResponse:
       type: "object"
@@ -1409,9 +1665,11 @@ components:
         "@id":
           type: "string"
           format: "UUID"
-          description:  "Unique Identifier. Must be formatted with `Merchant Document + UUID`
-          \n\n This @id must be generated by the company responsible for the merchant's menu and have to be informed in the Order object by the *ordering application*."
-          example: "22815773000169-dbc7e35a-c936-4665-9e13-eb55eb8b6824"
+          description:  "Unique Identifier. Must be formatted with `Merchant Document + UUID + Software Information*`
+          
+          > *Software Information is optional.
+
+          \n\n This @id must be generated by the merchant's `Software Service` and must be informed in the `Order` object by the `Ordering Application`."
         "@type":
           type: "string"
           enum:
@@ -2721,10 +2979,10 @@ components:
                       - $ref: "#/components/schemas/Price/properties/currency"
                   type:
                     type: "string"
-                    description: "Online if the payment was made through some platform, or offline if it was paid on delivery or in cash, for example."
+                    description: "`PREPAID` if the payment was made through some platform, or `PENDING` if it going to be paid on delivery or in cash, for example."
                     enum:
-                      - "ONLINE"
-                      - "OFFLINE"
+                      - "PREPAID"
+                      - "PENDING"
                   method:
                     type: "string"
                     enum:
