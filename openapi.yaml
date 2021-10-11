@@ -2122,7 +2122,7 @@ components:
           example: { value: 5, currency: "R$"}
         estimateDeliveryTime:
           type: "integer"
-          description: "Estimate delivery time for this polygon"
+          description: "Estimate delivery time for this polygon in minutes"
     
     GeoRadius:
       type: "object"
@@ -2156,7 +2156,7 @@ components:
                   example: { value: 5, currency: "R$"}
                 estimateDeliveryTime:
                   type: "integer"
-                  description: "Estimate delivery time for this CIRCLE size."    
+                  description: "Estimate delivery time for this CIRCLE size in minutes."    
                 
     Price:
       type: "object"
