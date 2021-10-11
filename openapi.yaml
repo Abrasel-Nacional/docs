@@ -2085,7 +2085,7 @@ components:
           example: "SERVICE_AREA"
         polygon:
           type: "array"
-          description: "If the `polygon` is chosen to be used, `geoRadius` is not required.\n\n\n\nA polygon or multipolygon expressed as a series of three or more space delimited points. It is recommended that the first and last points be the same, but it is not required.\n\n\n\nEach point in a polygon or multipolygon is defined by a latitude point followed by a longitude point. You also must specify the points in a counter-clockwise direction."
+          description: "If the `polygon` is chosen to be used, `geoRadius` is not required.\n\n\n\nA polygon or multipolygon expressed as a series of three or more space delimited points."
           items:
             allOf:
               - $ref: "#/components/schemas/Polygon"  
@@ -2102,27 +2102,27 @@ components:
       properties:
         geoCoordinates:
           type: "array"
-          description: "If the `polygon` is chosen to be used, `geoRadius` is not required.\n\n\n\nA polygon or multipolygon expressed as a series of three or more space delimited points. It is recommended that the first and last points be the same, but it is not required.\n\n\n\nEach point in a polygon or multipolygon is defined by a latitude point followed by a longitude point. You also must specify the points in a counter-clockwise direction."
+          description: "Coordinates of each point of the polygon. It is recommended that the first and last points be the same, but it is not required.\n\n\n\nEach point in a polygon or multipolygon is defined by a latitude point followed by a longitude point. You also must specify the points in a counter-clockwise direction."
           items:
               type: "object"
-              title: "R$"
+              title: "geoCoordinate"
               required: ["latitude", "longitude"]
               properties:
                 latitude:
                   type: "string"
-                  description: "sdf"
+                  description: "Indicates the latitude coordinate of the polygon point"
                 longitude:
                   type: "string"
-                  description: "sdf"                    
+                  description: "Indicates the longitude coordinate of the polygon point."                    
         price:
           type: "object"
-          description:  "Price of the fee"
+          description:  "Price of the fee for this polygon"
           allOf:
             - $ref: "#/components/schemas/Price"
           example: { value: 5, currency: "R$"}
         estimateDeliveryTime:
           type: "integer"
-          description: ""
+          description: "Estimate delivery time for this polygon"
     
     GeoRadius:
       type: "object"
@@ -2139,24 +2139,24 @@ components:
           example: -20.8383
         radius:
           type: "array"
-          description: "If the `polygon` is chosen to be used, `geoRadius` is not required.\n\n\n\nA polygon or multipolygon expressed as a series of three or more space delimited points. It is recommended that the first and last points be the same, but it is not required.\n\n\n\nEach point in a polygon or multipolygon is defined by a latitude point followed by a longitude point. You also must specify the points in a counter-clockwise direction."
+          description: "Informations about each radius of the CIRCLE that the merchant serves."
           items:
               type: "object"
-              title: "R$"
-              required: ["latitude", "longitude"]
+              title: "radius"
+              required: ["size"]
               properties:
                 size:
                   type: "integer"
-                  description: "sdf"
+                  description: "The size of the CIRCLE radius in meters."
                 price:
                   type: "object"
-                  description:  "Price of the fee"
+                  description:  "Price of the fee for this CIRCLE size."
                   allOf:
                     - $ref: "#/components/schemas/Price"
                   example: { value: 5, currency: "R$"}
                 estimateDeliveryTime:
                   type: "integer"
-                  description: ""    
+                  description: "Estimate delivery time for this CIRCLE size."    
                 
     Price:
       type: "object"
