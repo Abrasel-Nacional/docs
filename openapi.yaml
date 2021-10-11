@@ -2127,7 +2127,7 @@ components:
     GeoRadius:
       type: "object"
       title: "GeoRadius"
-      required: [geoCoordinates]
+      required: [geoMidpointLatitude, geoMidpointLongitude, radius ]
       properties:
         geoMidpointLatitude:    
           type: "number"
