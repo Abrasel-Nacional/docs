@@ -3990,7 +3990,7 @@ components:
             "22815773000169-6bb71850-1d40-49f9-8046-b13e068c0cca"]
           }
         ]
-        category: [
+        categories: [
           {
             id: "22815773000169-92fad022-2c28-4239-a026-989f5b555cb7",
             type: "CATEGORY",
@@ -4113,7 +4113,7 @@ components:
             ]
           }
         ]
-        availability: [
+        availabilities: [
           {
             id: "22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029",
             type: "AVAILABILITY",
