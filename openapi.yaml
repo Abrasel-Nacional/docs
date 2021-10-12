@@ -1805,7 +1805,7 @@ components:
             \n\n An optional entity to implement. Describes additional options of an `ItemOffer`."
           items:
             type: "object"
-        availability:
+        availabilities:
           type: "array"
           description:
             "See: **[Availability](#section/Menu/Availability)**  
