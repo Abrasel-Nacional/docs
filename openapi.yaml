@@ -14,15 +14,35 @@ info:
 
   description: |-
 
-    # Github Repository
+   # Changelog and Suggestions
     
+    ### CHANGELOG
+
+    **Latest Changes:**
+
+    Version: **1.00 rc6**
+
+      - Removed all `@` in front of the `@id` attributes. All attributes are now defaulted to `id`.  
+      - Removed all `@type` fields from `/merchant` entities.
+      - Removed the `@` from the `@type` attribute of the `orders` object which was renamed to `type` (without the @).
+      - Corrected the name of the **`X-App-MerchanId`** attribute of the **header** parameter in the order notification webhook to **`X-App-MerchantId`**.
+      - Changed the responses for the following endpoints from `HTTP 200` to `HTTP 202`:
+        - `/orders/{orderId}/confirm`
+        - `/orders/{orderId}/requestCancellation`
+        - `/orders/{orderId}/readyForPickup`.
+        - `/orders/{orderId}/dispatch`
+
+    See the full changelog here:  
+    https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md
+
+    ### SUGGESTIONS
+
     In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
     
-    https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test
+    https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues
 
-    ### Changelog
 
-    https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md
+    # ------ OPEN DELIVERY ------
 
     # Introduction
 
@@ -77,7 +97,7 @@ info:
 
     See: **[Sales Report Guide](#tag/SalesReport)**
 
-    # Open Delivery Repository
+    ## Open Delivery Repository
 
     The goal of the repository is to centrally host the information of **Open Delivery** participants and generate statistic data for the project.
     Through an opt in form in the project landing page, is expected that the **Software Services** and **Ordering Application** perform a registration that will be available in a database of participants.
@@ -87,7 +107,7 @@ info:
       <img src="https://abrasel-nacional.github.io/docs/images/repo-image.png" />
     </div>
 
-    ## How to Access
+    ### How to Access
 
     To be able to make the necessary information available, the Merchant Software Service must join the Open Delivery directory via the landing page [www.opendelivery.org.br](https://www.opendelivery.org.br).
       
@@ -126,7 +146,7 @@ info:
      **2017-05-01** for date (As defined by full-date - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))\
      **08:08:00Z** for time (As defined by full-time - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))
 
-    - **IDs**: Use an @id property to identify all unique entities within an entity type. An @id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
+    - **IDs**: Use an id property to identify all unique entities within an entity type. An id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
 
     - **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
 
@@ -179,6 +199,12 @@ info:
       * __HTTP Status Code__: [504 Gateway Timeout](https://tools.ietf.org/html/rfc7231#section-6.6.5).
 
 tags:
+
+# Authentication
+  - name: securitySection
+    x-displayName: ------ SECURITY ------
+    x-traitTag: true
+
   - name: authentication
     x-displayName: "Authentication"
     description: |    
@@ -186,6 +212,12 @@ tags:
         **Open Delivery** suports two types of authentication methods: **OAuth 2** and **apiKey**.
 
         <!-- ReDoc-Inject: <security-definitions> -->
+
+# Merchant
+
+  - name: merchantSection
+    x-displayName: ------ MERCHANT ------
+    x-traitTag: true
 
   - name: merchantOverview
     x-displayName: Merchant Overview
@@ -320,7 +352,7 @@ tags:
       <SchemaDefinition schemaRef="#/components/schemas/Availability" />
  
   - name: merchantEndpoints
-    x-displayName: Merchant API
+    x-displayName: "Merchant Endpoint"
     description: |-
 
   - name: merchantStatus
@@ -339,6 +371,11 @@ tags:
 
       The **Ordering Application** that implements this webhook, should return an HTTP 200 response code with an empty response body to acknowledge receipt of the webhook event. 
       If the merchant **Software Service** does not receive a 200 acknowledgement response, than the webhook event will be resent based on the **Software Service** policies.
+
+# Orders
+  - name: ordersSection
+    x-displayName: ------ ORDERS ------
+    x-traitTag: true
 
   - name: ordersOverview
     x-displayName: Order Overview
@@ -397,6 +434,7 @@ tags:
 
       **Open Delivery** provides API's to send **[cancellation](#tag/ordersCancellation)** requests from either system.
       These requests can be accepted or denied depending on the rules that the company has.
+    x-traitTag: true
 
   - name: ordersPolling
     x-displayName: Polling (Required)
@@ -423,7 +461,7 @@ tags:
 
       **Duplicate Events and Order Date:**
       
-      Eventually the API may return the same event more than once, for example the PLACED event including old orders. For this reason it is important that your application handles the uniqueness of requests and events through "id" and the date through "createdAt".
+      Eventually the API may return the same event more than once, for example the PLACED event including old orders. For this reason it is important that your application handles the uniqueness of requests and events through id and the date through "createdAt".
 
       Therefore, when receiving an event, you must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
 
@@ -438,8 +476,8 @@ tags:
       > Merchants **Software Service** should make an acknowledgment request for each polling request with results.  
       > If it receives events that are not used by the itself, it needs to send the acknowledgment of these events anyway so that it is not receiving them every polling again.   
       > **Open Delivery** recommends that this be the default treatment for all events not yet mapped in the **Software Service** application.  
-      > **Software Services** only needs to send acknowledgment of the event once.
-        
+      > **Software Services** only needs to send acknowledgment of the event once."
+    
   - name: ordersWebhook
     x-displayName: Webhook (Optional)
     description: |-
@@ -464,7 +502,7 @@ tags:
       | Header            | Description |
       | ----------------- | ----------- |
       | X-App-Id          | An Unique Identificator of the **Ordering Application** |
-      | X-App-MerchanId   | An Unique Identificator of the **Merchant** receiving the order |      
+      | X-App-MerchantId   | An Unique Identificator of the **Merchant** receiving the order |      
       | X-App-Signature   | SHA256 hash of the request body, using the client secret as the key |
 
         
@@ -598,6 +636,10 @@ tags:
 
         CANCELLATION_DENIED or CANCELLED
 
+# Sales Report
+  - name: salesReportSection
+    x-displayName: ------ SALES REPORT ------
+    x-traitTag: true
 
   - name: salesReport
     x-displayName: Sales Report Endpoint
@@ -605,121 +647,110 @@ tags:
 
         **Ordering Application** must provide an endpoint where merchants can view information about sales for orders placed and information about the transfer of funds to the merchant.
 
-#  - name: menuEntitiesModel
-#    x-displayName: Menu Entities Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/Merchant" />
-#
-#  - name: merchantModel
-#    x-displayName: Merchant Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/BasicInfo" />
-#
-#  - name: serviceModel
-#    x-displayName: Service Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/Service" />
-#
-#  - name: menuModel
-#    x-displayName: Menu Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/Menu" />
-#
-#  - name: itemModel
-#    x-displayName: Items Model
-#    description: |
-#     
-#
-#  - name: categoryModel
-#    x-displayName: Categories Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/Category" />  
-#
-#  - name: itemOfferModel
-#    x-displayName: Items Offers Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" />
-#
-#  - name: optionGroupModel
-#    x-displayName: Option Groups Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/OptionGroup" />
-#
-#  - name: availabilityModel
-#    x-displayName: Availability Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/Availability" />
-#
-#  - name: orderModel
-#    x-displayName: Order Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/Order" />       
-#
-#  - name: eventModel
-#    x-displayName: Event Model
-#    description: |
-#      <SchemaDefinition schemaRef="#/components/schemas/Event" /> 
+# Repository
+  - name: repositorySection
+    x-displayName: ------ REPOSITORY ------
+    x-traitTag: true
 
   - name: repositoryOverview
     x-displayName: Repository endpoint
     description: |-
       This endpoint is responsible for the respository.
 
+# Logistics
+  - name: logisticsSection
+    x-displayName: ------ LOGISTICS (WIP) ------
+    x-traitTag: true
   - name: logisticOverview
     x-displayName: Logistic Overview
     description: |-
       Endpoints related to the communication with logistic services companies.
 
-  - name: logisticEndpoints
-    x-displayName: Logistic Endpoints
+  - name: logisticOrder
+    x-displayName: Delivery Order
+    description: |-
+
+  - name: logisticTracking
+    x-displayName: Delivery Tracking
+    description: |-
+
+  - name: logisticStatus
+    x-displayName: Delivery Status
+    description: |-
+
+  - name: logisticCancellationProblems
+    x-displayName: Problems and Cancellation
+    description: |-
+
+  - name: logisticPrice
+    x-displayName: Delivery Pricing
     description: |-
 
 x-tagGroups:
   - name: ""
     tags:
+      - securitySection
       - authentication
-  - name: Merchant
+  - name: ""
     tags:
+      - merchantSection
+  - name: "Overview and Structure"
+    tags:      
       - merchantOverview
       - merchantStructure
+  - name: "api"
+    tags:            
       - merchantEndpoints
-  - name: Merchant Updates and Status
+  - name: Updates and Status
     tags:
       - merchantUpdate
       - merchantStatus   
-  - name: Orders
+  - name: ""
     tags:
+      - ordersSection
+  - name: "Overview"
+    tags:      
       - ordersOverview
+  - name: Events
+    tags:    
       - ordersPolling
       - ordersWebhook
+  - name: Details
+    tags:         
       - ordersDetails
+  - name: Actions
+    tags:           
       - ordersStatus
       - ordersCancellation
-  - name: Sales Report
+  - name: ""
+    tags:
+      - salesReportSection  
+  - name: Sales Report API
     tags:
       - salesReport
-  - name: Repository
+  - name: ""
+    tags:
+      - repositorySection  
+  - name: Repository API
     tags:
       - repositoryOverview
-# - name: Logistics (ALPHA)
-#   tags:
-#   - logisticOverview
-#   - logisticEndpoints      
-# - name: Models
-#    tags:
-#      - menuEntitiesModel
-#      - merchantModel
-#      - serviceModel
-#      - menuModel
-#      - itemModel
-#      - categoryModel
-#      - itemOfferModel
-#      - optionGroupModel
-#      - availabilityModel
-#      - orderModel
-#      - eventModel
+  - name: ""
+    tags:
+      - logisticsSection        
+  - name: Logistics (ALPHA)
+    tags:
+    - logisticOverview
+    - logisticPrice
+    - logisticOrder
+    - logisticTracking       
+#    - logisticStatus
+#    - logisticCancellationProblems
+   
+
 
 paths:
+
+#Authentication
 
   /oauth/token:
     post:
@@ -750,7 +781,7 @@ paths:
         "500":
           description: "Unexpected error"
             
-
+# Merchant
 
   /merchant:
     get:
@@ -799,7 +830,7 @@ paths:
           name: "merchantId"
           required: true
           schema:
-            $ref:  "#/components/schemas/Merchant/properties/@id"
+            $ref:  "#/components/schemas/Merchant/properties/id"
       tags:
       - "merchantStatus"
       operationId: "getMerchantStatus"
@@ -831,6 +862,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"          
   
+# Orders
 
   "/events:polling":
     get:
@@ -843,7 +875,7 @@ paths:
           type: array
           description: Subset of merchants to fetch events from. Must either be omitted or non-empty.
           items:
-            $ref: "#/components/schemas/Merchant/properties/@id"
+            $ref: "#/components/schemas/Merchant/properties/id"
       - name: "eventType"
         in: "query"
         required: true
@@ -918,7 +950,7 @@ paths:
         </div>            
       responses:
         "202":
-          description: "Accepted. The request may be processed asynchronously"
+          $ref: "#/components/responses/Accepted"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
@@ -958,9 +990,9 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Order"
-              examples:
-                orderExample:
-                  $ref: "#/components/examples/orderExample"
+              # examples:
+              #   orderExample:
+              #     $ref: "#/components/examples/orderExample"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -973,7 +1005,7 @@ paths:
   /orders/{orderId}/confirm:
     post:
       parameters: 
-        - name: "@id"
+        - name: id
           in: "path"
           required: true
           schema:
@@ -997,8 +1029,8 @@ paths:
           <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
         </div>          
       responses:
-        "200":
-          description: "Order confirmed."
+        "202":
+          $ref: "#/components/responses/Accepted"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -1011,7 +1043,7 @@ paths:
   /orders/{orderId}/requestCancellation:
     post:
       parameters: 
-        - name: "@id"
+        - name: id
           in: "path"
           required: true
           schema:
@@ -1035,8 +1067,8 @@ paths:
           <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
         </div>            
       responses:
-        "200":
-          description: "Order cancellation requested."
+        "202":
+          $ref: "#/components/responses/Accepted"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -1049,7 +1081,7 @@ paths:
   /orders/{orderId}/acceptCancellation:
     post:
       parameters: 
-        - name: "@id"
+        - name: id
           in: "path"
           required: true
           schema:
@@ -1072,7 +1104,7 @@ paths:
         </div> 
       responses:
         "200":
-          description: "Order cancellation confirmed."
+          description: "Order cancellation has been confirmed."
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -1085,7 +1117,7 @@ paths:
   /orders/{orderId}/denyCancellation:
     post:
       parameters: 
-        - name: "@id"
+        - name: id
           in: "path"
           required: true
           schema:
@@ -1110,7 +1142,7 @@ paths:
         </div>            
       responses:
         "200":
-          description: "Denied cancellation order confirmed."
+          description: "Order cancellation has been denied."
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -1123,7 +1155,7 @@ paths:
   /orders/{orderId}/readyForPickup:
     post:
       parameters: 
-        - name: "@id"
+        - name: id
           in: "path"
           required: true
           schema:
@@ -1145,8 +1177,8 @@ paths:
           <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
         </div>         
       responses:
-        "200":
-          description: "Accepted"
+        "202":
+          $ref: "#/components/responses/Accepted"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -1159,7 +1191,7 @@ paths:
   /orders/{orderId}/dispatch:
     post:
       parameters: 
-        - name: "@id"
+        - name: id
           in: "path"
           required: true
           schema:
@@ -1181,8 +1213,8 @@ paths:
           <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
         </div>             
       responses:
-        "200":
-          description: "Accepted"
+        "202":
+          $ref: "#/components/responses/Accepted"
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -1192,6 +1224,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
+# Sales Report
 
   /salesReport:
     get:
@@ -1209,7 +1242,7 @@ paths:
           <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
         </div> 
       parameters:
-        - name: "@id"
+        - name: id
           in: "query"
           required: true
           schema:
@@ -1243,6 +1276,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
   
+# Repository
 
   /repository:
     get:
@@ -1300,11 +1334,12 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"         
   
-  
+# Logistics
+
   /logistics/price:
     get:
       tags:
-        - "logisticEndpoints"
+        - "logisticPrice"
       summary: "Quote a delivery price"
       security:
         []
@@ -1327,7 +1362,7 @@ paths:
   /logistics/delivery:
     post:
       parameters: 
-        - name: "@id"
+        - name: id
           in: "path"
           required: true
           schema:
@@ -1336,8 +1371,8 @@ paths:
       requestBody:
           $ref: "#/components/requestBodies/CancelDenied"
       tags:
-      - "logisticEndpoints"
-      operationId: "newDelivery"
+      - "logisticOrder"
+      operationId: "logisticsNewDelivery"
       summary: "Ask for new delivery"
       security:
         - OAuth2: [od.all]  
@@ -1354,7 +1389,129 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
+  /logistics/picked:
+    post:
+      parameters: 
+        - name: id
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      requestBody:
+          $ref: "#/components/requestBodies/CancelDenied"
+      tags:
+      - "logisticOrder"
+      operationId: "logisticsPicked"
+      summary: "Order picked"
+      security:
+        - OAuth2: [od.all]  
+      description: "Order picked by delivery man at Merchant"
+      responses:
+        "200":
+          description: "Denied cancellation order confirmed."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /logistics/finish:
+    post:
+      parameters: 
+        - name: id
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      requestBody:
+          $ref: "#/components/requestBodies/CancelDenied"
+      tags:
+      - "logisticOrder"
+      operationId: "logisticsFinish"
+      summary: "Finish delivery"
+      security:
+        - OAuth2: [od.all]  
+      description: "Indicates the end of a delivery order"
+      responses:
+        "200":
+          description: "Denied cancellation order confirmed."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /logistics/handleProblem:
+    post:
+      parameters: 
+        - name: id
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      requestBody:
+          $ref: "#/components/requestBodies/CancelDenied"
+      tags:
+      - "logisticOrder"
+      operationId: "logisticsProblem"
+      summary: "Handle problem"
+      security:
+        - OAuth2: [od.all]  
+      description: "Handle problems that may occur during the delivery"
+      responses:
+        "200":
+          description: "Denied cancellation order confirmed."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"           
+
+  /logistics/cancel:
+    post:
+      parameters: 
+        - name: id
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      requestBody:
+          $ref: "#/components/requestBodies/CancelDenied"
+      tags:
+      - "logisticOrder"
+      operationId: "logisticsCancel"
+      summary: "Cancel delivery"
+      security:
+        - OAuth2: [od.all]  
+      description: "Cancel a delivery in progress"
+      responses:
+        "200":
+          description: "Denied cancellation order confirmed."
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound" 
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"                                 
+
 x-webhooks:
+
+# Merchant 
 
   /menuUpdated:
     post:
@@ -1400,6 +1557,8 @@ x-webhooks:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"     
 
+# Order
+
   newEvent:
     post:
       parameters:
@@ -1411,10 +1570,10 @@ x-webhooks:
           format: "UUID"
           description: "An unique Identificator of the Ordering Application"
       - in: "header"
-        name: "X-App-MerchanId"
+        name: "X-App-MerchantId"
         required: true
         schema:
-          $ref:  "#/components/schemas/Merchant/properties/@id"
+          $ref:  "#/components/schemas/Merchant/properties/id"
           description: "An unique Identificator of the Merchant "
       - in: "header"
         name: "X-App-Signature"
@@ -1453,6 +1612,8 @@ x-webhooks:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"   
 
+# Logistic
+
   newLogisticEvent:
     post:
       parameters:
@@ -1470,11 +1631,11 @@ x-webhooks:
           type: "string"
           format: "SHA256"
           description: "SHA256 hash of the request body, using the client secret as the key"
-      summary: New Logistic Event Notification
+      summary: Tracking event webhook
       description: Information about a new event in the systems
       operationId: newLogisticEvent
       tags: 
-        - logisticEndpoints
+        - logisticTracking
       requestBody:
         content:
           application/json:
@@ -1568,14 +1729,14 @@ components:
           schema:
             $ref: "#/components/schemas/OrderConfirmed"
     CancelRequest:
-      description: "Request to order cancelled."
+      description: "Request for order cancellation has been accepted."
       required: true
       content:
         "application/json":
           schema:
             $ref: "#/components/schemas/RequestCancelled"
     CancelDenied:
-      description: "Request to cancel order denied."
+      description: "Request for order cancellation has been denied."
       required: true
       content:
         "application/json":
@@ -1583,10 +1744,12 @@ components:
             $ref: "#/components/schemas/RequestDenied"  
   
   responses:
+    Accepted:
+      description: "Request has been accepted for processing."
     BadRequest:
       description: "Bad Request"
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/Error'
     NotFound:
@@ -1648,7 +1811,7 @@ components:
     Merchant:
       type: "object"
       title: "MenuEntity"
-      required: ["lastUpdate", "TTL", "@id", "@type", "status", "basicInfo", "services", "items", "menus", "categories", "itemOffers"]
+      required: ["lastUpdate", "TTL", id, "status", "basicInfo", "services", "items", "menus", "categories", "itemOffers"]
       properties:
         lastUpdate:
           type: "string"
@@ -1662,19 +1825,14 @@ components:
           Max: 86400. 
           \nA new request must be done when the TTL expires."
           example: 500
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "Unique Identifier. Must be formatted with `Merchant Document + UUID + Software Information*`
           
           > *Software Information is optional.
 
-          \n\n This @id must be generated by the merchant's `Software Service` and must be informed in the `Order` object by the `Ordering Application`."
-        "@type":
-          type: "string"
-          enum:
-          - MERCHANT
-          example: "MERCHANT"
+          \n\n This id must be generated by the merchant's `Software Service` and must be informed in the `Order` object by the `Ordering Application`."
         status:
           type: "string"
           description:  "Indicates if the entity is Avaliable or Unavaliable. Only use this type when you must disable the entity due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays)."    
@@ -1730,7 +1888,7 @@ components:
     MerchantDescription:
       type: "object"
       title: "MenuEntity"
-      required: ["lastUpdate", "TTL", "@id", "@type", "status", "basicInfo", "services", "items", "menus", "categories", "itemOffers"]
+      required: ["lastUpdate", "TTL", id, "status", "basicInfo", "services", "items", "menus", "categories", "itemOffers"]
       properties:
         lastUpdate:
           type: "string"
@@ -1742,15 +1900,11 @@ components:
           \nMin: 500
           Max: 86400. 
           \nA new request must be done when the TTL expires."
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "Unique Identifier. Must be formatted with `Merchant Document + UUID`
-          \n\n This @id must be generated by the company responsible for the merchant's menu and have to be informed in the Order object by the *ordering application*."
-        "@type":
-          type: "string"
-          enum:
-          - MERCHANT
+          \n\n This id must be generated by the company responsible for the merchant's menu and have to be informed in the Order object by the *ordering application*."
         status:
           type: "string"
           description:  "Indicates if the entity is Avaliable or Unavaliable. Only use this type when you must disable the entity due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays)."    
@@ -2012,7 +2166,7 @@ components:
     ContactPhones:
       type: "object"
       title: "Contact Phones"
-      required: ["@id","@type", "commercialNumber"]
+      required: ["commercialNumber"]
       properties:
         "commercialNumber":
           type: "string"
@@ -2026,18 +2180,13 @@ components:
     Service:
       type: "object"
       title: "Service"
-      required: ["@id","@type", "status", "serviceType", "menuId", "serviceHours"]
+      required: [id, "status", "serviceType", "menuId", "serviceHours"]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "Unique Identifier"
           example: "22815773000169-f078e8e2-3044-4eec-b4a8-8359810de123"
-        "@type":
-          type: "string"
-          enum:
-          - "SERVICE"
-          example: "SERVICE"
         status:
           type: "string"
           description:  "Indicates if the entity is Avaliable or Unavaliable. Only use this type when you must disable the entity due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays)."    
@@ -2053,7 +2202,7 @@ components:
             - TAKEOUT
           example: "DELIVERY"
         menuId:
-          description:  "The @id value of the `Menu` entity correlated to this `Service` entity."
+          description:  "The id value of the `Menu` entity correlated to this `Service` entity."
           type: string
           format: UUID
           example: "22815773000169-f627ccdc-6789-456f-a782-148538d5035b" 
@@ -2071,18 +2220,13 @@ components:
     ServiceArea:
       type: "object"
       title: "Service Area"
-      required: ["@id","@type", "geoMidpointLatitude", "geoMidpointLongitude"]
+      required: [id]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the service area."
           example: "22815773000169-01339e6d-520b-429e-bc7c-dcfd2df42278"
-        "@type":
-          type: "string"
-          enum:
-          - "SERVICE_AREA"
-          example: "SERVICE_AREA"
         polygon:
           type: "array"
           description: "If the `polygon` is chosen to be used, `geoRadius` is not required.\n\n\n\nA polygon or multipolygon expressed as a series of three or more space delimited points."
@@ -2161,7 +2305,7 @@ components:
     Price:
       type: "object"
       title: "Price"
-      required: ["@id","@type", "value", "currency"]
+      required: ["value", "currency"]
       properties:
         value:    
           type: "number"
@@ -2177,7 +2321,7 @@ components:
     ItemPrice:
       type: "object"
       title: "Item Price"
-      required: ["@id","@type", "value", "originalValue", "currency"]
+      required: ["value", "originalValue", "currency"]
       properties:
         value:    
           type: "number"
@@ -2196,18 +2340,13 @@ components:
     ServiceHours:
       type: "object"
       title: "Service Hours"
-      required: ["@id","@type", "weekHours"]
+      required: [id, "weekHours"]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the service hours."
           example: "22815773000169-fb093d8c-2ca5-40fb-afcf-472fbdae81cc"
-        "@type":
-          type: "string"
-          enum:
-          - "SERVICE_HOURS"
-          example: "SERVICE_HOURS"
         weekHours:
           type: array
           description:  "A list of the day(s) of the week and time periods for which the service is valid."
@@ -2289,18 +2428,13 @@ components:
     Item:
       type: "object"
       title: "Item"
-      required: ["@id","@type", "name", "description", "externalCode", "image", "unit"]
+      required: [id, "name", "description", "externalCode", "image", "unit"]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the item."
           example: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198"
-        "@type":
-          type: "string"
-          enum:
-          - "ITEM"
-          example: "ITEM"
         name:
           type: "string"
           description:  "Item name"
@@ -2449,18 +2583,13 @@ components:
     Menu:
       type: "object"
       title: "Menu"
-      required: ["@id","@type", "name", "description", "externalCode", "disclaimer", "categoryId"]
+      required: [id, "name", "description", "externalCode", "disclaimer", "categoryId"]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the menu."
           example: "22815773000169-f627ccdc-6789-456f-a782-148538d5035b"
-        "@type":
-          type: "string"
-          enum:
-          - "MENU"
-          example: "MENU"
         name:
           type: "string"
           description:  "Menu name"
@@ -2484,7 +2613,7 @@ components:
           description:  "Disclaimer URL"
         categoryId:
           type: "array"
-          description:  "A list of the @id values of the child `Category` entities that correspond to this `Menu` entity. Default assumes all `Category` entities are available in this menu."
+          description:  "A list of the id values of the child `Category` entities that correspond to this `Menu` entity. Default assumes all `Category` entities are available in this menu."
           items:
             type: "string"
             format: "UUID"
@@ -2493,18 +2622,13 @@ components:
     Category:
       type: "object"
       title: "Category"
-      required: ["@id","@type", "index", "name", "description", "image", "externalCode", "status", "availabilityId"]
+      required: [id, "index", "name", "description", "image", "externalCode", "status", "availabilityId"]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the category."
           example: "22815773000169-92fad022-2c28-4239-a026-989f5b555cb7"
-        "@type":
-          type: "string"
-          enum:
-          - "CATEGORY"
-          example: "CATEGORY"
         index:
           type: "string"
           description:  "Category display index."
@@ -2537,37 +2661,32 @@ components:
           example: "AVAILABLE"
         availabilityId:
           type: "array"
-          description:  "The @id values of `Availability` entities which provide details on when the category is available. Default assumes a `Category` is available at all times."
+          description:  "The id values of `Availability` entities which provide details on when the category is available. Default assumes a `Category` is available at all times."
           items:
             allOf:
-            - $ref: "#/components/schemas/Availability/properties/@id"
+            - $ref: "#/components/schemas/Availability/properties/id"
           example: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"] 
         itemOfferId:
           type: array
-          description:  "A list of the @id values of the child `ItemOffer` entities that correspond to this `Category` entity. Default assumes all `ItemOffer` entities are available in this category."
+          description:  "A list of the id values of the child `ItemOffer` entities that correspond to this `Category` entity. Default assumes all `ItemOffer` entities are available in this category."
           items:
             allOf:
-            - $ref: "#/components/schemas/ItemOffer/properties/@id"
+            - $ref: "#/components/schemas/ItemOffer/properties/id"
           example: ["22815773000169-f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9"]            
                   
     ItemOffer:
       type: "object"
       title: "ItemOffer"
-      required: ["@id","@type", "itemId", "index", "price", "availabilityId"]
+      required: [id, "itemId", "index", "price", "availabilityId"]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the item offer."
           example: "22815773000169-f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9"
-        "@type":
-          type: "string"
-          enum:
-          - "ITEM_OFFER"
-          example: "ITEM_OFFER"
         itemId:
           type: "string"
-          description:  "The @id value of the `Item` entity correlated to this `ItemOffer` entity."
+          description:  "The id value of the `Item` entity correlated to this `ItemOffer` entity."
           example: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198"
         index:
           type: integer
@@ -2581,34 +2700,29 @@ components:
           example: {value: 43, originalValue: 43, currency: "R$"}
         availabilityId:
           type: "array"
-          description:  "The @id values of `Availability` entities which provide details on when the menu item offer is available. Default assumes an `ItemOffer` is available at all times."
+          description:  "The id values of `Availability` entities which provide details on when the menu item offer is available. Default assumes an `ItemOffer` is available at all times."
           items:
             allOf:
-            - $ref: "#/components/schemas/Availability/properties/@id"
+            - $ref: "#/components/schemas/Availability/properties/id"
           example: [ "22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"]   
         optionGroupsId:
           type: "array"
-          description:  "A list of the @id values of the child `OptionGroup` entities that correspond to this `ItemOffer` entity."
+          description:  "A list of the id values of the child `OptionGroup` entities that correspond to this `ItemOffer` entity."
           items:
             allOf:
-            - $ref: "#/components/schemas/OptionGroup/properties/@id"
+            - $ref: "#/components/schemas/OptionGroup/properties/id"
           example: ["22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"]                      
        
     OptionGroup:
       type: "object"
       title: "Option Group"
-      required: ["@id","@type", "index", "name", "description", "externalCode", "status", "minPermitted", "maxPermitted"]
+      required: [id, "index", "name", "description", "externalCode", "status", "minPermitted", "maxPermitted"]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the option group."
           example: "22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"
-        "@type":
-          type: "string"
-          enum:
-          - "OPTION_GROUP"
-          example: "OPTION_GROUP"
         index:
           type: integer
           description:  "Option Group display index."
@@ -2653,21 +2767,16 @@ components:
     Option:
       type: "object"
       title: "Option"
-      required: ["@id","@type"]
+      required: [id]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the option."
           example: "22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87a"
-        "@type":
-          type: "string"
-          enum:
-          - "OPTION"
-          example: "OPTION"
         itemId:
           type: "string"
-          description:  "The @id value of the `Item` entity correlated to this `Option` entity."
+          description:  "The id value of the `Item` entity correlated to this `Option` entity."
           example: "22815773000169-502ecf11-0509-48ed-b63c-6211c48fd9b9"
         index:
           type: integer
@@ -2686,18 +2795,13 @@ components:
     Availability:
       type: "object"
       title: "Availability"
-      required: ["@id","@type", "startDate", "endDate", "hours"]
+      required: [id, "hours"]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the availability."
-          example: "22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"
-        "@type":
-          type: "string"
-          enum:
-          - "AVAILABILITY"
-          example: "AVAILABILITY"       
+          example: "22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"      
         startDate:
           type: "string"
           description:  "Availability start date. If not informed, the availabilty is already avaliable."
@@ -2716,30 +2820,30 @@ components:
     AckEvents:
       type: "object"
       title: "Ack Events"
-      required: ["@id", "orderId", "eventType"]
+      required: [id, "orderId", "eventType"]
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the event."
         orderId:
-            $ref: "#/components/schemas/Order/properties/@id"  
+            $ref: "#/components/schemas/Order/properties/id"  
         eventType:
             $ref: "#/components/schemas/Event/properties/eventType"              
 
     Order:
       type: "object"
       title: "Order"
-      required: ["@id","@type", "displayId", "createdAt", "orderTiming", 
+      required: [id,"type", "displayId", "createdAt", "orderTiming", 
       "preparationStartDateTime", "merchant", "items", "total", "payments", "customer"]
-      example:
-        $ref: "#/components/examples/orderExample"
+      # example:
+      #   $ref: "#/components/examples/orderExample"
       properties:
-        "@id":
+        id:
           type: "string"
           format: "UUID"
           description:  "A unique identifier of the order."
-        "@type":
+        "type":
             type: "string"
             enum:
               - "DELIVERY"
@@ -2761,12 +2865,12 @@ components:
             description: "Order preparation start time."
         merchant:
             type: "object"
-            required: ["@id", "name"]
+            required: [id, "name"]
             description: "Merchant information."
             properties:
-              "@id":
+              id:
                 allOf:
-                  - $ref: "#/components/schemas/Merchant/properties/@id"
+                  - $ref: "#/components/schemas/Merchant/properties/id"
                 example: "22815773000169-32f6467d-d7a6-4725-9a8c-69a3d5d6aa20"
               name:
                 allOf:
@@ -2776,9 +2880,9 @@ components:
           description: "Order items."
           items:
             type: "object"
-            required: ["@id", "name", "unit", "quantity", "unitPrice", "totalPrice", "externalCode"]
+            required: [id, "name", "unit", "quantity", "unitPrice", "totalPrice", "externalCode"]
             properties:
-              "@id":
+              id:
                 type: "string"
                 format: "UUID"
                 description: "A unique identifier of the order."
@@ -2825,12 +2929,12 @@ components:
                 description: "Options related to the item."
                 items:
                   type: "object"
-                  required: ["@id", "name", "externalCode", "unit", "quantity", "unitPrice", "price"]
+                  required: [id, "name", "externalCode", "unit", "quantity", "unitPrice", "price"]
                   properties:
                     index:
                       type: "number"
                       description: "Option's position."
-                    "@id":
+                    id:
                       type: "string"
                       format: "UUID"
                     name:
@@ -3012,10 +3116,10 @@ components:
                     description: "Only mandatory for `CASH` method."
         customer:
           type: "object"
-          required: ["@id", "phone", "documentNumber", "name", "ordersCountOnMerchant"]
+          required: [id, "phone", "documentNumber", "name", "ordersCountOnMerchant"]
           description: "Customer related information."
           properties:
-            "@id":
+            id:
               type: "string"
               format: "UUID"
               description: "A unique identifier related to the consumer."
@@ -3038,7 +3142,7 @@ components:
               type: "number"
         delivery:
           type: "object"
-          description: "If the chosen `@type` is `delivery`, `takeout` is not required."
+          description: "If the chosen `type` is `DELIVERY`, then `TAKEOUT` is not required."
           required: ["deliveredBy", "deliveryAddress", "estimatedDeliveryDateTime"]
           properties:
             deliveredBy:
@@ -3103,14 +3207,14 @@ components:
             estimatedDeliveryDateTime:
               type: "string"
               format: date-time
-              description: "Estimated delivery date in ISO timestamp format."
+              description: "Estimated delivery date and time. The same date showed to the costumer, in the ordering application interface."
             deliveryDateTime:
               type: "string"
               format: date-time
-              description: "Delivery date in ISO timestamp format." 
+              description: "Delivery date. The date time that the delivery actually took place." 
         takeout:
           type: "object"
-          description: "If the chosen `@type` is `takeout`, `delivery` is not required."
+          description: "If the chosen `type` is `TAKEOUT`, `DELIVERY` is not required."
           required: ["mode", "takeoutDateTime"]
           properties:
             mode:
@@ -3198,7 +3302,7 @@ components:
           description: "Sales made by merchant."
           items:
             type: "object"
-            required: ["@id", "orderDate", "lastProcessingDate", 
+            required: [id, "orderDate", "lastProcessingDate", 
             "orderStatus", "companyName", "documentNumber", "payment", "businessModelOrder"]
             properties:
               "@orderId":
@@ -3392,7 +3496,7 @@ components:
               - "ORDER_CANCELLATION_REQUEST"
         orderId:
           allOf:
-            - $ref: "#/components/schemas/Order/properties/@id"
+            - $ref: "#/components/schemas/Order/properties/id"
         orderURL:
           type: "string"
           format: "uri"
@@ -3675,11 +3779,11 @@ components:
         orderTiming: "INSTANT"
         preparationStartDateTime: "2021-05-27T19:45:10.332Z"
         merchant:
-          id: "22815773000169-7fb59cb8-5808-40c8-b967-1b3f20ee39cd"
+          id: 7fb59cb8-5808-40c8-b967-1b3f20ee39cd"
           name: "Plaza Pizza"
         items: [
           {
-            id: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198",
+            id: 732bd31e-77fc-47ee-88ee-a0437f97b198",
             index: 0,
             name: "Medium - 2 flavors",
             externalCode: "22",
@@ -3700,7 +3804,7 @@ components:
             },  
           options: [
             {
-              id: "22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87a",
+              id: e5232f14-430c-4a94-8ff6-289d5a16a87a",
               name: "1/2 Pepperoni",
               externalCode: "23",
               unit: "UNIT",
@@ -3716,7 +3820,7 @@ components:
               specialInstructions: "None"
             },
             {
-              id: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
+              id: 7e507cab-7235-4f75-a0c2-e955fb2f2048",
               name: "1/2 Mozzarella",
               externalCode: "24",
               unit: "UNIT",
@@ -3749,12 +3853,27 @@ components:
         ] 
         discounts: [
           {
-            value: 0,
+            amount: {
+              value: 20.00,
+              currency: "R$"
+            },
             target: "DELIVERY_FEE",
-            sponsorshipValues: {
-              name: "MARKETPLACE",
-              value: 0
-            }
+            sponsorshipValues: [
+              {
+                name: "MARKETPLACE",
+                amount: {
+                value: 10.00,
+                currency: "R$"
+                }
+              },
+              {
+                name: "MERCHANT",
+                amount: {
+                value: 10.00,
+                currency: "R$"
+                        }
+              }
+            ]
           }
         ] 
         total: 
@@ -3771,12 +3890,12 @@ components:
               },
             discount: 
               {
-                value: 0.00,
+                value: 20.00,
                 currency: "R$"
               },
             orderAmount: 
               {
-                value: 55.50,
+                value: 35.50,
                 currency: "R$"
               },
           }
@@ -3792,7 +3911,7 @@ components:
             }
           ]
         customer:
-          id: "22815773000169-d9730653-a8ba-4e85-8dbb-b5697e6ae8d5"
+          id: d9730653-a8ba-4e85-8dbb-b5697e6ae8d5"
           phone: 
             number: "11999999999"
             extension: "0"
@@ -3814,7 +3933,8 @@ components:
             neighborhood: "Moema"
             state: "SP"
             complement: "102"
-            deliveryDateTime: "2021-05-27T20:45:10.332Z"
+        estimatedDeliveryDateTime: "2021-05-27T20:45:10.332Z"
+        deliveryDateTime: "2021-05-27T20:47:10.443Z"
         extraInfo: "None"
 
     merchantExample:
@@ -3823,7 +3943,6 @@ components:
         lastUpdate: "2021-05-27T20:45:10.332Z"
         TTL: 500
         id: "22815773000169-dbc7e35a-c936-4665-9e13-eb55eb8b6824"
-        type: "MERCHANT"
         status: "AVAILABLE"
         basicInfo:
           name: "Pizza Plaza"
@@ -3834,7 +3953,7 @@ components:
           averagePreparationTime: 20
           minOrderValue:
             value: 20.00
-          currency: "R$"
+            currency: "R$"
           merchantType: "RESTAURANT"
           merchantCategories: ["PIZZA", "FAMILY_MEALS", "PREMIUM"]
           address:
@@ -3855,41 +3974,27 @@ components:
               whatsappNumber: "11998888888"
             }
           ]
-          logoURL: "https://logo-image.food-company.com"
-          bannerURL: "https://banner-image.food-company.com"
+          logoImage:
+              URL: "https://food-company.com/logo.png"
+              CRC-32: 432098ASDSR
+          bannerImage:
+              URL: "https://food-company.com/banner.png"
+              CRC-32: 09345UIHF98
           createdAt: "2021-05-10T20:45:10.332Z"
         services: [
           {
-            id: "22815773000169-f078e8e2-3044-4eec-b4a8-8359810de123",
-            type: "SERVICE",
+            id: "f078e8e2-3044-4eec-b4a8-8359810de123",
             status: "AVAILABLE",
             serviceType: "DELIVERY",
-            menuId: "22815773000169-f627ccdc-6789-456f-a782-148538d5035b",
+            menuId: "f627ccdc-6789-456f-a782-148538d5035b",
             serviceArea: {
-              id: "22815773000169-01339e6d-520b-429e-bc7c-dcfd2df42278",
-              type: "SERVICE_AREA",
+             id: "01339e6d-520b-429e-bc7c-dcfd2df42278",
               geoMidpointLatitude: -20.2333,
               geoMidpointLongitude: -20.8383,
               geoRadius: 1000
             },
-            serviceAreaFee: {
-              id: "22815773000169-e74643e5-53e3-41ef-a2c3-1e2db96eb1ee",
-              type: "SERVICE_AREA_FEE",
-              geoMidpointLatitude: -20.2333,
-              geoMidpointLongitude: -20.8383,
-              value: [
-                {
-                  geoRadius: 2000,
-                  price: {
-                    value: 5.00,
-                    currency: "R$"
-                  }
-                }
-              ]
-            },
             serviceHours: {
-              id: "22815773000169-fb093d8c-2ca5-40fb-afcf-472fbdae81cc",
-              type: "SERVICE_HOURS",
+              id: "fb093d8c-2ca5-40fb-afcf-472fbdae81cc",
               weekHours: [
                 {
                   dayOfWeek: ["MONDAY", "TUESDAY",
@@ -3916,72 +4021,81 @@ components:
         ]
         items: [
           {
-            id: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198",
-            type: "ITEM",
+            id: "732bd31e-77fc-47ee-88ee-a0437f97b198",
             name: "Medium - 2 flavors",
             description: "Medium two-flavored pizza.",
             externalCode: "23",
-            imageUrl: "https://www.food-place.com/images/medium-pizza.png",
+            image: {
+              URL: "https://www.food-place.com/images/medium-pizza.png",
+              CRC-32: 09345UIHF98
+              },
             serving: 8,
-            unit: "8 pieces"
+            unit: "unit"
           },
           {
-            id: "22815773000169-b728fd88-4af0-43f7-956f-95c251f01ddd",
-            type: "ITEM",
+            id: "b728fd88-4af0-43f7-956f-95c251f01ddd",
             name: "Small - 1 flavor",
             description: "Small one-flavored pizza.",
             externalCode: "23",
-            imageUrl: "https://www.food-place.com/images/small-pizza.png",
+          image: {
+              URL: "https://www.food-place.com/images/small-pizza.png",
+              CRC-32: 09345UIHF98
+              },
             serving: 4,
-            unit: "4 pieces"
+            unit: "unit"
           },
           {
-            id: "22815773000169-502ecf11-0509-48ed-b63c-6211c48fd9b9",
-            type: "ITEM",
+            id: "502ecf11-0509-48ed-b63c-6211c48fd9b9",
             name: "1/2 Pepperoni",
             description: "Pepperoni flavored pizza with LOTS of pepperoni.",
             externalCode: "23",
-            imageUrl: "https://www.food-place.com/images/peperroni.png",
+          image: {
+              URL: "https://www.food-place.com/images/pepperoni.png",
+              CRC-32: 09345UIHF98
+              },
             nutritionalInfo: {
               description: "Contains preservatives",
               calories: "2000 Cal",
               allergen: ["GLUTEN"],
             },
-            unit: "0"
+            unit: "unit"
           },
           {
-            id: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
-            type: "ITEM",
+            id: 7e507cab-7235-4f75-a0c2-e955fb2f2048",
             name: "1/2 Mozzarella",
             description: "Delicious mozzarella pizza.",
             externalCode: "24",
-            imageUrl: "https://www.food-place.com/images/mozzarella.png",
+          image: {
+              URL: "https://www.food-place.com/images/mozzarella.png",
+              CRC-32: 09345UIHF98
+              },
             nutritionalInfo: {
               description: "Contains preservatives",
               calories: "2500 Cal",
-              allergen: ["GLUTEN"],
+              allergen: ["GLUTEN", "LACTOSE"],
             },
-            unit: "0"
+            unit: "unit"
           },
           {
-            id: "22815773000169-2c0f3447-5309-49cc-a167-4eac5c664470",
-            type: "ITEM",
+            id: 2c0f3447-5309-49cc-a167-4eac5c664470",
             name: "Banana",
             description: "Banana Pizza with cream.",
             externalCode: "25",
-            imageUrl: "https://www.food-place.com/images/banana.png",
+          image: {
+              URL: "https://www.food-place.com/images/banana.png",
+              CRC-32: 09345UIHF98
+              },
             nutritionalInfo: {
               description: "Contains preservatives",
               calories: "2500 Cal",
               allergen: ["GLUTEN"],
             },
-            unit: "0"
+            unit: "unit"
           }
         ]
         menus: [
           {
-            id: "22815773000169-f627ccdc-6789-456f-a782-148538d5035b",
-            type: "MENU",
+            id: f627ccdc-6789-456f-a782-148538d5035b",
             name: "Pizzas",
             description: "Pizza menu",
             externalCode: "123",
@@ -3992,8 +4106,7 @@ components:
         ]
         categories: [
           {
-            id: "22815773000169-92fad022-2c28-4239-a026-989f5b555cb7",
-            type: "CATEGORY",
+            id: 92fad022-2c28-4239-a026-989f5b555cb7",
             index: 0,
             name: "Salted Pizza",
             description: "Salted pizza flavors.",
@@ -4006,8 +4119,7 @@ components:
             ]
           },
           {
-            id: "22815773000169-6bb71850-1d40-49f9-8046-b13e068c0cca",
-            type: "CATEGORY",
+            id: 6bb71850-1d40-49f9-8046-b13e068c0cca",
             index: 1,
             name: "Sweeted Pizza",
             description: "Sweeted pizza flavors.",
@@ -4022,9 +4134,8 @@ components:
         ]
         itemOffers: [
           {
-            id: "22815773000169-f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9",
-            type: "ITEM_OFFER",
-            itemId: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198",
+            id: f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9",
+            itemid: 732bd31e-77fc-47ee-88ee-a0437f97b198",
             index: 0,
             price: {
               value: 43.00,
@@ -4035,9 +4146,8 @@ components:
             optionGroupsId: ["22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"]
           },
           {
-            id: "22815773000169-377b99ba-5413-43d1-b875-7cdcaa72860e",
-            type: "ITEM_OFFER",
-            itemId: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
+            id: 377b99ba-5413-43d1-b875-7cdcaa72860e",
+            itemid: 7e507cab-7235-4f75-a0c2-e955fb2f2048",
             index: 1,
             price: {
               value: 30.00,
@@ -4050,8 +4160,7 @@ components:
         ]
         optionGroups: [
           {
-            id: "22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3",
-            type: "OPTION_GROUP",
+            id: fe67e551-f42f-499a-8afb-0ed893c71fa3",
             index: 0,
             name: "Choose your salted pizza flavor",
             description: "Choose your salted pizza flavor.",
@@ -4061,9 +4170,8 @@ components:
             maxPermitted: 2,
             options: [
               {
-                id: "22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87a",
-                type: "OPTION",
-                itemId: "22815773000169-502ecf11-0509-48ed-b63c-6211c48fd9b9",
+                id: e5232f14-430c-4a94-8ff6-289d5a16a87a",
+                itemid: 502ecf11-0509-48ed-b63c-6211c48fd9b9",
                 index: 0,
                 price: {
                   value: 50.00,
@@ -4073,9 +4181,8 @@ components:
                 maxPermitted: 1
               },
               {
-                id: "22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87a",
-                type: "OPTION",
-                itemId: "22815773000169-7e507cab-7235-4f75-a0c2-e955fb2f2048",
+                id: e5232f14-430c-4a94-8ff6-289d5a16a87a",
+                itemid: 7e507cab-7235-4f75-a0c2-e955fb2f2048",
                 index: 1,
                 price: {
                   value: 43.00,
@@ -4088,8 +4195,7 @@ components:
             ]
           },
            {
-            id: "22815773000169-c524c066-96fa-458d-b78c-3712661529b3",
-            type: "OPTION_GROUP",
+            id: c524c066-96fa-458d-b78c-3712661529b3",
             index: 0,
             name: "Choose your sweeted pizza flavor",
             description: "Choose your sweeted pizza flavor.",
@@ -4099,9 +4205,8 @@ components:
             maxPermitted: 1,
             options: [
               {
-                id: "22815773000169-2419d582-357f-4149-9089-12321537f147",
-                type: "OPTION",
-                itemId: "22815773000169-2c0f3447-5309-49cc-a167-4eac5c664470",
+                id: 2419d582-357f-4149-9089-12321537f147",
+                itemid: 2c0f3447-5309-49cc-a167-4eac5c664470",
                 index: 0,
                 price: {
                   value: 30.00,
@@ -4115,8 +4220,7 @@ components:
         ]
         availabilities: [
           {
-            id: "22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029",
-            type: "AVAILABILITY",
+            id: 11d063c4-73a7-4f87-a0eb-71636cc02029",
             startDate: "05/01/2021",
             endDate: "05/30/2021",
             hours: {
