@@ -630,7 +630,7 @@ tags:
 # Logistics Tags
 
   - name: logisticsSection
-    x-displayName: ------ LOGISTICS (WIP) ------
+    x-displayName: ------ LOGISTICS ------
     x-traitTag: true
   - name: logisticOverview
     x-displayName: Logistic Overview
