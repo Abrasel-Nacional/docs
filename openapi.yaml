@@ -782,12 +782,12 @@ x-tagGroups:
   - name: Sales Report API
     tags:
       - salesReport
-  - name: ""
-    tags:
-      - repositorySection
-  - name: Repository API
-    tags:
-      - repositoryOverview
+  # - name: ""
+  #   tags:
+  #     - repositorySection
+  # - name: Repository API
+  #   tags:
+  #     - repositoryOverview
   - name: ""
     tags:
       - logisticsSection
