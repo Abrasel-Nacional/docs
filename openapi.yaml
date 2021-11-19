@@ -791,7 +791,7 @@ x-tagGroups:
   - name: ""
     tags:
       - logisticsSection
-  - name: Logistics (ALPHA)
+  - name: Logistics
     tags:
       - logisticOverview
       - logisticOrder
