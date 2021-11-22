@@ -7,7 +7,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0
   contact:
     url: https://www.opendelivery.org.br
-    x-technical: Programmers.
+    x-author: Guilherme Munhoz Camargo - Programmers
   x-logo:
     url: https://gui-camargo.github.io/OD/logo-open-delivery_small.png
     altText: Open Delivery logo
@@ -114,7 +114,7 @@ info:
      - Addition of new features to the **Open Delivery** API;
      - Addition of new optional parameters;
      - Addition of new fields in **Open Delivery** API responses;
-     - Change of order of fields;
+     - Change of fields sorting;
      - Addition of new elements in enumerations.
 
     # General guidelines
@@ -632,6 +632,13 @@ tags:
   - name: logisticsSection
     x-displayName: ------ LOGISTICS ------
     x-traitTag: true
+    description: |-
+      This section covers the API referring to the operations with `Logistic Services`. 
+      
+      > The information below are still in release candidate (BETA) and will be tested in the coming months.
+
+      The expected release of the logistics API is at **Version 1.1.0**
+
   - name: logisticOverview
     x-displayName: Logistic Overview
     description: |-
@@ -639,7 +646,7 @@ tags:
 
       ## Logistics API Usage
 
-      Open Delivery's Logistic API aims to standardize the communication between a **Caller** - which can be either a Software Service or an Ordering Application - and a company's software that provides logistic services (called here Logistic Service).  
+      Open Delivery's Logistic API aims to standardize the communication between a **requester** - which can be either a Software Service or an Ordering Application - and a company's software that provides logistic services (called here Logistic Service).  
       
       > A Logistic Service can be either a company that specializes in delivery services or an Ordering Application that also provides delivery services. 
       
@@ -657,7 +664,7 @@ tags:
       It covers the calling of a new delivery, as well as auxiliary endpoints for reporting the pickup of an order, the completion of the delivery, as well as problem handling and cancellations.
 
       ### Delivery Tracking
-      Webhook to be available at the **Caller**'s side of the call, in order to receive all order event updates, as well as delivery information updates.
+      Webhook to be available at the **requester's** side of the call, in order to receive all order event updates, as well as delivery information updates.
 
       ### Delivery Availability and Price
 
@@ -669,18 +676,18 @@ tags:
 
       ### Events
 
-      This overview summarizes the **Open Delivery** delivery ordering flow and how it interacts with the Caller (merchant **Software Services** or **Ordering Applications**) and the Logistics Services.
+      This overview summarizes the **Open Delivery** delivery ordering flow and how it interacts with the requester (merchant **Software Services** or **Ordering Applications**) and the Logistics Services.
 
       <div align="center">
         <img src="https://abrasel-nacional.github.io/docs/images/logisticsOrderFlow.png" />
       </div>
 
-      >  It is important to emphasize that the entire event flow is per Order and even though a delivery may have combined orders (see section below), for all operations in the flow, the id to be used is the `orderId` (initially informed by the caller at the /logistics/delivery endpoint). 
+      >  It is important to emphasize that the entire event flow is per Order and even though a delivery may have combined orders (see section below), for all operations in the flow, the id to be used is the `orderId` (initially informed by the requester at the /logistics/delivery endpoint). 
 
        ### Combining Orders
 
       The Open Delivery logistics API offers the option of combining more than one order into a single delivery.  
-      This can be done on both the **Caller** and the **Logistic Service** sides.
+      This can be done on both the **Software Service (or Ordering Application)** and the **Logistic Service** sides.
 
       To combine orders its necessary that at least one delivery is currently in progress.
       When requesting for a new delivery, you need to inform the `deliveryId` field of the ongoing delivery in the `combinedDeliveryId` field of the new request.
@@ -692,7 +699,7 @@ tags:
       > This combination will be subject to acceptance by the **Logistic Service**. 
 
       The **Logistic Service** may also perform order combination in its software, using its algorithms and processes (provided that the `canCombine` field is entered as `TRUE` in the delivery request). 
-      > For this combination no action is required from the **Caller**.
+      > For this combination no action is required from the **requester**.
       
       Regardless of the case, the **Logistic Service** must inform in the event webhook the combined orders of the same merchant, through the `combinedOrdersIds` field.
 
@@ -736,9 +743,21 @@ tags:
     x-displayName: Delivery Availability and Pricing
     description: |-
 
+      Endpoint used to check the availability of a `Logistic Service` to make a delivery with addresses and times already defined, as well as to obtain the price for this delivery.
+
+      This endpoint only simulates the acceptance of a new delivery request, using the information available at the time of the call. 
+
+      > The call to this endpoint does not generate any commitment to Logistic Service and should only be used as an estimate of the delivery values.  
+        To make a real delivery request, call this endpoint. 
+
   - name: logisticDetails
     x-displayName: Delivery Details and History
     description: |-
+
+      Endpoint used to get detailed and history information for a specific delivery order. 
+
+      > This endpoint should not be used as a way to get delivery tracking. This is already covered in the events webhook. The purpose of this route is to receive sporadic calls to get missing information or the complete history of events and problems.
+        Misuse of this endpoint can result in blockages by Logistic Service.
 
 x-tagGroups:
   - name: ""
@@ -1431,7 +1450,7 @@ paths:
       description: "Starts the process of calling a new delivery for an order."
       responses:
         "202":
-          description: "Successful merchant return."
+          description: "Request has been accepted for processing."
           content:
             "application/json":
               schema:
@@ -1462,11 +1481,11 @@ paths:
         Gets detailed information about the delivery order.
       responses:
         "200":
-          description: "Successfully returns the merchant list."
+          description: "Successfully returns the delivery order details."
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/ListMerchant"
+                $ref: "#/components/schemas/DeliveryOrderDetails"
         "400":
           $ref: "#/components/responses/BadRequest"
         "404":
@@ -1483,7 +1502,10 @@ paths:
           schema:
             $ref: "#/components/schemas/DeliveryOrder/properties/orderId"
       requestBody:
-        $ref: "#/components/requestBodies/CancelDenied"
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/DeliveryOrderPicked"
       tags:
         - "logisticOrder"
       operationId: "logisticsPicked"
@@ -1512,7 +1534,10 @@ paths:
           schema:
             $ref: "#/components/schemas/DeliveryOrder/properties/orderId"
       requestBody:
-        $ref: "#/components/requestBodies/CancelDenied"
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/DeliveryOrderFinish"
       tags:
         - "logisticOrder"
       operationId: "logisticsFinish"
@@ -1552,9 +1577,9 @@ paths:
         Handle problems that may occur during the delivery.
        
         > Problems can occur at any time during a delivery in progress.  
-        It is important that the **Logistic Service** always informs the **Caller** of a problem (via webhook), even if the problem does not require any action by the merchant to solve it.
+        It is important that the **Logistic Service** always informs the **Software Service (or Ordering Application)** of a problem (via webhook), even if the problem does not require any action by the merchant to solve it.
 
-        > Since there are other ways to solve delivery problems, such as via telephone or messaging applications, the implementation of this endpoint is optional, and the **Logistic Service** will inform the **Caller** of the need to use it.
+        > Since there are other ways to solve delivery problems, such as via telephone or messaging applications, the implementation of this endpoint is optional, and the **Logistic Service** will inform the **Software Service (or Ordering Application)** of the need to use it.
         <div align="center">
           <img src="https://abrasel-nacional.github.io/docs/images/logisticsProblem.png" />
         </div>
@@ -1590,7 +1615,7 @@ paths:
       description: |-
           Requests cancellation of a order delivery in progress
 
-          > The `Caller` may request to cancel the delivery of an order at any time.  
+          > The **Software Service (or Ordering Application)** may request to cancel the delivery of an order at any time.  
           Depending on **Logistic Service** policies, additional fees may apply.
 
           > If the order being cancelled is in a combined delivery, when cancelling, the order informed will be unlinked from the delivery, not interrupting the progress of the other orders in the same delivery.
@@ -4095,7 +4120,7 @@ components:
     DeliveryOrder:
       description: Delivery Order Object
       type: object
-      required: [orderId, orderDisplayId]
+      required: [orderId, orderDisplayId, merchant, pickupAddress, returnToMerchant, canCombine, deliveryAddress, vehicle, limitTimes, totalOrderPrice, totalWeight, payments]
       properties:
         orderId:
           type: string
@@ -4133,10 +4158,10 @@ components:
                   description: "Instructions"
         returnToMerchant:
           type: boolean
-          description: "Return To Merchant"
+          description: "Inform whether the delivery man should return to the pickup address after the delivery has been made."
         canCombine:
           type: boolean
-          description: "Can Combine the Order with another Orders"
+          description: "Inform whether the `Logistic Service` can combine this order with other orders in the same delivery."
         deliveryAddress:
           description: "Delivery Address"
           allOf:
@@ -4170,16 +4195,27 @@ components:
             - $ref: "#/components/schemas/Price"
         totalWeight:
           type: integer
-          description: "Total Weight"
+          description: "Total Weight in **grams**"
         volumes:
           type: integer
-          description: "Volumes"
+          description: |-
+            Number of volumes that will be transported in this order. For example, 2 packages, or 3 boxes. 
+            > The unit of measure will not be considered, only the quantity.
         specialInstructions:
           type: string
           description: "Special Instructions"
         additionalPricePercentual:
           type: integer
-          description: "Additional Price Percentual"
+          description: |-
+              Indicates to the `Logistic Service` an additional percentage to the list price that the requester agrees to pay for the delivery.
+              > The delivery request will be refused if the delivery price exceeds this value.
+
+              Example: List Price = $10  
+                       Actual calculated price = $15  
+                       Additonal price percentage = **50**
+
+
+              In this case, any value informed below 50, would result in the order being rejected.
         payments:
           type: object
           description: "Payments Info"
@@ -4221,7 +4257,7 @@ components:
     Vehicle:
       description: Delivery Order Response Object
       type: object
-      required: [id]
+      required: [type, container]
       properties:
         type:
           type: "array"
@@ -4248,16 +4284,16 @@ components:
     DeliveryOrderResponse:
       description: Delivery Order Response Object
       type: object
-      required: [id]
+      required: [deliveryId, event, completion]
       properties:
         deliveryId:
           type: "string"
           format: "UUID"
           description: "The delivery Id generated by the `Logistic Service`."
         event:
-          type: "string"
-          format: "UUID"
-          description: "PENDING"
+          description: "Current event of the order. It is expected to be sent with the value `PENDING` at this moment, since the acceptance or rejection of the request will be processed asynchronously."
+          allOf:
+            - $ref: "#/components/schemas/DeliveryEvent/properties/type"
         completion:
           type: "object"
           description: "The delivery Id generated by the `Logistic Service`."
@@ -4278,9 +4314,9 @@ components:
     DeliveryOrderEvent:
       description: Delivery Order Event Object
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [deliveryId, orderId, orderDisplayId, merchant, event, customerName, vehicle, deliveryPrice, eta, deliveryMan]
       properties:
-        id:
+        deliveryId:
           type: "string"
           format: "UUID"
           description: "The delivery ID generated by the `Logistics Service`."
@@ -4324,7 +4360,7 @@ components:
           description: "Delivery Pricing Info"
           allOf:
             - $ref: "#/components/schemas/DeliveryAvailabilityPrice"
-        ETAs:
+        eta:
           description: "ETA Times"
           allOf:
             - $ref: "#/components/schemas/ETA"
@@ -4342,7 +4378,7 @@ components:
           items:
             type: string
             format: UUID
-
+            
     DeliveryEvent:
       description: Delivery Event
       type: object
@@ -4351,6 +4387,7 @@ components:
         type:
           type: string
           enum:
+            - PENDING
             - ACCEPTED
             - REJECTED
             - PICKUP_STARTED
@@ -4466,19 +4503,19 @@ components:
           type: string
           description: "Problem reason"
           enum:
-          - OCORRENCIA_COM_O_ENTREGADOR
-          - PROBLEMAS_PAGAMENTO
-          - PRODUTO_ERRADO
-          - PEDIDO_DEMOROU_DEMAIS_/_ATRASADO
-          - PEDIDO_DANIFICADO_/_VIOLADO
-          - O_CLIENTE_NÃO_FEZ_NENHUM_PEDIDO
-          - ENDEREÇO_DO_CLIENTE_ERRADO
-          - PEDIDO_INCOMPLETO
-          - NINGUÉM_PARA_RECEBER_O_PEDIDO
-          - ENTREGADOR_ESPERANDO_PAGAMENTO_DE_PEDIDO_JÁ_PAGO
-          - PEDIDO_ENTREGUE_SEM_PAGAMENTO
-          - OUTRO_MOTIVO
-          - EXTRAVIO
+          - DELIVERY_MAN_OCCURRENCE
+          - PAYMENT_PROBLEMS
+          - WRONG_PRODUCT_OR_ITEM
+          - ORDER_DELAYED
+          - ORDER_DAMAGED_OR_VIOLATED
+          - CUSTOMER_DID_NOT_PLACE_ORDER
+          - CUSTOMER_ADDRESS_UNKNOWN
+          - ORDER_MISSING_ITEMS
+          - NOBODY_TO_RECEIVE
+          - DELIVERY_MAN_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
+          - ORDER_DELIVERED_WITHOUT_PAYMENT
+          - FRAUD_OR_THEFT
+          - OTHER
         message:
           type: string
           description: "Message"
@@ -4492,6 +4529,52 @@ components:
         needMerchantAction:
           type: boolean
           description: "Need Merchant Action"
+
+    DeliveryProblemHistory:
+      description: Delivery Event
+      type: object
+      required: [id, orderId, orderDisplayId]
+      properties:
+        reason:
+          type: string
+          description: "Problem reason"
+          enum:
+          - DELIVERY_MAN_OCCURRENCE
+          - PAYMENT_PROBLEMS
+          - WRONG_PRODUCT_OR_ITEM
+          - ORDER_DELAYED
+          - ORDER_DAMAGED_OR_VIOLATED
+          - CUSTOMER_DID_NOT_PLACE_ORDER
+          - CUSTOMER_ADDRESS_UNKNOWN
+          - ORDER_MISSING_ITEMS
+          - NOBODY_TO_RECEIVE
+          - DELIVERY_MAN_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
+          - ORDER_DELIVERED_WITHOUT_PAYMENT
+          - FRAUD_OR_THEFT
+          - OTHER
+        message:
+          type: string
+          description: "Message"
+        datetime:
+          type: string
+          format: date-time
+          description: "Problem Datetime"
+        resolved:
+          type: boolean
+          description: "Can Finish Deliver"
+        actionTaken:
+          type: boolean
+          description: "Action taken by the requester"
+          enum:
+            - RETURN_TO_STORE
+            - DELIVER_PRODUCT
+            - CANCEL_DELIVERY 
+        resolutionDate:
+          type: string
+          format: date-time
+          description: "REsolution Datetime"  
+
+    
 
     ChosenVehicle:
       description: Delivery Order Response Object
@@ -4594,7 +4677,7 @@ components:
         additionalPricePercentual:
           type: integer
           description: "Additional Price Percentual"
-        onlinePayments:
+        onlinePayment:
           type: boolean
           description: "Payments Info"
 
@@ -4648,7 +4731,8 @@ components:
           type: string
           format: date-time
           description: "Max Delivery Time"
-
+  
+          
     DeliveryMan:
       description: Delivery Man
       type: object
@@ -4757,36 +4841,159 @@ components:
     DeliveryHandleProblem:
       description: Delivery Cancel
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [reason, action]
       properties:
         reason:
           type: string
-          description: "Reason"
+          description: "Problem Reason"
           enum:
-          - OCORRENCIA_COM_O_ENTREGADOR
-          - PROBLEMAS_PAGAMENTO
-          - PRODUTO_ERRADO
-          - PEDIDO_DEMOROU_DEMAIS_/_ATRASADO
-          - PEDIDO_DANIFICADO_/_VIOLADO
-          - O_CLIENTE_NÃO_FEZ_NENHUM_PEDIDO
-          - ENDEREÇO_DO_CLIENTE_ERRADO
-          - PEDIDO_INCOMPLETO
-          - NINGUÉM_PARA_RECEBER_O_PEDIDO
-          - ENTREGADOR_ESPERANDO_PAGAMENTO_DE_PEDIDO_JÁ_PAGO
-          - PEDIDO_ENTREGUE_SEM_PAGAMENTO
-          - OUTRO_MOTIVO
-          - EXTRAVIO
+          - DELIVERY_MAN_OCCURRENCE
+          - PAYMENT_PROBLEMS
+          - WRONG_PRODUCT_OR_ITEM
+          - ORDER_DELAYED
+          - ORDER_DAMAGED_OR_VIOLATED
+          - CUSTOMER_DID_NOT_PLACE_ORDER
+          - CUSTOMER_ADDRESS_UNKNOWN
+          - ORDER_MISSING_ITEMS
+          - NOBODY_TO_RECEIVE
+          - DELIVERY_MAN_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
+          - ORDER_DELIVERED_WITHOUT_PAYMENT
+          - FRAUD_OR_THEFT
+          - OTHER
         action:
           type: string
-          description: "Action"
+          description: "Resolution Action"
           enum:
           - RETURN_TO_STORE
           - DELIVER_PRODUCT
           - CANCEL_DELIVERY  
         message:
           type: string
-          description: "Message"        
+          description: "Message" 
+          
+    DeliveryOrderPicked:
+      type: "object"
+      title: "Order Picked"
+      required: ["reason", "code"]
+      properties:
+        pickupDate:
+          type: "string"
+          format: date-time
+          description: "Date and time when the order pickup occurred"
+        volumePicked:
+          type: "integer"
+          description: "Number of volumes picked up"
+        observation:
+          type: string
+          description: "Observation"
+    
+    DeliveryOrderFinish:
+      type: "object"
+      title: "Order Picked"
+      required: ["finishDate"]
+      properties:
+        finishDate:
+          type: "string"
+          format: date-time
+          description: "Date and time when delivery completion occurred"
+        observation:
+          type: string
+          description: "Observation"  
 
+          
+    DeliveryOrderDetails:
+      description: Delivery Order Event Object
+      type: object
+      required: [id, orderId, orderDisplayId]
+      properties:
+        deliveryId:
+          type: "string"
+          format: "UUID"
+          description: "The delivery ID generated by the `Logistics Service`."
+        orderId:
+          type: "string"
+          format: "UUID"
+          description: "The orderId generated by the `Ordering Application`."
+        orderDisplayId:
+          type: string
+          description: "Order Id shown in the `Ordering Application` interface for the costumer."
+          example: "96b41025"
+        merchant:
+          type: "object"
+          required: [id, "name"]
+          description: "Merchant information."
+          properties:
+            id:
+              allOf:
+                - $ref: "#/components/schemas/Merchant/properties/id"
+            name:
+              allOf:
+                - $ref: "#/components/schemas/BasicInfo/properties/name"
+        customerName:
+          type: "string"
+          description: "Customer Name"  
+        events:
+          type: array
+          description: "Events History"
+          items:
+            allOf:
+              - $ref: "#/components/schemas/DeliveryEvent"
+        problem:
+          type: array
+          description: "History of problems that occuried during delivery"
+          items:
+            allOf:
+              - $ref: "#/components/schemas/DeliveryProblemHistory"
+        vehicle:
+          description: "Chosen Vehicle Info"
+          allOf:
+            - $ref: "#/components/schemas/ChosenVehicle"
+        deliveryPrice:
+          description: "Delivery Pricing Info"
+          allOf:
+            - $ref: "#/components/schemas/DeliveryAvailabilityPrice"
+        times:
+          description: "ETA Times"
+          allOf:
+            - $ref: "#/components/schemas/DeliveryTimes"
+        deliveryMan:
+          description: "Delivery Man Info"
+          allOf:
+            - $ref: "#/components/schemas/DeliveryMan"
+        combinedOrdersIds:
+          type: "array"
+          description: "Combined Orders Ids"
+          items:
+            type: string
+            format: UUID
+        deliveryDetailsURL:
+          type: "string"
+          format: "uri"
+          description: "delivery Details URL"    
+
+       
+    DeliveryTimes:
+      description: ETA
+      type: object
+      required: [id, orderId, orderDisplayId]
+      properties:
+        deliveryEtaDate:
+          type: string
+          format: date-time
+          description: "Max Delivery Time"
+        maxDeliveryTime:
+          type: string
+          format: date-time
+          description: "Max Delivery Time"          
+        isDeliveryFinished:
+          type: boolean
+          description: "Is Delivery Finished"
+        deliveryFinishDate:
+          type: string
+          format: date-time
+          description: "Delivery Eta Datetime"
+
+  
   examples:
     tokenExample:
       summary: New Token
