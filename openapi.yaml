@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "1.0.0-rc6 'Beta'"
+  version: "'Beta'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -13,91 +13,51 @@ info:
     altText: Open Delivery logo
 
   description: |-
+    # ► ------- OPEN DELIVERY ------- ◄
 
-    # Changelog and Suggestions
-     
-     ### CHANGELOG
+    # └► Introduction
+      **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and ordering applications, establishing a single communication standard for all, through a set of REST APIs.
+      Thus, menus and orders are standardized and customer requests are received in a single place, in an organized and efficient way, allowing the merchant to work with more partners in the delivery environment.
 
-       **Latest Changes:**  
-       Version: **1.00 rc6**
+    # └► Table Of Contents
 
-       - Removed all `@` in front of the `@id` attributes. All attributes are now defaulted to `id`.  
-       - Removed all `@type` fields from `/merchant` entities.
-       - Removed the `@` from the `@type` attribute of the `orders` object which was renamed to `type` (without the @).
-       - Corrected the name of the **`X-App-MerchanId`** attribute of the **header** parameter in the order notification webhook to **`X-App-MerchantId`**.
-       - Changed the responses for the following endpoints from `HTTP 200` to `HTTP 202`:
-         - `/orders/{orderId}/confirm`
-         - `/orders/{orderId}/requestCancellation`
-         - `/orders/{orderId}/readyForPickup`.
-         - `/orders/{orderId}/dispatch`
+    The documentation is separated as follows:
 
-       See the full changelog here:  
-       https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
+    **[General and Common Information](#section/-GENERAL-INFO-)**    
+    This is information that is valid for all versions that exist so far.
+      - **[Open Delivery API Evolution](#section/Open-Delivery-API-Evolution)**
+      - **[General Guidelines](#section/General-Guidelines)**
+      - **[Error Handling](#section/Error-Handling)**
 
 
-     ### SUGGESTIONS
+    **[Version 1.0.0-rc.X](#tag/versionSection)**   
+    Endpoints that will be released with version 1.0.0
+      - **[Changelog](#tag/versionChangelog)**
+      - **[Security](#tag/securitySection)**
+      - **[Merchant](#tag/merchantSection)**
+      - **[Order](#tag/orderSection)**
+      - **[Sales Report](#tag/salesReportSection)**
 
-       In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
+    **[Version 1.1.0-rc.X](#tag/versionSection2)**  
+    Endpoints that will be released with version 1.1.0
+      - **[Changelog](#tag/versionChangelog2)**
+      - **[Logistics](#tag/logisticsSection)**
+
+
+    > Both versions will be available in this documentation, each one with its own changelog.
+
+    > As both versions are still in release candidate, small changes may still occur until the release date.
+
+    # └► Issues and Suggestions
+
+    In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
        
        https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues
 
+    # 
+    # ► ------- GENERAL INFO -------- ◄
 
-     # ------ OPEN DELIVERY ------
-
-    # Introduction
-
-     **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and ordering applications, establishing a single communication standard for all, through a set of REST APIs.
-     Thus, menus and orders are standardized and customer requests are received in a single place, in an organized and efficient way, allowing the merchant to work with more partners in the delivery environment.
-
-     ## How Open Delivery integrations work
-
-     **Open Delivery** API integrations have two main components: **Merchants** information and **Orders** events.
-
-     <div align="center">
-       <img src="https://abrasel-nacional.github.io/docs/images/od_intro.png" />
-     </div>
-
-     ## Merchant API
-
-     This API defines all the necessary merchant information for the **Ordering Application** to display correctly for the costumer.
-     The Merchant endpoint is hosted by the merchant chosen **Software Service** Company (eg. POS applications) and periodically fetched by an **Ordering Application** (eg. Marketplaces), ensuring up-to-date ordering information is shown to costumers.
-
-     The API contains these top-level entities:
-
-     - **Basic Merchant Info** properties
-     - **Service** properties
-     - **Menu** properties (Menus, Categories, Items, Offers, OptionGroups and Availability)
-
-     See: **[Merchant Guide](#tag/merchantOverview)**
-
-     ## Order API
-     
-     ### Order Events
-
-     **Open Delivery** provides two ways for the merchant **Software Service** to receive the order events generated by the **Ordering Application**:
-
-     - Polling (required)
-     - Webhook (optional)
-
-     ### Order updates
-
-     After a new order event has been submitted, merchant **Software Service** leverage asynchronous order updates to send update notifications to users within the **Ordering Application** user interface.
-
-     For example, you can notify the user that their order "status has moved from "Accepted" to "In Progress".
-
-     ### Order Cancellation
-
-     Requests to cancel an order can be made at any time, subject to acceptance or rejection depending on the cancellation rules of the companies.
-
-      See: **[Orders Guide](#tag/ordersOverview)**
-
-     ## Sales Report API
-     
-     **Open Delivery** also provides a way for the merchant **Software Service** to check informantion about sales and transfers done by the **Ordering Application**.
-
-     See: **[Sales Report Guide](#tag/SalesReport)**
-
-    # Open Delivery API Evolution
+    # └► Open Delivery API Evolution
 
      The **Open Delivery** API seeks to respect [SemVer](https://semver.org/). In this sense, compatible changes should not generate a new major version.
 
@@ -117,7 +77,7 @@ info:
      - Change of fields sorting;
      - Addition of new elements in enumerations.
 
-    # General guidelines
+    # └► General Guidelines
 
      - **DateTime, Date and Time values**: For properties that require a DateTime, Date or Time value, use the formats specified in date-time, date and time formats (following the [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14) specifications)
       For example:
@@ -126,11 +86,11 @@ info:
       **2017-05-01** for date (As defined by full-date - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))\
       **08:08:00-03:00** for time (As defined by full-time - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))
 
-     - **IDs**: Use an id property to identify all unique entities within an entity type. An id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
+    - **IDs**: Use an id property to identify all unique entities within an entity type. An id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
 
-     - **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
+    - **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
 
-    # Error Handling
+    # └► Error Handling
 
      The API returns HTTP status codes to indicate success or failure of requests.
 
@@ -180,25 +140,91 @@ info:
 tags:
   # Authentication
   - name: securitySection
-    x-displayName: ------ SECURITY ------
+    x-displayName: "└─■ SECURITY"
     x-traitTag: true
 
   - name: authentication
-    x-displayName: "Authentication"
+    x-displayName: "└───● Authentication"
     description: |
 
       **Open Delivery** suports two types of authentication methods: **OAuth 2** and **apiKey**.
 
       <!-- ReDoc-Inject: <security-definitions> -->
 
+# Version Tags
+
+  - name: versionSection
+    x-displayName: " ►►►► VERSION 1.0.0-rc.7 ◄◄◄◄"
+    x-traitTag: true
+    description: |-
+      All the information listed in this section is planned to be released in version **1.0.0** of the Open Delivery API.
+
+      > This version is still in **'Beta'**, so minor changes may still occur until release.
+
+  - name: versionChangelog
+    x-displayName: "└─► Changelog"
+    x-traitTag: true
+    description: |-  
+    
+        Latest Changes:  
+        
+        **Version [1.0.0-rc.7] - Nov 26, 2021**
+        
+        #### Breaking changes:
+        - Changed the `out_of_stock_items` and `invalid_items` attributes of the `/orders/{orderId}/requestCancellation` endpoint to `outOfStockItems` and `invalidItems`.
+
+        #### Other changes:
+        * Restructured side menu to better separate sections:
+          * Added a Table of Contents sections;
+          * Documentation separated by versions (1.0.0-rc.X and 1.1.0-rc.X);
+        * Removed the `format` attribute `description` from the `nutritionalInfo` of the Merchant `item` object that was incorrectly marked as "UUID";
+        * Corrected spelling of `BURGUER` option to `BURGER` in `merchantCategories` attribute of Merchant `BasicInfo` object;
+        
+        Examples Corrections
+        * Fixed all `country` fields to corretcly represent its description;
+        * Fixed all `currency` fields to corretcly represent its description;
+        * Fixed all 'image' fields to better represent the `Image` object;
+        * Fixed the spelling of all `itemId` fields in the `/merchant` endpoint example (`itemid` to `itemId`)`;
+        * Fixed some `id` fields in the `/merchant` example that had an additional " char; 
+        * Fixed the `contactEmails` field in the `/merchant` example
+        * Fixed the `contactPhone` field in the `/merchant` example
+        * Fixed the `services` object in the `/merchant` example
+        * Fixed the `weekHours` object in the `/merchant` example
+        * Fixed the `availability` object in the `/merchant` example  
+
+
+        See the full changelog here:  
+        https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
+
+  - name: versionSection2
+    x-displayName: " ►►►► VERSION 1.1.0-rc.0 ◄◄◄◄"
+    x-traitTag: true
+    description: |-
+      All the information listed in this section is planned to be released in version **1.1.0** of the Open Delivery API.
+
+      > This version is still in **'Beta'**, so minor changes may still occur until release.
+  - name: versionChangelog2
+    x-displayName: "└─► Changelog"
+    x-traitTag: true
+    description: |-  
+    
+        **Latest Changes:**  
+        Version: **1.1.0 rc.0**
+
+        - Added Logistics API
+
+        See the full changelog here:  
+        https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
+
+
 # Merchant Tags
 
   - name: merchantSection
-    x-displayName: ------ MERCHANT ------
+    x-displayName:   "└─■ MERCHANT"
     x-traitTag: true
 
   - name: merchantOverview
-    x-displayName: Merchant Overview
+    x-displayName: "└───● Merchant Overview"
     description: |-
 
       The Merchant entity will be the entity used by the **Ordering Application** to fetch all the data from a merchant and display it to the user.
@@ -220,7 +246,7 @@ tags:
       3.	If the **Software Service** **[refuses](#operation/cancelDenied)** an order for any reason, upon receiving the refusal, it is recommended that the **Ordering Application** make a new request on the **[/merchant](#operation/getMerchant)** endpoint.
 
   - name: merchantStructure
-    x-displayName: Merchant Structure
+    x-displayName: └───● Merchant Structure
     description: |-
 
       The structure of the Merchant model consists of the following top-level properties:
@@ -330,18 +356,18 @@ tags:
       <SchemaDefinition schemaRef="#/components/schemas/Availability" />
 
   - name: merchantEndpoints
-    x-displayName: "Merchant Endpoint"
+    x-displayName: "└───● Merchant Endpoint"
     description: |-
 
   - name: merchantStatus
-    x-displayName: Merchant Status
+    x-displayName: "└───● Merchant Status"
     description: |-
       ## Health Check
 
       The **Ordering Application** must provide an **[endpoint](#operation/getMerchantStatus)** to let the merchant **Software Service** knows if its merchant information is being correctly read by the **Ordering Application**.
 
   - name: merchantUpdate
-    x-displayName: Merchant Update
+    x-displayName: "└───● Merchant Update"
     description: |-
       ### Merchant Update Notification
 
@@ -353,11 +379,11 @@ tags:
 # Orders Tags
 
   - name: ordersSection
-    x-displayName: ------ ORDERS ------
+    x-displayName:  "└─■ ORDERS"
     x-traitTag: true
 
   - name: ordersOverview
-    x-displayName: Order Overview
+    x-displayName: └───● Order Overview
     description: |-
 
       This overview summarizes the **Open Delivery** Ordering flow and how it interacts with merchant **Software Services** and **Ordering Applications**.
@@ -394,7 +420,7 @@ tags:
 
       Once the new order event is received, it is necessary to get the **[order details](#tag/ordersDetails)**, such as items purchased, delivery addresses, and payment methods.
 
-      ### Status Updates
+      ### Events Updates
 
       After getting the order details, the merchant needs to notify the '**Ordering Application**' of the order progress.
 
@@ -416,7 +442,7 @@ tags:
     x-traitTag: true
 
   - name: ordersPolling
-    x-displayName: Polling (Required)
+    x-displayName: └───● Polling (Required)
     description: |-
 
       Receiving events via Polling works as follows:
@@ -458,7 +484,7 @@ tags:
       > **Software Services** only needs to send acknowledgment of the event once."
 
   - name: ordersWebhook
-    x-displayName: Webhook (Optional)
+    x-displayName: └───● Webhook (Optional)
     description: |-
 
       Receiving events via Webhook works as follows:
@@ -492,7 +518,7 @@ tags:
       The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.
 
   - name: ordersDetails
-    x-displayName: Order Details
+    x-displayName: └───● Order Details
     description: |-
 
       Before confirming or canceling an order, it is necessary to get the order details so that the merchant **Software Service** user can check if he will be able to prepare and deliver this order, such as checking if he has all the necessary items and if he is available to make the delivery to the informed address.
@@ -506,7 +532,7 @@ tags:
       <SchemaDefinition schemaRef="#/components/schemas/Order" />
 
   - name: ordersStatus
-    x-displayName: Status Update
+    x-displayName: └───● Order Event Update
     description: |-
 
       Following the order lifecycle, the merchant **Software Service** needs to notify the **Ordering Application** of the upcoming order status.
@@ -523,7 +549,7 @@ tags:
       > When sending requests to these endpoints, is expected that the **Ordering Application** notifies the consumer of the progress of the order.
 
   - name: ordersCancellation
-    x-displayName: Cancellation
+    x-displayName: └───● Order Cancellation
     description: |-
 
       An order can be canceled for several reasons and the initiative to cancel an order can come from the merchant, the customer, or the ordering application.   
@@ -618,19 +644,20 @@ tags:
 # Sales Report Tags
 
   - name: salesReportSection
-    x-displayName: ------ SALES REPORT ------
+    x-displayName: └─■ SALES REPORT
     x-traitTag: true
 
   - name: salesReport
-    x-displayName: Sales Report Endpoint
+    x-displayName: └───● Sales Report Endpoint
     description: |-
 
       **Ordering Application** must provide an endpoint where merchants can view information about sales for orders placed and information about the transfer of funds to the merchant.
 
+
 # Logistics Tags
 
   - name: logisticsSection
-    x-displayName: ------ LOGISTICS ------
+    x-displayName: └─■ LOGISTICS
     x-traitTag: true
     description: |-
       This section covers the API referring to the operations with `Logistic Services`. 
@@ -640,7 +667,7 @@ tags:
       The expected release of the logistics API is at **Version 1.1.0**
 
   - name: logisticOverview
-    x-displayName: Logistic Overview
+    x-displayName: └───● Logistic Overview
     description: |-
       Open Delivery provides a set of standards so that both merchants through their Software Service and Ordering Applications can request a new delivery to a logistics operator and track this delivery.
 
@@ -671,7 +698,7 @@ tags:
       Endpoint with the function of simulating a new delivery, with the purpose of checking if it is possible to make the delivery as well as its prices and times. "
 
   - name: logisticOrder
-    x-displayName: Delivery Order
+    x-displayName: └───● Delivery Order
     description: |-
 
       ### Events
@@ -707,7 +734,7 @@ tags:
       > Since all event flow is per Order, then in the case of deliveries that have combined orders, an event message must be sent to each of the orders separately. 
 
   - name: logisticTracking
-    x-displayName: Delivery Tracking
+    x-displayName: └───● Delivery Tracking
     description: |-
      Receiving delivery events via Webhook works as follows:
 
@@ -740,7 +767,7 @@ tags:
       The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.
 
   - name: logisticPrice
-    x-displayName: Delivery Availability and Pricing
+    x-displayName: └───● Delivery Availability and Pricing
     description: |-
 
       Endpoint used to check the availability of a `Logistic Service` to make a delivery with addresses and times already defined, as well as to obtain the price for this delivery.
@@ -751,7 +778,7 @@ tags:
         To make a real delivery request, call this endpoint. 
 
   - name: logisticDetails
-    x-displayName: Delivery Details and History
+    x-displayName: └───● Delivery Details and History
     description: |-
 
       Endpoint used to get detailed and history information for a specific delivery order. 
@@ -760,45 +787,49 @@ tags:
         Misuse of this endpoint can result in blockages by Logistic Service.
 
 x-tagGroups:
+  - name: ".................................................................................................................."
+    tags:
+      - versionSection
+      - versionChangelog
   - name: ""
     tags:
       - securitySection
-      - authentication
+      - authentication         
   - name: ""
     tags:
       - merchantSection
-  - name: "Overview and Structure"
+  - name: "└──◌ Overview and Structure"
     tags:
       - merchantOverview
       - merchantStructure
-  - name: "api"
+  - name: "└──◌ api"
     tags:
       - merchantEndpoints
-  - name: Updates and Status
+  - name: "└──◌ Updates and Status"
     tags:
       - merchantUpdate
       - merchantStatus
   - name: ""
     tags:
       - ordersSection
-  - name: "Overview"
+  - name: "└──◌ Overview"
     tags:
       - ordersOverview
-  - name: Events
+  - name: └──◌ Events
     tags:
       - ordersPolling
       - ordersWebhook
-  - name: Details
+  - name: └──◌ Details
     tags:
       - ordersDetails
-  - name: Actions
+  - name: └──◌ Actions
     tags:
       - ordersStatus
       - ordersCancellation
   - name: ""
     tags:
       - salesReportSection
-  - name: Sales Report API
+  - name: └──◌ Sales Report API
     tags:
       - salesReport
   # - name: ""
@@ -807,10 +838,14 @@ x-tagGroups:
   # - name: Repository API
   #   tags:
   #     - repositoryOverview
+  - name: ".................................................................................................................."
+    tags:
+      - versionSection2
+      - versionChangelog2     
   - name: ""
     tags:
       - logisticsSection
-  - name: Logistics
+  - name: └──◌ Logistics API
     tags:
       - logisticOverview
       - logisticOrder
@@ -1995,17 +2030,7 @@ components:
       title: "MenuEntity"
       required:
         [
-          "lastUpdate",
-          "TTL",
-          id,
-          "status",
-          "basicInfo",
-          "services",
-          "items",
-          "menus",
-          "categories",
-          "itemOffers",
-        ]
+          "lastUpdate", "TTL", id, "status", "basicInfo", "services", "items", "menus", "categories", "itemOffers",]
       properties:
         lastUpdate:
           type: "string"
@@ -2233,7 +2258,7 @@ components:
           items:
             type: "string"
             enum:
-              - "BURGUERS"
+              - "BURGERS"
               - "PIZZA"
               - "FAST_FOOD"
               - "HOT_DOG"
@@ -2300,18 +2325,15 @@ components:
           description: "Image to be used as the merchant logo"
           allOf:
             - $ref: "#/components/schemas/Image"
-          example: "https://food-company.com/logo.png"
         bannerImage:
           type: "object"
           description: "Image to be used as the merchant banner (the banner display depends on the client application interface)"
           allOf:
             - $ref: "#/components/schemas/Image"
-          example: "https://food-company.com/banner.png"
         createdAt:
           type: "string"
           format: date-time
           description: "Merchant creation date in ISO timestamp format but with type String."
-          example: "2021-05-10T20:45:10.332Z"
 
     ListMerchant:
       type: "array"
@@ -2406,7 +2428,8 @@ components:
             required: ["latitude", "longitude"]
             properties:
               latitude:
-                type: "string"
+                type: "number"
+                multipleOf: 0.00001
                 description: "Indicates the latitude coordinate of the polygon point"
               longitude:
                 type: "string"
@@ -2416,7 +2439,7 @@ components:
           description: "Price of the fee for this polygon"
           allOf:
             - $ref: "#/components/schemas/Price"
-          example: { value: 5, currency: "R$" }
+          example: { value: 5, currency: "BRL" }
         estimateDeliveryTime:
           type: "integer"
           description: "Estimate delivery time for this polygon in minutes"
@@ -2450,7 +2473,7 @@ components:
                 description: "Price of the fee for this CIRCLE size."
                 allOf:
                   - $ref: "#/components/schemas/Price"
-                example: { value: 5, currency: "R$" }
+                example: { value: 5, currency: "BRL" }
               estimateDeliveryTime:
                 type: "integer"
                 description: "Estimate delivery time for this CIRCLE size in minutes."
@@ -2472,7 +2495,7 @@ components:
           type: "string"
           pattern: "^[A-Z]{3}$"
           description: "The 3-letter ISO 4217 currency code."
-          example: "R$"
+          example: "BRL"
 
     ServiceHours:
       type: "object"
@@ -2593,7 +2616,6 @@ components:
           description: "Image of the item"
           allOf:
             - $ref: "#/components/schemas/Image"
-          example: "https://www.food-place.com/images/peperroni.png"
         nutritionalInfo:
           type: "object"
           description: "Nutrition information for the dish."
@@ -2612,12 +2634,11 @@ components:
 
     NutritionalInfo:
       type: "object"
-      title: "Contact Phones"
+      title: "Nutritional Info"
       required: ["description", "calories"]
       properties:
         description:
           type: "string"
-          format: "UUID"
           description: 'Nutrition information in free text. For example "Contains preservatives".'
           example: "Contains preservatives"
         calories:
@@ -2802,7 +2823,6 @@ components:
           description: "Image of the category (the category image display depends on the client application interface)"
           allOf:
             - $ref: "#/components/schemas/Image"
-          example: "https://food-company.com/category1.png"
         externalCode:
           type: "string"
           description: "Category External Code. (Tipically the merchant **Software Service** category code)"
@@ -2852,7 +2872,7 @@ components:
           description: "Price of the menu item offer. Original and actual values can be informed, for showing discounts."
           allOf:
             - $ref: "#/components/schemas/ItemPrice"
-          example: { value: 43, originalValue: 43, currency: "R$" }
+          example: { value: 43, originalValue: 43, currency: "BRL" }
         availabilityId:
           type: "array"
           description: "The id values of `Availability` entities which provide details on when the menu item offer is available. Default assumes an `ItemOffer` is available at all times."
@@ -3498,7 +3518,7 @@ components:
                   type: "string"
                   pattern: "^[A-Z]{2}$"
                   description: "Two-letter ISO 3166-1 alpha-2 country code."
-                  example: "Brazil"
+                  example: "BR"
                 state:
                   type: "string"
                   description: "State"
@@ -3967,7 +3987,7 @@ components:
           type: "string"
           pattern: "^[A-Z]{2}$"
           description: "Two-letter ISO 3166-1 alpha-2 country code."
-          example: "Brazil"
+          example: "BR"
         "state":
           type: "string"
           description: "State"
@@ -4033,7 +4053,7 @@ components:
           type: "string"
           pattern: "^[A-Z]{3}$"
           description: "The 3-letter ISO 4217 currency code."
-          example: "R$"
+          example: "BRL"
 
     Repository:
       type: "object"
@@ -4382,7 +4402,7 @@ components:
     DeliveryEvent:
       description: Delivery Event
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [type, datetime]
       properties:
         type:
           type: string
@@ -4414,7 +4434,7 @@ components:
     DeliveryEventDenied:
       description: Delivery Event
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [reason]
       discriminator:
         propertyName: reason
         mapping:
@@ -4497,7 +4517,7 @@ components:
     DeliveryProblem:
       description: Delivery Event
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [reason, datetime, canFinishDeliver, needMerchantAction]
       properties:
         reason:
           type: string
@@ -4533,7 +4553,7 @@ components:
     DeliveryProblemHistory:
       description: Delivery Event
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [reason, datetime, resolved]
       properties:
         reason:
           type: string
@@ -4574,12 +4594,10 @@ components:
           format: date-time
           description: "REsolution Datetime"  
 
-    
-
     ChosenVehicle:
       description: Delivery Order Response Object
       type: object
-      required: [id]
+      required: [type, container]
       properties:
         type:
           type: string
@@ -4604,7 +4622,7 @@ components:
     DeliveryAvailabilityPrice:
       description: Delivery Order Object
       type: object
-      required: [orderId, orderDisplayId]
+      required: [pickupAddress, returnToMerchant, canCombine, deliveryAddress, vehicle, limitTimes, totalOrderPrice, totalWeight]
       properties:
         merchant:
           type: "object"
@@ -4684,7 +4702,6 @@ components:
     DeliveryAvailabilityPriceResponse:
       description: Delivery Order Response Object
       type: object
-      required: [id]
       properties:
         deliveryPrice:
           description: "Delivery Pricing Info"
@@ -4711,7 +4728,7 @@ components:
     ETA:
       description: ETA
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [pickupEtaMinutes, pickupEtaDatetime, deliveryEtainMinutes, deliveryEtaDatetime, maxDeliveryTime]
       properties:
         pickupEtaMinutes:
           type: integer
@@ -4755,7 +4772,7 @@ components:
     GeoLocalization:
       description: Delivery Event
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [latitude, longitude, distanceToPickup, distanceToDelivery, timestamp]
       properties:
         latitude:
           type: string
@@ -4807,7 +4824,7 @@ components:
     DeliveryCancel:
       description: Delivery Cancel
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [reason]
       properties:
         reason:
           type: string
@@ -4833,6 +4850,7 @@ components:
           
     DeliveryCancelResponse:
       type: object
+      required: [additionalCharges]
       properties:
         additionalCharges:
           type: boolean
@@ -4874,7 +4892,6 @@ components:
     DeliveryOrderPicked:
       type: "object"
       title: "Order Picked"
-      required: ["reason", "code"]
       properties:
         pickupDate:
           type: "string"
@@ -4904,7 +4921,7 @@ components:
     DeliveryOrderDetails:
       description: Delivery Order Event Object
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [deliveryId, orderId, orderDisplayId, merchant, customerName, events, vehicle, deliveryPrice, times, deliveryDetailsURL]
       properties:
         deliveryId:
           type: "string"
@@ -4975,7 +4992,7 @@ components:
     DeliveryTimes:
       description: ETA
       type: object
-      required: [id, orderId, orderDisplayId]
+      required: [deliveryEtaDate, maxDeliveryTime, isDeliveryFinished]
       properties:
         deliveryEtaDate:
           type: string
@@ -5024,9 +5041,9 @@ components:
               unit: "UNIT",
               quantity: 1,
               specialInstructions: "Do not put onions.",
-              unitPrice: { value: 43.00, currency: "R$" },
-              optionsPrice: { value: 50.00, currency: "R$" },
-              totalPrice: { value: 50.00, currency: "R$" },
+              unitPrice: { value: 43.00, currency: "BRL" },
+              optionsPrice: { value: 50.00, currency: "BRL" },
+              totalPrice: { value: 50.00, currency: "BRL" },
               options:
                 [
                   {
@@ -5035,8 +5052,8 @@ components:
                     externalCode: "23",
                     unit: "UNIT",
                     quantity: 1,
-                    unitPrice: { value: 50.00, currency: "R$" },
-                    price: { value: 50.00, currency: "R$" },
+                    unitPrice: { value: 50.00, currency: "BRL" },
+                    price: { value: 50.00, currency: "BRL" },
                     specialInstructions: "None",
                   },
                   {
@@ -5045,8 +5062,8 @@ components:
                     externalCode: "24",
                     unit: "UNIT",
                     quantity: 1,
-                    unitPrice: { value: 30.00, currency: "R$" },
-                    price: { value: 30.00, currency: "R$" },
+                    unitPrice: { value: 30.00, currency: "BRL" },
+                    price: { value: 30.00, currency: "BRL" },
                     specialInstructions: "None",
                   },
                 ],
@@ -5059,34 +5076,34 @@ components:
               type: "DELIVERY_FEE",
               receivedBy: "MARKETPLACE",
               receiverDocument: "1234",
-              price: { value: 5.00, currency: "R$" },
+              price: { value: 5.00, currency: "BRL" },
               observation: "None",
             },
           ]
         discounts:
           [
             {
-              amount: { value: 20.00, currency: "R$" },
+              amount: { value: 20.00, currency: "BRL" },
               target: "DELIVERY_FEE",
               sponsorshipValues:
                 [
                   {
                     name: "MARKETPLACE",
-                    amount: { value: 10.00, currency: "R$" },
+                    amount: { value: 10.00, currency: "BRL" },
                   },
                   {
                     name: "MERCHANT",
-                    amount: { value: 10.00, currency: "R$" },
+                    amount: { value: 10.00, currency: "BRL" },
                   },
                 ],
             },
           ]
         total:
           {
-            itemsPrice: { value: 50.00, currency: "R$" },
-            otherFees: { value: 5.00, currency: "R$" },
-            discount: { value: 20.00, currency: "R$" },
-            orderAmount: { value: 35.50, currency: "R$" },
+            itemsPrice: { value: 50.00, currency: "BRL" },
+            otherFees: { value: 5.00, currency: "BRL" },
+            discount: { value: 20.00, currency: "BRL" },
+            orderAmount: { value: 35.50, currency: "BRL" },
           }
         payments:
           prepaid: 55.00
@@ -5095,7 +5112,7 @@ components:
             [
               {
                 value: 55.00,
-                currency: "R$",
+                currency: "BRL",
                 method: "FOOD_VOUCHER",
                 methodInfo: "None",
               },
@@ -5111,7 +5128,7 @@ components:
         delivery:
           deliveredBy: "MERCHANT"
           deliveryAddress:
-            country: "Brazil"
+            country: "BR"
             streetName: "Gomes de Carvalho Street"
             formattedAddress: "string"
             streetNumber: "100"
@@ -5143,11 +5160,11 @@ components:
           averagePreparationTime: 20
           minOrderValue:
             value: 20.00
-            currency: "R$"
+            currency: "BRL"
           merchantType: "RESTAURANT"
           merchantCategories: ["PIZZA", "FAMILY_MEALS", "PREMIUM"]
           address:
-            country: "Brazil"
+            country: "BR"
             state: "SP"
             city: "São Paulo"
             district: "Moema"
@@ -5157,9 +5174,9 @@ components:
             complement: "2001"
             latitude: -23.5480
             longitude: -46.63630
-          contactEmails: "food@company.com"
+          contactEmails: ["food@company.com"]
           contactPhones:
-            [{ commercialNumber: "11999999999", whatsappNumber: "11998888888" }]
+            { commercialNumber: "11999999999", whatsappNumber: "11998888888" }
           logoImage:
             URL: "https://food-company.com/logo.png"
             CRC-32: 432098ASDSR
@@ -5174,13 +5191,46 @@ components:
               status: "AVAILABLE",
               serviceType: "DELIVERY",
               menuId: "f627ccdc-6789-456f-a782-148538d5035b",
-              serviceArea:
-                {
-                  id: "01339e6d-520b-429e-bc7c-dcfd2df42278",
-                  geoMidpointLatitude: -20.2333,
-                  geoMidpointLongitude: -20.8383,
-                  geoRadius: 1000,
-                },
+              serviceArea: {
+                "id": "f078e8e2-3044-4eec-b4a8-8359810de124",
+                "polygon": [
+                    {
+                        "geoCoordinates": [
+                            {
+                                "latitude": -20.2333,
+                                "longitude": -20.8383
+                            },
+                            {
+                                "latitude": -20.8500,
+                                "longitude": -21.0000
+                            },
+                            {
+                                "latitude": -21.1500,
+                                "longitude": -21.9548
+                            }
+                        ],
+                        "price": {
+                            "value": 5,
+                            "currency": "BRL"
+                        },
+                        "estimateDeliveryTime": 25
+                    }
+                ],
+                "geoRadius": {
+                    "geoMidpointLatitude": -20.2333,
+                    "geoMidpointLongitude": -20.8383,
+                    "radius": [
+                        {
+                            "size": 10,
+                            "price": {
+                                "value": 5.50,
+                                "currency": "BRL"
+                            },
+                            "estimateDeliveryTime": 10
+                        }
+                    ]
+                }
+            },
               serviceHours:
                 {
                   id: "fb093d8c-2ca5-40fb-afcf-472fbdae81cc",
@@ -5194,13 +5244,25 @@ components:
                             "WEDNESDAY",
                             "THURSDAY",
                             "FRIDAY",
-                          ],
-                      },
+                          ],                     
                       timePeriods:
                         {
                           startTime: "10:00:00.000Z",
                           endTime: "18:00:00.000Z",
-                        },
+                        }
+                      },
+                      {
+                        dayOfWeek:
+                          [
+                            "SATURDAY",
+                            "SUNDAY",
+                          ],                     
+                      timePeriods:
+                        {
+                          startTime: "14:00:00.000Z",
+                          endTime: "18:00:00.000Z",
+                        }
+                      }
                     ],
                   holidayHours:
                     [
@@ -5263,7 +5325,7 @@ components:
               unit: "unit",
             },
             {
-              id: 7e507cab-7235-4f75-a0c2-e955fb2f2048",
+              id: 7e507cab-7235-4f75-a0c2-e955fb2f2048,
               name: "1/2 Mozzarella",
               description: "Delicious mozzarella pizza.",
               externalCode: "24",
@@ -5281,7 +5343,7 @@ components:
               unit: "unit",
             },
             {
-              id: 2c0f3447-5309-49cc-a167-4eac5c664470",
+              id: 2c0f3447-5309-49cc-a167-4eac5c664470,
               name: "Banana",
               description: "Banana Pizza with cream.",
               externalCode: "25",
@@ -5321,7 +5383,11 @@ components:
               index: 0,
               name: "Salted Pizza",
               description: "Salted pizza flavors.",
-              imageUrl: "https://www.food-company.com/images/salted_pizza.png",
+              image:
+                {
+                  URL: "https://food-company.com/category1.png",
+                  CRC-32: 09345UIHF98
+                },
               externalCode: "13",
               status: "AVAILABLE",
               availabilityId:
@@ -5334,7 +5400,11 @@ components:
               index: 1,
               name: "Sweeted Pizza",
               description: "Sweeted pizza flavors.",
-              imageUrl: "https://www.food-company.com/images/sweeted_pizza.png",
+              image:
+                {
+                  URL: "https://food-company.com/category2.png",
+                  CRC-32: 09345UIHF98
+                },
               externalCode: "13",
               status: "AVAILABLE",
               availabilityId:
@@ -5346,20 +5416,20 @@ components:
         itemOffers:
           [
             {
-              id: f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9",
-              itemid: 732bd31e-77fc-47ee-88ee-a0437f97b198",
+              id: f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9,
+              itemId: 732bd31e-77fc-47ee-88ee-a0437f97b198,
               index: 0,
-              price: { value: 43.00, originalValue: 43.00, currency: "R$" },
+              price: { value: 43.00, originalValue: 43.00, currency: "BRL" },
               availabilityId:
                 ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
               optionGroupsId:
                 ["22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"],
             },
             {
-              id: 377b99ba-5413-43d1-b875-7cdcaa72860e",
-              itemid: 7e507cab-7235-4f75-a0c2-e955fb2f2048",
+              id: 377b99ba-5413-43d1-b875-7cdcaa72860e,
+              itemId: 7e507cab-7235-4f75-a0c2-e955fb2f2048,
               index: 1,
-              price: { value: 30.00, originalValue: 30.00, currency: "R$" },
+              price: { value: 30.00, originalValue: 30.00, currency: "BRL" },
               availabilityId:
                 ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
               optionGroupsId:
@@ -5369,7 +5439,7 @@ components:
         optionGroups:
           [
             {
-              id: fe67e551-f42f-499a-8afb-0ed893c71fa3",
+              id: fe67e551-f42f-499a-8afb-0ed893c71fa3,
               index: 0,
               name: "Choose your salted pizza flavor",
               description: "Choose your salted pizza flavor.",
@@ -5380,25 +5450,25 @@ components:
               options:
                 [
                   {
-                    id: e5232f14-430c-4a94-8ff6-289d5a16a87a",
-                    itemid: 502ecf11-0509-48ed-b63c-6211c48fd9b9",
+                    id: e5232f14-430c-4a94-8ff6-289d5a16a87a,
+                    itemId: 502ecf11-0509-48ed-b63c-6211c48fd9b9,
                     index: 0,
                     price:
-                      { value: 50.00, originalValue: 50.00, currency: "R$" },
+                      { value: 50.00, originalValue: 50.00, currency: "BRL" },
                     maxPermitted: 1,
                   },
                   {
-                    id: e5232f14-430c-4a94-8ff6-289d5a16a87a",
-                    itemid: 7e507cab-7235-4f75-a0c2-e955fb2f2048",
+                    id: e5232f14-430c-4a94-8ff6-289d5a16a87b,
+                    itemId: 7e507cab-7235-4f75-a0c2-e955fb2f2048,
                     index: 1,
                     price:
-                      { value: 43.00, originalValue: 43.00, currency: "R$" },
+                      { value: 43.00, originalValue: 43.00, currency: "BRL" },
                     maxPermitted: 1,
                   },
                 ],
             },
             {
-              id: c524c066-96fa-458d-b78c-3712661529b3",
+              id: c524c066-96fa-458d-b78c-3712661529b3,
               index: 0,
               name: "Choose your sweeted pizza flavor",
               description: "Choose your sweeted pizza flavor.",
@@ -5409,11 +5479,11 @@ components:
               options:
                 [
                   {
-                    id: 2419d582-357f-4149-9089-12321537f147",
-                    itemid: 2c0f3447-5309-49cc-a167-4eac5c664470",
+                    id: 2419d582-357f-4149-9089-12321537f147,
+                    itemId: 2c0f3447-5309-49cc-a167-4eac5c664470,
                     index: 0,
                     price:
-                      { value: 30.00, originalValue: 30.00, currency: "R$" },
+                      { value: 30.00, originalValue: 30.00, currency: "BRL" },
                     maxPermitted: 1,
                   },
                 ],
@@ -5425,15 +5495,35 @@ components:
               id: 11d063c4-73a7-4f87-a0eb-71636cc02029",
               startDate: "05/01/2021",
               endDate: "05/30/2021",
-              hours:
-                {
-                  dayOfWeek:
-                    ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY"],
-                },
-              timePeriods:
-                { startTime: "10:00:00.000Z", endTime: "18:00:00.000Z" },
-            },
-          ]
+              hours: [
+                      {
+                        dayOfWeek:
+                          [
+                            "MONDAY",
+                            "TUESDAY",
+                            "WEDNESDAY",
+                            "THURSDAY",
+                            "FRIDAY",
+                          ],                     
+                      timePeriods:
+                        {
+                          startTime: "10:00:00.000Z",
+                          endTime: "18:00:00.000Z",
+                        }
+                      },
+                      {
+                        dayOfWeek:
+                          [
+                            "SATURDAY",
+                            "SUNDAY",
+                          ],                     
+                      timePeriods:
+                        {
+                          startTime: "14:00:00.000Z",
+                          endTime: "18:00:00.000Z",
+                        }
+                      }
+                    ]}]
 
     # orderDeliveryExample:
     #   summary: New Delivery example
@@ -5485,7 +5575,7 @@ components:
     #         "orderCreatedAt": "2021-01-26T18:14:20+03:00"
     #     "totalPrice":
     #         "value": 39.5
-    #         "currency": "R$"
+    #         "currency": "BRL"
     #     "totalWeight": 89
     #     "volumes": 2
     #     "specialInstructions": "Pratos quentes"
@@ -5501,7 +5591,7 @@ components:
     #               ],
     #               "amount": {
     #                   "value": 39.5,
-    #                   "currency": "R$"
+    #                   "currency": "BRL"
     #               }
     #           }
     #       ],
@@ -5574,7 +5664,7 @@ components:
     #   ]
     #   "deliveryPrice": {
     #       "value": 30.98,
-    #       "currency": "R$"
+    #       "currency": "BRL"
     #   }
     #   "priceTable": "NORMAL | DINAMICA"
     #   "additionalPricePerc": 5
