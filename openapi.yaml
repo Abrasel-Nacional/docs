@@ -154,7 +154,7 @@ tags:
 # Version Tags
 
   - name: versionSection
-    x-displayName: " ►►►► VERSION 1.0.0-rc.8 ◄◄◄◄"
+    x-displayName: " ►►►► VERSION 1.0.0-rc.9 ◄◄◄◄"
     x-traitTag: true
     description: |-
       All the information listed in this section is planned to be released in version **1.0.0** of the Open Delivery API.
@@ -168,25 +168,22 @@ tags:
     
         Latest Changes:  
         
-        **Version [1.0.0-rc.8] - Dec 14, 2021**
-        
-        ### Breaking Changes:
-        * [[Issue #50](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/50)]] - All `latitude` and `longitude` attributes have had their format changed to `number` with precision of 5 decimal places.
+        ### Version [1.0.0-rc.9] - 23/12/2021
+
+        * [[Issue #58](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/58)] - Added the `reference` field to all address-related objects:  
         Affected objects:
           - `Address`
-          - `Polygon`
-          - `GeoRadius`
           - `Order`
-          
-        ### Other changes
-        * [[Issue #52](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/52)] - Removed the requirement to inform the `image` field in `Item` and `Category` objects.
-        * [[Issue #46](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/46)] - Recommended to use standard **ISO 3166-2** in `state` fields in address objects.
+        * [[Issue #62](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/62)] - Added HTTP code **204** to the `GET /events:pooling` endpoint to be used in cases where no new events exist.
+        * [[Issue #63](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/63)] 
+            - Removed schema descriptive text from the `POST /orders/{orderId}/requestCancellation` endpoint. 
+            - Fixed `INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT` option which was incorrectly formatted from same endpoint above. 
 
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
 
   - name: versionSection2
-    x-displayName: " ►►►► VERSION 1.1.0-rc.1 ◄◄◄◄"
+    x-displayName: " ►►►► VERSION 1.1.0-rc.2 ◄◄◄◄"
     x-traitTag: true
     description: |-
       All the information listed in this section is planned to be released in version **1.1.0** of the Open Delivery API.
@@ -197,14 +194,15 @@ tags:
     x-traitTag: true
     description: |-  
     
-        **Latest Changes:**  
-        Version: **1.1.0 rc.1**
+        Latest Changes:  
 
-        ### Breaking Changes:
-        * [[Issue #50](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/50)]] - All `latitude` and `longitude` attributes have had their format changed to `number` with precision of 5 decimal places.
-        Affected objects:
-          - `Address`
-          - `GeoLocalization`
+        ### Version [1.0.0-rc.2] - 23/12/2021
+
+        #### Breaking Changes:
+        * [[Issue #61](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/61)] - Fixed `deliveryPrice` fields that were referencing an incorrect schema.  
+        Affected Endpoints:
+          - `Delivery Tracking`
+          - `Delivery Availability and Pricing`
           
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
@@ -597,7 +595,7 @@ tags:
       - ORDER_OUTSIDE_THE_DELIVERY_AREA
       - BLOCKED_CUSTOMER
       - OUTSIDE_DELIVERY_HOURS
-      - INTERNAL_DIFFICULTIES_OF THE RESTAURANT
+      - INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT
       - RISK_AREA
       ``` 
 
@@ -1021,6 +1019,8 @@ paths:
             "application/json":
               schema:
                 $ref: "#/components/schemas/Event"
+        "204":
+          description: "No content."       
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -1890,7 +1890,6 @@ components:
             $ref: "#/components/schemas/OrderConfirmed"
 
     CancelRequest:
-      description: "Request for order cancellation has been accepted."
       required: true
       content:
         "application/json":
@@ -3540,6 +3539,10 @@ components:
                   type: "string"
                   description: "Address complement."
                   example: "BL 02 AP 31"
+                reference:
+                  type: "string"
+                  description: "Address reference." 
+                  example: "Yellow House"
                 formattedAddress:
                   type: "string"
                   description: "Full Formated Address Text"
@@ -4015,6 +4018,10 @@ components:
           type: "string"
           description: "Address complement."
           example: "BL 02 AP 31"
+        "reference":
+          type: "string"
+          description: "Address reference." 
+          example: "Yellow House"  
         "latitude":
           type: "number"
           multipleOf: 0.00001
@@ -4380,7 +4387,7 @@ components:
         deliveryPrice:
           description: "Delivery Pricing Info"
           allOf:
-            - $ref: "#/components/schemas/DeliveryAvailabilityPrice"
+            - $ref: "#/components/schemas/DeliveryPrice"
         eta:
           description: "ETA Times"
           allOf:
@@ -4487,7 +4494,7 @@ components:
               type: object
               description: "Information about the prices"
               allOf:
-                - $ref: "#/components/schemas/DeliveryAvailabilityPrice"
+                - $ref: "#/components/schemas/DeliveryPrice"
 
     DeliveryEventDeniedNoDeliveryMan:
       description: Metadata
@@ -4620,6 +4627,29 @@ components:
           type: "string"
           description: "Special Instructions"
 
+    DeliveryPrice:
+      description: Delivery Pricing
+      type: object
+      required: [price, pricingList, additionalPricePercentual]
+      properties:
+        price:
+          allOf:
+            - $ref: "#/components/schemas/Price"
+        pricingList:
+          type: string
+          description: "Indicates what list was used to calculate the delivery price."
+          enum:
+            - "NORMAL"
+            - "DINAMIC"
+        additionalPricePercentual:
+          type: integer
+          description: |-
+              Indicates the additional percentage to the list price that was calculated for this delivery.
+
+              Example: List Price = $10  
+                       Actual calculated price = $15  
+                       Additonal price percentage = **50**
+
     DeliveryAvailabilityPrice:
       description: Delivery Order Object
       type: object
@@ -4707,7 +4737,7 @@ components:
         deliveryPrice:
           description: "Delivery Pricing Info"
           allOf:
-            - $ref: "#/components/schemas/DeliveryAvailabilityPrice"        
+            - $ref: "#/components/schemas/DeliveryPrice"        
         vehicles:
           type: object
           description: "Chosen Vehicle Info"
@@ -4975,7 +5005,7 @@ components:
         deliveryPrice:
           description: "Delivery Pricing Info"
           allOf:
-            - $ref: "#/components/schemas/DeliveryAvailabilityPrice"
+            - $ref: "#/components/schemas/DeliveryPrice"
         times:
           description: "ETA Times"
           allOf:
@@ -5017,7 +5047,6 @@ components:
           format: date-time
           description: "Delivery Eta Datetime"
 
-  
   examples:
     tokenExample:
       summary: New Token
@@ -5179,6 +5208,7 @@ components:
             number: "100"
             postalCode: "20111-000"
             complement: "2001"
+            reference: "Yellow house"
             latitude: -23.54804
             longitude: -46.63630
           contactEmails: ["food@company.com"]
