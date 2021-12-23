@@ -168,7 +168,7 @@ tags:
     
         Latest Changes:  
         
-        ### Version [1.0.0-rc.9] - 23/12/2021
+        ### Version [1.0.0-rc.9] - Dec 23, 2021
 
         * [[Issue #58](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/58)] - Added the `reference` field to all address-related objects:  
         Affected objects:
@@ -196,7 +196,7 @@ tags:
     
         Latest Changes:  
 
-        ### Version [1.0.0-rc.2] - 23/12/2021
+        ### Version [1.1.0-rc.2] - Dec 23, 2021
 
         #### Breaking Changes:
         * [[Issue #61](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/61)] - Fixed `deliveryPrice` fields that were referencing an incorrect schema.  
