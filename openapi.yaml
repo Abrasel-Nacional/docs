@@ -183,7 +183,7 @@ tags:
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
 
   - name: versionSection2
-    x-displayName: " ►►►► VERSION 1.1.0-rc.2 ◄◄◄◄"
+    x-displayName: " ►►►► VERSION 1.1.0-rc.3 ◄◄◄◄"
     x-traitTag: true
     description: |-
       All the information listed in this section is planned to be released in version **1.1.0** of the Open Delivery API.
@@ -196,13 +196,13 @@ tags:
     
         Latest Changes:  
 
-        ### Version [1.1.0-rc.2] - Dec 23, 2021
+        ### Version [1.1.0-rc.3] - Jan 17, 2022
 
         #### Breaking Changes:
-        * [[Issue #61](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/61)] - Fixed `deliveryPrice` fields that were referencing an incorrect schema.  
-        Affected Endpoints:
-          - `Delivery Tracking`
-          - `Delivery Availability and Pricing`
+        * Changed the `reason` enum options of the `rejectedInfo` field of the `Delivery Tracking` endpoint to English.
+
+        #### Other Changes
+        * The description of the fields has been revised and improved to better reflect the purpose of each field.
           
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
@@ -970,7 +970,9 @@ paths:
           required: true
           schema:
             type: array
-            description: Subset of merchants to fetch events from. Must either be omitted or non-empty.
+            description: |-
+              Subset of merchants to fetch events from. Must either be omitted or non-empty.
+              > At this time, this field will only return data from the authenticated merchant, since authentication occurs per merchant and not per application. This field may be used in future versions. 
             items:
               $ref: "#/components/schemas/Merchant/properties/id"
         - name: "eventType"
@@ -2353,7 +2355,7 @@ components:
           type: "string"
           format: "UUID"
           description: "Unique Identifier"
-          example: "22815773000169-f078e8e2-3044-4eec-b4a8-8359810de123"
+          example: "f078e8e2-3044-4eec-b4a8-8359810de123"
         status:
           type: "string"
           description: "Indicates if the entity is Avaliable or Unavaliable. Only use this type when you must disable the entity due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays)."
@@ -2372,7 +2374,7 @@ components:
           description: "The id value of the `Menu` entity correlated to this `Service` entity."
           type: string
           format: UUID
-          example: "22815773000169-f627ccdc-6789-456f-a782-148538d5035b"
+          example: "f627ccdc-6789-456f-a782-148538d5035b"
         serviceArea:
           type: "object"
           description: "A conditional entity to implement (required if the Service entity associated has serviceType set to `DELIVERY`). Describes the geographical region in which food can be delivered."
@@ -2393,7 +2395,7 @@ components:
           type: "string"
           format: "UUID"
           description: "A unique identifier of the service area."
-          example: "22815773000169-01339e6d-520b-429e-bc7c-dcfd2df42278"
+          example: "01339e6d-520b-429e-bc7c-dcfd2df42278"
         polygon:
           type: "array"
           description: "If the `polygon` is chosen to be used, `geoRadius` is not required.\n\n\n\nA polygon or multipolygon expressed as a series of three or more space delimited points."
@@ -2503,7 +2505,7 @@ components:
           type: "string"
           format: "UUID"
           description: "A unique identifier of the service hours."
-          example: "22815773000169-fb093d8c-2ca5-40fb-afcf-472fbdae81cc"
+          example: "fb093d8c-2ca5-40fb-afcf-472fbdae81cc"
         weekHours:
           type: array
           description: "A list of the day(s) of the week and time periods for which the service is valid."
@@ -2594,7 +2596,7 @@ components:
           type: "string"
           format: "UUID"
           description: "A unique identifier of the item."
-          example: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198"
+          example: "732bd31e-77fc-47ee-88ee-a0437f97b198"
         name:
           type: "string"
           description: "Item name"
@@ -2607,7 +2609,7 @@ components:
         externalCode:
           type: "string"
           description: "Item External Code. (Tipically the merchant **Software Service** item code)"
-          example: "23"
+          example: "233467"
         image:
           type: "object"
           description: "Image of the item"
@@ -2621,13 +2623,15 @@ components:
         serving:
           type: "integer"
           description: "Field to show the number of people the portion serves."
+          example: 2
         unit:
           type: "string"
           description: "Measure Unit of the Item"
-          example: "0"
+          example: "kg"
         ean:
           type: "string"
           description: "EAN (European Article Number)"
+          example: "7896005202074"
 
     NutritionalInfo:
       type: "object"
@@ -2736,7 +2740,8 @@ components:
               - "VEGETARIAN"
         isAlcoholic:
           type: "boolean"
-          description: "Indicates if an item is alcoholic"
+          description: "Indicates if an item is alcoholic."
+          example: false
 
     Menu:
       type: "object"
@@ -2748,7 +2753,7 @@ components:
           type: "string"
           format: "UUID"
           description: "A unique identifier of the menu."
-          example: "22815773000169-f627ccdc-6789-456f-a782-148538d5035b"
+          example: "f627ccdc-6789-456f-a782-148538d5035b"
         name:
           type: "string"
           description: "Menu name"
@@ -2778,8 +2783,8 @@ components:
             format: "UUID"
           example:
             [
-              "22815773000169-92fad022-2c28-4239-a026-989f5b555cb7",
-              "22815773000169-6bb71850-1d40-49f9-8046-b13e068c0cca",
+              "92fad022-2c28-4239-a026-989f5b555cb7",
+              "6bb71850-1d40-49f9-8046-b13e068c0cca",
             ]
 
     Category:
@@ -2800,7 +2805,7 @@ components:
           type: "string"
           format: "UUID"
           description: "A unique identifier of the category."
-          example: "22815773000169-92fad022-2c28-4239-a026-989f5b555cb7"
+          example: "92fad022-2c28-4239-a026-989f5b555cb7"
         index:
           type: "string"
           description: "Category display index."
@@ -2836,14 +2841,14 @@ components:
           items:
             allOf:
               - $ref: "#/components/schemas/Availability/properties/id"
-          example: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"]
+          example: ["11d063c4-73a7-4f87-a0eb-71636cc02029"]
         itemOfferId:
           type: array
           description: "A list of the id values of the child `ItemOffer` entities that correspond to this `Category` entity. Default assumes all `ItemOffer` entities are available in this category."
           items:
             allOf:
               - $ref: "#/components/schemas/ItemOffer/properties/id"
-          example: ["22815773000169-f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9"]
+          example: ["f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9"]
 
     ItemOffer:
       type: "object"
@@ -2854,11 +2859,11 @@ components:
           type: "string"
           format: "UUID"
           description: "A unique identifier of the item offer."
-          example: "22815773000169-f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9"
+          example: "f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9"
         itemId:
           type: "string"
           description: "The id value of the `Item` entity correlated to this `ItemOffer` entity."
-          example: "22815773000169-732bd31e-77fc-47ee-88ee-a0437f97b198"
+          example: "732bd31e-77fc-47ee-88ee-a0437f97b198"
         index:
           type: integer
           description: "ItemOffer display index."
@@ -2875,14 +2880,14 @@ components:
           items:
             allOf:
               - $ref: "#/components/schemas/Availability/properties/id"
-          example: ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"]
+          example: ["11d063c4-73a7-4f87-a0eb-71636cc02029"]
         optionGroupsId:
           type: "array"
           description: "A list of the id values of the child `OptionGroup` entities that correspond to this `ItemOffer` entity."
           items:
             allOf:
               - $ref: "#/components/schemas/OptionGroup/properties/id"
-          example: ["22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"]
+          example: ["fe67e551-f42f-499a-8afb-0ed893c71fa3"]
 
     OptionGroup:
       type: "object"
@@ -2903,7 +2908,7 @@ components:
           type: "string"
           format: "UUID"
           description: "A unique identifier of the option group."
-          example: "22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"
+          example: "fe67e551-f42f-499a-8afb-0ed893c71fa3"
         index:
           type: integer
           description: "Option Group display index."
@@ -2954,11 +2959,11 @@ components:
           type: "string"
           format: "UUID"
           description: "A unique identifier of the option."
-          example: "22815773000169-e5232f14-430c-4a94-8ff6-289d5a16a87a"
+          example: "e5232f14-430c-4a94-8ff6-289d5a16a87a"
         itemId:
           type: "string"
           description: "The id value of the `Item` entity correlated to this `Option` entity."
-          example: "22815773000169-502ecf11-0509-48ed-b63c-6211c48fd9b9"
+          example: "502ecf11-0509-48ed-b63c-6211c48fd9b9"
         index:
           type: integer
           description: "Option display index"
@@ -2982,7 +2987,7 @@ components:
           type: "string"
           format: "UUID"
           description: "A unique identifier of the availability."
-          example: "22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"
+          example: "11d063c4-73a7-4f87-a0eb-71636cc02029"
         startDate:
           type: "string"
           description: "Availability start date. If not informed, the availabilty is already avaliable."
@@ -4146,7 +4151,7 @@ components:
 #Logistic
 
     DeliveryOrder:
-      description: Delivery Order Object
+      description: Delivery Order Object.
       type: object
       required: [orderId, orderDisplayId, merchant, pickupAddress, returnToMerchant, canCombine, deliveryAddress, vehicle, limitTimes, totalOrderPrice, totalWeight, payments]
       properties:
@@ -4170,7 +4175,7 @@ components:
               allOf:
                 - $ref: "#/components/schemas/BasicInfo/properties/name"
         pickupAddress:
-          description: "Pickup Address"
+          description: "Pickup Address."
           allOf:
             - $ref: "#/components/schemas/Address"
             - type: object
@@ -4200,25 +4205,27 @@ components:
                   type: string
                   description: "Instructions"
         vehicle:
-          description: "Vehicle Info"
+          description: "Vehicle Info. informs which vehicle options are to be used for delivery. More than one can be informed, but the logistics service must choose only one of the types of vehicles informed."
           allOf:
             - $ref: "#/components/schemas/Vehicle"
         limitTimes:
           type: object
-          description: "Limit Times"
+          description: "Limit Times. Informs the maximum pickup and delivery times that must be met by the `Logistics Service`."
           properties:
             pickupLimit:
               type: integer
-              description: ""
+              description: "Pickup Limit in **minutes**. It should be used to inform the maximum amount of minutes from the time the request was made to which the order should be collected at the merchant."
+              example: 23
             deliveryLimit:
               type: integer
-              description: "Delivery Limit"
+              description: "Delivery Limit in **minutes**. It should be used to inform the maximum amount of minutes from the time the request was made to which the order should be delivered at the consumer's address."
+              example: 48
             orderCreatedAt:
               type: string
               format: date-time
-              description: "Order Created At" 
+              description: "The date and time that the Order was created at the Ordering Application." 
         totalOrderPrice:
-          description: "Total Order Price"
+          description: "Total order price that was calculated and displayed for the final consumer in the `Ordering Application`. This value may already contain taxes and shipping in addition to the value of the items purchased."
           allOf:
             - $ref: "#/components/schemas/Price"
         totalWeight:
@@ -4231,7 +4238,7 @@ components:
             > The unit of measure will not be considered, only the quantity.
         specialInstructions:
           type: string
-          description: "Special Instructions"
+          description: "Free text to describe special instructions that may apply."
         additionalPricePercentual:
           type: integer
           description: |-
@@ -4246,20 +4253,22 @@ components:
               In this case, any value informed below 50, would result in the order being rejected.
         payments:
           type: object
-          description: "Payments Info"
+          description: "Payments Info. It informs the payment methods chosen by the consumer in the `Ordering Application`. This section should be used by the `Logistics Service` to check how much the delivery man should receive from the consumer when delivering the order."
           properties:
             method:
               type: string
-              description: ""
+              description: |-
+                OFFLINE - The order will be paid by the consumer at the time the order is received.  
+                ONLINE - The order has already been paid through the order application.
               enum:
                 - OFFLINE
                 - ONLINE
             wirelessPos:
               type: boolean
-              description: ""  
+              description: "Indicates whether the delivery man should take the wireless payment device with him."  
             offlineMethod:
               type: array
-              description: ""
+              description: "If the method is `OFFLINE`, the payment information should be provided."
               items:
                 type: object
                 description: ""
@@ -4279,11 +4288,12 @@ components:
                     allOf:
                       - $ref: "#/components/schemas/Price"
             change:
+              description: If type is `CASH`, tells how much change will be needed.
               allOf:
                 - $ref: "#/components/schemas/Price"
 
     Vehicle:
-      description: Delivery Order Response Object
+      description: Vehicle Object.
       type: object
       required: [type, container]
       properties:
@@ -4310,7 +4320,7 @@ components:
           description: "Special Instructions"
 
     DeliveryOrderResponse:
-      description: Delivery Order Response Object
+      description: Delivery Order Response Object.
       type: object
       required: [deliveryId, event, completion]
       properties:
@@ -4324,23 +4334,23 @@ components:
             - $ref: "#/components/schemas/DeliveryEvent/properties/type"
         completion:
           type: "object"
-          description: "The delivery Id generated by the `Logistic Service`."
+          description: "Informs the expected date and time for sending the acceptance or refusal of the delivery order."
           properties:
             estimate:
               type: string
               format: date-time
-              description: ""
+              description: "Expected date and time for completion."
             rejectAfter:
               type: string
               format: date-time
-              description: ""  
+              description: "Maximum date and time to wait for the acceptance or refusal of the order. After this time the delivery request should be disregarded and a new request should be made."  
         deliveryDetailsURL:
           type: "string"
           format: "uri"
-          description: "delivery Details URL"
+          description: "It should be the URL where the delivery information can be found."
 
     DeliveryOrderEvent:
-      description: Delivery Order Event Object
+      description: Delivery Order Event Object.
       type: object
       required: [deliveryId, orderId, orderDisplayId, merchant, event, customerName, vehicle, deliveryPrice, eta, deliveryMan]
       properties:
@@ -4368,47 +4378,47 @@ components:
               allOf:
                 - $ref: "#/components/schemas/BasicInfo/properties/name"  
         event:
-          description: "Current Event"
+          description: "Current Event Info."
           allOf:
             - $ref: "#/components/schemas/DeliveryEvent"
         problem:
           type: array
-          description: "List of problems that may occur"
+          description: "List of problems that may occur."
           items:
             allOf:
               - $ref: "#/components/schemas/DeliveryProblem"
         customerName:
           type: "string"
-          description: "Customer Name"
+          description: "Customer Name."
         vehicle:
-          description: "Chosen Vehicle Info"
+          description: "Chosen Vehicle Info."
           allOf:
             - $ref: "#/components/schemas/ChosenVehicle"
         deliveryPrice:
-          description: "Delivery Pricing Info"
+          description: "Delivery Pricing Info."
           allOf:
             - $ref: "#/components/schemas/DeliveryPrice"
         eta:
-          description: "ETA Times"
+          description: "ETA Times."
           allOf:
             - $ref: "#/components/schemas/ETA"
         deliveryMan:
-          description: "Delivery Man Info"
+          description: "Delivery Man Info."
           allOf:
             - $ref: "#/components/schemas/DeliveryMan"
         geoLocalization:
-          description: "Geo Localization"
+          description: "Geo Localization."
           allOf:
             - $ref: "#/components/schemas/GeoLocalization"
         combinedOrdersIds:
           type: "array"
-          description: "Combined Orders Ids"
+          description: "Combined Orders Ids. Informs which other orders from the same merchant are being carried by the same delivery man, with the same `deliveryId`."
           items:
             type: string
             format: UUID
             
     DeliveryEvent:
-      description: Delivery Event
+      description: Delivery Event Object.
       type: object
       required: [type, datetime]
       properties:
@@ -4429,40 +4439,40 @@ components:
             - DELIVERY_FINISHED
         message:
           type: string
-          description: "Message"
+          description: "Free message. It should be used to provide more detailed information."
         datetime:
           type: string
           format: date-time
-          description: "Event Datetime"
+          description: "Date and time when the event ocurred."
         rejectionInfo:
-          description: "Rejection Info"
+          description: "Rejection Info. It should be informed to provide more information when the event type is `REJECTED`."
           allOf:
             - $ref: "#/components/schemas/DeliveryEventDenied"
 
     DeliveryEventDenied:
-      description: Delivery Event
+      description: Delivery Event Denied Object.
       type: object
       required: [reason]
       discriminator:
         propertyName: reason
         mapping:
-          PRECO_EXCEDIDO: "#/components/schemas/DeliveryEventDeniedPrice"
-          VEICULO_NAO_DISPONIVEL: "#/components/schemas/DeliveryEventDeniedVehicle"
-          NENHUM_ENTREGADOR_DISPONIVEL: "#/components/schemas/DeliveryEventDeniedNoDeliveryMan"
-          NAO_ATENDE_TEMPOS_SOLICITADOS: "#/components/schemas/DeliveryEventDeniedEta"
-          REGIAO_NAO_ATENDIDA: "#/components/schemas/DeliveryEventDenied"
-          OUTROS: "#/components/schemas/DeliveryEventDenied"
+          PRICE_EXCEEDED: "#/components/schemas/DeliveryEventDeniedPrice"
+          VEHICLE_NOT_AVAILABLE: "#/components/schemas/DeliveryEventDeniedVehicle"
+          NO_DELIVERYMAN_AVAILABLE: "#/components/schemas/DeliveryEventDeniedNoDeliveryMan"
+          DOES_NOT_MEET_REQUESTED_TIMES: "#/components/schemas/DeliveryEventDeniedEta"
+          REGION_NOT_SERVED: "#/components/schemas/DeliveryEventDenied"
+          OTHER: "#/components/schemas/DeliveryEventDenied"
       properties:
         reason:
           type: string
-          description: Rejection reason
+          description: Rejection reason.
           enum:
-            - "PRECO_EXCEDIDO"
-            - "VEICULO_NAO_DISPONIVEL"
-            - "NENHUM_ENTREGADOR_DISPONIVEL"
-            - "NAO_ATENDE_TEMPOS_SOLICITADOS"
-            - "REGIAO_NAO_ATENDIDA"
-            - "OUTROS"
+            - "PRICE_EXCEEDED"
+            - "VEHICLE_NOT_AVAILABLE"
+            - "NO_DELIVERYMAN_AVAILABLE"
+            - "DOES_NOT_MEET_REQUESTED_TIMES"
+            - "REGION_NOT_SERVED"
+            - "OTHER"
 
     DeliveryEventDeniedVehicle:
       description: Metadata
@@ -4472,17 +4482,18 @@ components:
         - properties:
             metadata:
               type: object
-              description: "Information related to the Event Type"
+              description: "Information about vehicles availability at the moment."
               properties:
                 availableVehicles:
                   type: integer
-                  description: "Available Vehicles"
-                vehiclesAvailable:  
+                  description: "Informs how many vehicles are available at the moment."
+                vehiclesAvailable:
+                  description: "List of currently available vehicles."
                   allOf:
                     - $ref: "#/components/schemas/Vehicle"
                 nextAvailableVehicle:
                   type: integer
-                  description: "Next Available Vehicle" 
+                  description: "Informs how soon the next vehicle will be available in **minutes**." 
 
     DeliveryEventDeniedPrice:
       description: Metadata
@@ -4492,7 +4503,7 @@ components:
         - properties:
             metadata:
               type: object
-              description: "Information about the prices"
+              description: "The actual delivery price calculated according to the data given in the request."
               allOf:
                 - $ref: "#/components/schemas/DeliveryPrice"
 
@@ -4504,11 +4515,11 @@ components:
         - properties:
             metadata:
               type: object
-              description: "Information related to the Event Type"
+              description: "Information about delivery man availability."
               properties:
                 nextAvailableVehicle:
                   type: integer
-                  description: "teste"
+                  description: "Informs how soon the next delivery man will be available in **minutes**."
 
     DeliveryEventDeniedEta:
       description: Metadata
@@ -4518,18 +4529,18 @@ components:
         - properties:
             metadata:
               type: object
-              description: "Information related to the Event Type"
+              description: "The actual ETAs calculated according to the data given in the request."
               allOf:
                 - $ref: "#/components/schemas/ETA"
 
     DeliveryProblem:
-      description: Delivery Event
+      description: Delivery Problem Object.
       type: object
       required: [reason, datetime, canFinishDeliver, needMerchantAction]
       properties:
         reason:
           type: string
-          description: "Problem reason"
+          description: "Problem reason."
           enum:
           - DELIVERY_MAN_OCCURRENCE
           - PAYMENT_PROBLEMS
@@ -4546,26 +4557,26 @@ components:
           - OTHER
         message:
           type: string
-          description: "Message"
+          description: "Free message. It should be used to provide more detailed information."
         datetime:
           type: string
           format: date-time
-          description: "Problem Datetime"
+          description: "Date and time when the problem ocurred."
         canFinishDeliver:
           type: boolean
-          description: "Can Finish Deliver"
+          description: "Informs whether or not it is still possible to finish the delivery."
         needMerchantAction:
           type: boolean
-          description: "Need Merchant Action"
+          description: "Informs whether or not the merchant needs to perform some action in order for delivery to continue."
 
     DeliveryProblemHistory:
-      description: Delivery Event
+      description: Delivery Event.
       type: object
       required: [reason, datetime, resolved]
       properties:
         reason:
           type: string
-          description: "Problem reason"
+          description: "Problem reason."
           enum:
           - DELIVERY_MAN_OCCURRENCE
           - PAYMENT_PROBLEMS
@@ -4582,17 +4593,17 @@ components:
           - OTHER
         message:
           type: string
-          description: "Message"
+          description: "Free message. It should be used to provide more detailed information."
         datetime:
           type: string
           format: date-time
-          description: "Problem Datetime"
+          description: "Date and time when the problem ocurred."
         resolved:
           type: boolean
-          description: "Can Finish Deliver"
+          description: "Informs if the problem was resolved or not."
         actionTaken:
           type: boolean
-          description: "Action taken by the requester"
+          description: "Action taken by the requester."
           enum:
             - RETURN_TO_STORE
             - DELIVER_PRODUCT
@@ -4600,7 +4611,7 @@ components:
         resolutionDate:
           type: string
           format: date-time
-          description: "REsolution Datetime"  
+          description: "Date and time when the problem was resolved."  
 
     ChosenVehicle:
       description: Delivery Order Response Object
@@ -4609,7 +4620,7 @@ components:
       properties:
         type:
           type: string
-          description: "Vehicle Type"
+          description: "Vehicle Type."
           enum:
             - "MOTORBIKE_BAG"
             - "MOTORBIKE_BOX"
@@ -4625,7 +4636,7 @@ components:
             - "THERMIC"
         instruction:
           type: "string"
-          description: "Special Instructions"
+          description: "Special Instructions."
 
     DeliveryPrice:
       description: Delivery Pricing
@@ -4633,6 +4644,7 @@ components:
       required: [price, pricingList, additionalPricePercentual]
       properties:
         price:
+          description: "The calculated price of the delivery. It may be 0. The price shall be calculated according to the Price List being used, as well as previously established commercial agreements."
           allOf:
             - $ref: "#/components/schemas/Price"
         pricingList:
@@ -4667,7 +4679,7 @@ components:
               allOf:
                 - $ref: "#/components/schemas/BasicInfo/properties/name"
         pickupAddress:
-          description: "Pickup Address"
+          description: "Pickup Address."
           allOf:
             - $ref: "#/components/schemas/Address"
             - type: object
@@ -4683,10 +4695,10 @@ components:
                   description: "Instructions"
         returnToMerchant:
           type: boolean
-          description: "Return To Merchant"
+          description: "Inform whether the delivery man should return to the pickup address after the delivery has been made."
         canCombine:
           type: boolean
-          description: "Can Combine the Order with another Orders"
+          description: "Inform whether the `Logistic Service` can combine this order with other orders in the same delivery."
         deliveryAddress:
           description: "Delivery Address"
           allOf:
@@ -4697,60 +4709,78 @@ components:
                   type: string
                   description: "Instructions"
         vehicle:
-          description: "Vehicle Info"
+          description: "Vehicle Info. informs which vehicle options are to be used for delivery. More than one can be informed, but the logistics service must choose only one of the types of vehicles informed."
           allOf:
             - $ref: "#/components/schemas/Vehicle"
         limitTimes:
           type: object
-          description: "Limit Times"
+          description: "Limit Times. Informs the maximum pickup and delivery times that must be met by the `Logistics Service`."
           properties:
             pickupLimit:
               type: integer
-              description: ""
+              description: "Pickup Limit in **minutes**. It should be used to inform the maximum amount of minutes from the time the request was made to which the order should be collected at the merchant."
+              example: 23
             deliveryLimit:
               type: integer
-              description: "Delivery Limit"
+              description: "Delivery Limit in **minutes**. It should be used to inform the maximum amount of minutes from the time the request was made to which the order should be delivered at the consumer's address."
+              example: 48
+            orderCreatedAt:
+              type: string
+              format: date-time
+              description: "The date and time that the Order was created at the Ordering Application." 
         totalOrderPrice:
-          description: "Total Order Price"
+          description: "Total order price that was calculated and displayed for the final consumer in the `Ordering Application`. This value may already contain taxes and shipping in addition to the value of the items purchased."
           allOf:
             - $ref: "#/components/schemas/Price"
         totalWeight:
           type: integer
-          description: "Total Weight"
+          description: "Total Weight in **grams**"
         volumes:
           type: integer
-          description: "Volumes"
+          description: |-
+            Number of volumes that will be transported in this order. For example, 2 packages, or 3 boxes. 
+            > The unit of measure will not be considered, only the quantity.
         specialInstructions:
           type: string
-          description: "Special Instructions"
+          description: "Free text to describe special instructions that may apply."
         additionalPricePercentual:
           type: integer
-          description: "Additional Price Percentual"
+          description: |-
+              Indicates to the `Logistic Service` an additional percentage to the list price that the requester agrees to pay for the delivery.
+              > The delivery request will be refused if the delivery price exceeds this value.
+
+              Example: List Price = $10  
+                       Actual calculated price = $15  
+                       Additonal price percentage = **50**
+
+
+              In this case, any value informed below 50, would result in the order being rejected.
         onlinePayment:
           type: boolean
-          description: "Payments Info"
+          description: "Informs whether or not the payment has already been made in the `Ordering Application`"
 
     DeliveryAvailabilityPriceResponse:
       description: Delivery Order Response Object
       type: object
       properties:
         deliveryPrice:
-          description: "Delivery Pricing Info"
+          description: "Delivery Pricing Info."
           allOf:
             - $ref: "#/components/schemas/DeliveryPrice"        
         vehicles:
           type: object
-          description: "Chosen Vehicle Info"
+          description: "Chosen Vehicle Info."
           properties:
             availableVehicles:
               type: integer
-              description: "Available Vehicles"
-            vehiclesAvailable:  
+              description: "Informs how many vehicles are available at the moment."
+            vehiclesAvailable:
+              description: "List of currently available vehicles."  
               allOf:
                 - $ref: "#/components/schemas/Vehicle"
             nextAvailableVehicle:
               type: integer
-              description: "Next Available Vehicle"    
+              description: "Informs how soon the next vehicle will be available in **minutes**." 
         ETAs:
           description: "ETAs"
           allOf:
@@ -4763,22 +4793,22 @@ components:
       properties:
         pickupEtaMinutes:
           type: integer
-          description: "Pickup Eta Minutes"
+          description: "Pickup Eta in **minutes**. Informs how many minutes it will take the delivery man to arrive at the merchant for order pickup."
         pickupEtaDatetime:
           type: string
           format: date-time
-          description: "Pickup Eta Datetime"
+          description: "Pickup Eta Datetime. Informs the date and time the delivery man is expected to arrive at the merchant for order pickup."
         deliveryEtainMinutes:
           type: integer
-          description: "Delivery Eta in Minutes"
+          description: "Delivery Eta in **minutes**. Informs how many minutes it will take the delivery man to arrive at the consumer's address for order delivery."
         deliveryEtaDatetime:
           type: string
           format: date-time
-          description: "Delivery Eta Datetime"
+          description: "Delivery Eta Datetime. Informs the date and time the delivery man is expected to arrive at the consumer's address for order delivery."
         maxDeliveryTime:
           type: string
           format: date-time
-          description: "Max Delivery Time"
+          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request."
   
           
     DeliveryMan:
@@ -4788,17 +4818,17 @@ components:
       properties:
         id:
           type: string
-          description: "Id"
+          description: "Delivery Man Id generated at the `Logistics Service`."
         name:
           type: string
-          description: "Name"
+          description: "Delivery Man Name."
         pictureURL:
           type: string
           format: "URI"
-          description: "Picture URL"
+          description: "URL to access the photo of the delivery man. Before entering this field, check that the parties allow data to be shared according to data disclosure laws and rules."
         phone:
           type: string
-          description: "Phone"
+          description: "Delivery Man Phone. Before entering this field, check that the parties allow data to be shared according to data disclosure laws and rules."
 
     GeoLocalization:
       description: Delivery Event
@@ -4843,20 +4873,20 @@ components:
               example: "Plaza Avenue"
             "postalCode":
               type: "string"
-              description: "Postal Code"
+              description: "Postal Code."
               example: "20111-000"
             distanceToPickup:
               type: string
               format: date-time
-              description: "Distance To Pickup"
+              description: "Distance To Pickup in **meters**."
             distanceToDelivery:
               type: string
               format: date-time
-              description: "Distance To Delivery"
+              description: "Distance To Delivery in **meters**."
             timestamp:
               type: string
               format: date-time
-              description: "Timestamp"
+              description: "Date and time when this information is valid."
 
     DeliveryCancel:
       description: Delivery Cancel
@@ -4865,7 +4895,7 @@ components:
       properties:
         reason:
           type: string
-          description: "Reason"
+          description: "Cancel Reason."
           enum:
             - CONSUMER_CANCELLATION_REQUESTED
             - NO_SHOW 
@@ -4877,13 +4907,13 @@ components:
             - OTHER
         action:
           type: string
-          description: "Action"
+          description: "Action to be taken by the delivery man, after the cancellation."
           enum:
             - RETURN_TO_STORE
             - CANCEL_DELIVERY
         message:
           type: string
-          description: "Message" 
+          description: "Free message. It should be used to provide more detailed information." 
           
     DeliveryCancelResponse:
       type: object
@@ -4891,7 +4921,7 @@ components:
       properties:
         additionalCharges:
           type: boolean
-          description: ""
+          description: "Informs whether or not the cancellation will cause an additional charge to the delivery."
 
     DeliveryHandleProblem:
       description: Delivery Cancel
@@ -4900,7 +4930,7 @@ components:
       properties:
         reason:
           type: string
-          description: "Problem Reason"
+          description: "Problem Reason."
           enum:
           - DELIVERY_MAN_OCCURRENCE
           - PAYMENT_PROBLEMS
@@ -4917,14 +4947,14 @@ components:
           - OTHER
         action:
           type: string
-          description: "Resolution Action"
+          description: "The action that the delivery man should take to solve this problem."
           enum:
           - RETURN_TO_STORE
           - DELIVER_PRODUCT
           - CANCEL_DELIVERY  
         message:
           type: string
-          description: "Message" 
+          description: "Free message. It should be used to provide more detailed information." 
           
     DeliveryOrderPicked:
       type: "object"
@@ -4936,10 +4966,10 @@ components:
           description: "Date and time when the order pickup occurred"
         volumePicked:
           type: "integer"
-          description: "Number of volumes picked up"
+          description: "Number of volumes picked up."
         observation:
           type: string
-          description: "Observation"
+          description: "Free text. It should be used to provide more detailed information."
     
     DeliveryOrderFinish:
       type: "object"
@@ -4949,16 +4979,16 @@ components:
         finishDate:
           type: "string"
           format: date-time
-          description: "Date and time when delivery completion occurred"
+          description: "Date and time when delivery completion occurred."
         observation:
           type: string
-          description: "Observation"  
+          description: "Free text. It should be used to provide more detailed information."  
 
           
     DeliveryOrderDetails:
       description: Delivery Order Event Object
       type: object
-      required: [deliveryId, orderId, orderDisplayId, merchant, customerName, events, vehicle, deliveryPrice, times, deliveryDetailsURL]
+      required: [deliveryId, orderId, orderDisplayId, merchant, customerName, events, vehicle, deliveryPrice, times]
       properties:
         deliveryId:
           type: "string"
@@ -4985,45 +5015,45 @@ components:
                 - $ref: "#/components/schemas/BasicInfo/properties/name"
         customerName:
           type: "string"
-          description: "Customer Name"  
+          description: "Customer Name."  
         events:
           type: array
-          description: "Events History"
+          description: "Events History."
           items:
             allOf:
               - $ref: "#/components/schemas/DeliveryEvent"
         problem:
           type: array
-          description: "History of problems that occuried during delivery"
+          description: "History of problems that occuried during delivery."
           items:
             allOf:
               - $ref: "#/components/schemas/DeliveryProblemHistory"
         vehicle:
-          description: "Chosen Vehicle Info"
+          description: "Chosen Vehicle Info."
           allOf:
             - $ref: "#/components/schemas/ChosenVehicle"
         deliveryPrice:
-          description: "Delivery Pricing Info"
+          description: "Delivery Pricing Info."
           allOf:
             - $ref: "#/components/schemas/DeliveryPrice"
         times:
-          description: "ETA Times"
+          description: "ETA Times."
           allOf:
             - $ref: "#/components/schemas/DeliveryTimes"
         deliveryMan:
-          description: "Delivery Man Info"
+          description: "Delivery Man Info."
           allOf:
             - $ref: "#/components/schemas/DeliveryMan"
         combinedOrdersIds:
           type: "array"
-          description: "Combined Orders Ids"
+          description: "Combined Orders Ids. Informs which other orders from the same merchant are being carried by the same delivery man, with the same `deliveryId`."
           items:
             type: string
             format: UUID
         deliveryDetailsURL:
           type: "string"
           format: "uri"
-          description: "delivery Details URL"    
+          description: "It should be the URL where the delivery information can be found."
 
        
     DeliveryTimes:
@@ -5034,18 +5064,18 @@ components:
         deliveryEtaDate:
           type: string
           format: date-time
-          description: "Max Delivery Time"
+          description: "Delivery Eta Datetime. Informs the date and time the delivery man is expected to arrive at the consumer's address for order delivery."
         maxDeliveryTime:
           type: string
           format: date-time
-          description: "Max Delivery Time"          
+          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request."
         isDeliveryFinished:
           type: boolean
-          description: "Is Delivery Finished"
+          description: "Informs whether or not the delivery is finished."
         deliveryFinishDate:
           type: string
           format: date-time
-          description: "Delivery Eta Datetime"
+          description: "Date and time when the delivery finished."
 
   examples:
     tokenExample:
@@ -5058,7 +5088,7 @@ components:
     orderExample:
       summary: "Sample Order"
       value:
-        id: "22815773000169-4818e72f-2304-466f-9fe7-af08f34ac4ed"
+        id: "4818e72f-2304-466f-9fe7-af08f34ac4ed"
         type: "DELIVERY"
         displayId: "12345"
         createdAt: "2021-05-27T19:38:10.332Z"
@@ -5408,8 +5438,8 @@ components:
               disclaimer: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
               categoryId:
                 [
-                  "22815773000169-92fad022-2c28-4239-a026-989f5b555cb7",
-                  "22815773000169-6bb71850-1d40-49f9-8046-b13e068c0cca",
+                  "92fad022-2c28-4239-a026-989f5b555cb7",
+                  "6bb71850-1d40-49f9-8046-b13e068c0cca",
                 ],
             },
           ]
@@ -5428,9 +5458,9 @@ components:
               externalCode: "13",
               status: "AVAILABLE",
               availabilityId:
-                ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
+                ["11d063c4-73a7-4f87-a0eb-71636cc02029"],
               itemOfferId:
-                ["22815773000169-f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9"],
+                ["f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9"],
             },
             {
               id: 6bb71850-1d40-49f9-8046-b13e068c0cca",
@@ -5445,9 +5475,9 @@ components:
               externalCode: "13",
               status: "AVAILABLE",
               availabilityId:
-                ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
+                ["11d063c4-73a7-4f87-a0eb-71636cc02029"],
               itemOfferId:
-                ["22815773000169-377b99ba-5413-43d1-b875-7cdcaa72860e"],
+                ["377b99ba-5413-43d1-b875-7cdcaa72860e"],
             },
           ]
         itemOffers:
@@ -5458,9 +5488,9 @@ components:
               index: 0,
               price: { value: 43.00, originalValue: 43.00, currency: "BRL" },
               availabilityId:
-                ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
+                ["11d063c4-73a7-4f87-a0eb-71636cc02029"],
               optionGroupsId:
-                ["22815773000169-fe67e551-f42f-499a-8afb-0ed893c71fa3"],
+                ["fe67e551-f42f-499a-8afb-0ed893c71fa3"],
             },
             {
               id: 377b99ba-5413-43d1-b875-7cdcaa72860e,
@@ -5468,9 +5498,9 @@ components:
               index: 1,
               price: { value: 30.00, originalValue: 30.00, currency: "BRL" },
               availabilityId:
-                ["22815773000169-11d063c4-73a7-4f87-a0eb-71636cc02029"],
+                ["11d063c4-73a7-4f87-a0eb-71636cc02029"],
               optionGroupsId:
-                ["22815773000169-c524c066-96fa-458d-b78c-3712661529b3"],
+                ["c524c066-96fa-458d-b78c-3712661529b3"],
             },
           ]
         optionGroups:
