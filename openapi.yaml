@@ -25,6 +25,7 @@ info:
 
     **[General and Common Information](#section/-GENERAL-INFO-)**    
     This is information that is valid for all versions that exist so far.
+      - **[How to Start](#section/How-to-Start-(Setup-Guide))**
       - **[Open Delivery API Evolution](#section/Open-Delivery-API-Evolution)**
       - **[General Guidelines](#section/General-Guidelines)**
       - **[Error Handling](#section/Error-Handling)**
@@ -57,6 +58,129 @@ info:
     # 
     # ► ------- GENERAL INFO -------- ◄
 
+    # └► How to Start (Setup Guide)
+
+    The Open Delivery API proposes the implementation of a single communication standard between the various parts that make up the delivery environment. This documentation contains all the definitions needed for interested systems and platforms to implement it.
+
+    Open Delivery does not have a server or baseURL. It is up to each company that implements the standard to use its infrastructure to host the endpoints.
+
+    This section seeks to summarize the Open Delivery documentation as a whole, helping the different parts of the integrations to understand what needs to be developed and parameterized. 
+
+    First, it is recommended to read all the documentation to understand the different processes and flows of the integrations. 
+
+    After reading and understanding the documentation as a whole, companies interested in implementing the standard in their platforms and systems can use this guide to assist in the implementation.
+
+    ## Parties Involved
+
+    - **ORDERING APPLICATION**: It is the platform where the final consumer will choose his items and place the order. It is responsible for reading the merchant data exposed by the SOFTWARE SERVICE and sending the orders to the SOFTWARE SERVICE as well.
+              
+    - **SOFTWARE SERVICE**: It is the merchant management platform. It is responsible for exposing the merchant data (registration data, service data, and menus) and receiving the orders from the ORDERING APPLICATION.
+
+      > There may also be applications that will perform a hub function, connecting the ORDERING APPLICATION to the SOFTWARE SERVICE. In this context, these intermediate applications, can play the role of both the ORDERING APPLICATION (when communicating with a SOFTWARE SERVICE) as well as the SOFTWARE SERVICE (when communicating with the ORDERING APPLICATION).
+
+    - **LOGISTIC SERVICE**: It is the platform responsible for receiving calls for new deliveries from SOFTWARE SERVICE or ORDERING APPLICATION, and sending the tracking of the deliveries.
+
+    ## Development
+
+    Since Open Delivery is not the host of the APIs, it is up to the companies interested in using the standard to develop the Open Delivery standard APIs in their systems and platforms using this documentation as a guideline. 
+
+    Listed below are the different Routes that each party needs to implement and make available in their systems:
+
+    | |ORDERING APPLICATION|SOFTWARE SERVICE|LOGISTIC SERVICE|
+    |-|:------------------:|:--------------:|:--------------:|
+    |**[AUTHENTICATION](https://abrasel-nacional.github.io/docs/#tag/authentication)**|||||
+    |[POST /oauth/token](https://abrasel-nacional.github.io/docs/#operation/getToken)|X||X|
+    |--------------------------------||||
+    |**[MERCHANT](https://abrasel-nacional.github.io/docs/#tag/merchantSection)**|||||
+    |[GET /merchant](https://abrasel-nacional.github.io/docs/#operation/getMerchant)||X||
+    |[POST /merchantUpdate](https://abrasel-nacional.github.io/docs/#operation/menuUpdated)|X||
+    |[GET /merchantStatus](https://abrasel-nacional.github.io/docs/#tag/merchantStatus)|X|||
+    |--------------------------------||||
+    |**[ORDER](https://abrasel-nacional.github.io/docs/#tag/ordersSection)**|||||
+    |[GET /events:polling ](https://abrasel-nacional.github.io/docs/#operation/pollingEvents)|X|||
+    |[POST /events/acknowledgment](https://abrasel-nacional.github.io/docs/#tag/ordersPolling/paths/~1events~1acknowledgment/post)|X|||
+    |[POST /orderUpdate](https://abrasel-nacional.github.io/docs/#operation/newEvent)||X||
+    |||||
+    |[GET /orders/{orderId}](https://abrasel-nacional.github.io/docs/#tag/ordersDetails/paths/~1orders~1{orderId}/get)|X|||
+    |[POST /orders/{orderId}/confirm](https://abrasel-nacional.github.io/docs/#operation/confirmOrder)|X|||
+    |[POST /orders/{orderId}/readyForPickup](https://abrasel-nacional.github.io/docs/#operation/orderReady)|X|||
+    |[POST /orders/{orderId}/dispatch](https://abrasel-nacional.github.io/docs/#operation/dispatchOrder)|X||
+    |||||
+    |[POST /orders/{orderId}/requestCancellation](https://abrasel-nacional.github.io/docs/#operation/requestCancellation)|X|||
+    |[POST /orders/{orderId}/acceptCancellation](https://abrasel-nacional.github.io/docs/#operation/cancellationAccepted) |X|||
+    |[POST /orders/{orderId}/denyCancellation](https://abrasel-nacional.github.io/docs/#operation/cancellationDenied)|X|||
+    |--------------------------------||||
+    |**[LOGISTICS](https://abrasel-nacional.github.io/docs/#tag/logisticsSection)**|||||
+    |[POST /logistics/delivery](https://abrasel-nacional.github.io/docs/#operation/logisticsNewDelivery)|||X|
+    |[POST /logistics/orderPicked/{orderId}](https://abrasel-nacional.github.io/docs/#operation/logisticsPicked)|||X|
+    |[POST /logistics/finishDelivery/{orderId}](https://abrasel-nacional.github.io/docs/#operation/logisticsFinish)|||X|
+    |[POST /logistics/handleProblem/{orderId}](https://abrasel-nacional.github.io/docs/#operation/logisticsProblem)|||X|
+    |[POST /logistics/cancel/{orderId}](https://abrasel-nacional.github.io/docs/#operation/logisticsCancel)|||X|
+    |[GET /logistics/delivery/{orderId}](https://abrasel-nacional.github.io/docs/#tag/logisticDetails/paths/~1logistics~1delivery~1{orderId}/get)|||X|
+    |[POST /logistics/availability](https://abrasel-nacional.github.io/docs/#tag/logisticPrice)|||X|
+    |[POST /deliveryUpdate](https://abrasel-nacional.github.io/docs/#operation/newLogisticEvent) |X|X||
+
+     ## Parametrizations
+
+      > **IMPORTANT: Before reading this section, it is recommended the reading of the complete documentation, for a better understanding of the different required parameterizations.**
+
+      Once the endpoints are implemented, the parties interested in integrating via the Open Delivery stantard should provide some parameters for the other party to correctly connect to its routes. 
+
+      Below is a list of information that each party must provide to the other party for the integrations to occur, i.e., you should consider that the information below will be created as parameters on the endpoint that will call the endpoints.
+
+      - **PARAMETERS IN THE SOFTWARE SERVICE   
+      (ORDERING APPLICATION --> SOFTWARE SERVICE)**
+
+        - **{baseURL}** : The {baseURL} is the parameter that indicates the base address, i.e. the constant part of the address, where the routes will be called. The ORDERING APPLICATION can provide up to 2 different base URLs:
+          - {baseURL} for authentication: where the token route will be hosted.
+          - {baseURL} for the other routes.
+
+          The ORDERING APPLICATION can use only one {baseURL} if it wishes.
+        
+        - **clientId** and **clientSecret**: The ORDERING APPLICATION is responsible for providing the credentials for authentication to be performed through the authentication endpoint. 
+        
+            > IMPORTANT: As described in the authentication section of the documentation, credentials must be generated BY MERCHANT and not by SOFTWARE SERVICE, that is, even if several MERCHANTS use the same SOFTWARE SERVICE, each of the MERCHANT will have a unique clientId and clientSecret.
+
+        - **AppId**: It is the unique ID of the ORDERING APPLICATION. It must be generated by the ORDERING APPLICATION itself, and once generated, it must be informed to all the SOFTWARE SERVICES that it will integrate. Since the **AppId** is a unique key of the ORDERING APPLICATION, you must not create oneAppId** per SOFTWARE SERVICES, but the same key for all of them.
+      > The companies that play the role of hub, intermediating the integrations between the ORDERING APPLICATION and the SOFTWARE SERVICE, must also generate their own **AppId**, different from the ORDERING APPLICATION's AppId.
+
+      - **PARAMETERS IN ORDERING APPLICATION  
+      (SOFTWARE SERVICE --> ORDERING APPLICATION)**
+
+        - **{baseURL} from the `GET /merchant` endpoint:** The ORDERING APPLICATION must be provided with the {baseURL} to access the GET /merchant route to obtain the merchant's information. 
+
+          > IMPORTANT: Each merchant that the SOFTWARE SERVICE works with must have a unique {baseURL}.
+        - **apiKey**: If the GET /merchant endpoint is implemented using authentication, it is necessary that the SOFTWARE SERVICE provides the apiKey referring to the entered merchant.
+        
+        - **Order Event Webhook**: If both parties are going to work with sending order events via webhook, it is necessary to provide the URL of the webhook.   
+      Default webhook route: 
+      `POST {baseURL}/orderEvent`
+
+      - **PARAMETERS IN THE SOFTWARE SERVICE/ORDERING APPLICATION  
+      (LOGISTIC SERVICE --> SOFTWARE SERVICE/ORDERING APPLICATION)**
+
+        - **{baseURL}** : The {baseURL} is the parameter that indicates which is the base address, i.e. the constant part of the address, where the routes will be called. The LOGISTIC SERVICE can provide up to 2 different base URLs:
+          - {baseURL} for authentication: where the token route will be hosted.
+          - {baseURL} for the other routes.
+
+          The LOGISTIC SERVICE will be able to use only one {baseURL} if it wishes.
+        
+        - **clientId** and **clientSecret**: The LOGISTIC SERVICE is responsible for providing the credentials for authentication to be performed through the authentication endpoint. 
+        
+            > IMPORTANT: As described in the authentication section of the documentation, the credentials must be generated BY MERCHANT and not by SOFTWARE SERVICE/ORDERING APPLICATION, that is, even if several MERCHANTS use the same SOFTWARE SERVICE/ORDERING APPLICATION, each of the MERCHANT will have a unique clientId and clientSecret.
+
+        - **AppId**: It is a unique identification of the LOGISTIC SERVICE. It must be generated by the LOGISTIC SERVICE itself and once generated, it must be informed to all the SOFTWARE SERVICES/ORDERING APPLICATION to which it will integrate. As the **AppId** is a unique key of the LOGISTIC SERVICE, it must not be created an **AppId** per SOFTWARE SERVICES/ORDERING APPLICATION, but the same key must be informed for all.
+
+      - **PARAMETERS IN THE LOGISTIC SERVICE  
+      (SOFTWARE SERVICE/ORDERING APPLICATION --> LOGISTIC SERVICE)**
+
+        - **Tracking Event Webhook**: It is necessary to inform the URL of the webhook to receive the tracking and event updates of the delivery order.   
+      Default webhook route: 
+      `POST {baseURL}/deliveryEvent`
+
+        - **MerchantId**: It is a unique ID of the MERCHANT. Similar to the **AppId** but for Merchant. It must be generated by SOFTWARE SERVICES and once generated, it must be informed to all LOGISTIC SERVICES it will integrate with. Since the **MerchantId** is a unique key, a **MerchantId** must not be created per LOGISTIC SERVICE, but the same key must be informed for all. 
+        The ORDERING APPLICATION must send the **MerchantId** received previously through its integration with the SOFTWARE SERVICE.
+        
     # └► Open Delivery API Evolution
 
      The **Open Delivery** API seeks to respect [SemVer](https://semver.org/). In this sense, compatible changes should not generate a new major version.
@@ -154,7 +278,7 @@ tags:
 # Version Tags
 
   - name: versionSection
-    x-displayName: " ►►►► VERSION 1.0.0-rc.9 ◄◄◄◄"
+    x-displayName: " ►►►► VERSION 1.0.0-rc.10 ◄◄◄◄"
     x-traitTag: true
     description: |-
       All the information listed in this section is planned to be released in version **1.0.0** of the Open Delivery API.
@@ -168,22 +292,49 @@ tags:
     
         Latest Changes:  
         
-        ### Version [1.0.0-rc.9] - Dec 23, 2021
+        ### Version [1.0.0-rc.10] - Feb 04, 2022
 
-        * [[Issue #58](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/58)] - Added the `reference` field to all address-related objects:  
-        Affected objects:
-          - `Address`
-          - `Order`
-        * [[Issue #62](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/62)] - Added HTTP code **204** to the `GET /events:pooling` endpoint to be used in cases where no new events exist.
-        * [[Issue #63](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/63)] 
-            - Removed schema descriptive text from the `POST /orders/{orderId}/requestCancellation` endpoint. 
-            - Fixed `INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT` option which was incorrectly formatted from same endpoint above. 
+        #### Contract Breaking Changes:
+        * The field names of the endpoint [/oauth/token](https://abrasel-nacional.github.io/docs/#operation/getToken) have been changed to meet the oAuth standard, following the rules described in the standard pages:
+
+          - Request: (https://www.oauth.com/oauth2-servers/access-tokens/client-credentials/)
+            - `clientId` to `client_id`.
+            - `clientSecret` to `client_secret`.
+            - `grantType` to `grant_type`.
+
+          - Response: (https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/)
+            - `accessToken` to `access_token`.
+            - `tokenType` to `token_type`.
+            - `expiresIn` to `expires_in`.
+            
+        * Made two changes to endpoint [/events:polling](https://abrasel-nacional.github.io/docs/#operation/pollingEvents)
+          - Removed the requirement for the `eventType` field in the request. By not entering this field, the ORDERING APPLICATION will return all events that have not yet been ack from the polling merchant, regardless of `eventType`.
+
+          - The HTTP 200 response from the endpoint was incorrectly returning a simple object. The response has been corrected to return an array of objects.  
+          From:  
+          `{ "eventId": "string", "eventType": "CREATED", "orderId": "string", "orderURL": "http://example.com", "createdAt": "2019-08-24T14:15:22Z" }`  
+          to:  
+          `[ { "eventId": "string", "eventType": "CREATED", "orderId": "string", "orderURL": "http://example.com", "createdAt": "2019-08-24T14:15:22Z" } ]`
+
+        #### Other changes
+        * A new field has been added in the [/events:polling](http://localhost:9093/-307623811#operation/pollingEvents) and [/orders/{orderId}](http://localhost:9093/-307623811#tag/ordersDetails/paths/~1orders~1{orderId}/get) endpoints called `sourceAppId` to be used by companies performing the Hub role.
+        * Removed the requirement for the `clientId` field in the `metadata` from the `Event` object when the `eventType` = `CONFIRMED`. 
+        * As the format of the `MerchantId` field has a very specific definition, the UUID format has been removed to be string only. This affects objects and parameters that use the merchant id. The places affected are:
+          - Request parameters:
+            - /merchantStatus
+            - /events:polling
+            - Order Webhook
+          - Objects:
+            - Merchant 
+            - Order
+            
+        * Added a new section called, [How to Start](https://abrasel-nacional.github.io/docs/#section/How-to-Start-(Setup-Guide)) to assist companies with the implementations and parameterizations.
 
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
 
   - name: versionSection2
-    x-displayName: " ►►►► VERSION 1.1.0-rc.3 ◄◄◄◄"
+    x-displayName: " ►►►► VERSION 1.1.0-rc.4 ◄◄◄◄"
     x-traitTag: true
     description: |-
       All the information listed in this section is planned to be released in version **1.1.0** of the Open Delivery API.
@@ -196,13 +347,16 @@ tags:
     
         Latest Changes:  
 
-        ### Version [1.1.0-rc.3] - Jan 17, 2022
+        ### Version [1.1.0-rc.4] - Feb 04, 2022
 
-        #### Breaking Changes:
-        * Changed the `reason` enum options of the `rejectedInfo` field of the `Delivery Tracking` endpoint to English.
-
-        #### Other Changes
-        * The description of the fields has been revised and improved to better reflect the purpose of each field.
+        * [[Issue #70](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/70)] - As the format of the `MerchantId` field has a very specific definition, the UUID format has been removed to be string only. This affects objects and parameters that use the merchant id. The places affected are:
+          - Request parameters:
+            - Delivery Order Webhook
+          - Objects:
+            - DeliveryOrder
+            - DeliveryOrderEvent
+            - DeliveryAvailabilityPrice
+            - DeliveryOrderDetails
           
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
@@ -977,7 +1131,6 @@ paths:
               $ref: "#/components/schemas/Merchant/properties/id"
         - name: "eventType"
           in: "query"
-          required: true
           schema:
             type: array
             description: |-
@@ -1020,7 +1173,9 @@ paths:
           content:
             "application/json":
               schema:
-                $ref: "#/components/schemas/Event"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
         "204":
           description: "No content."       
         "400":
@@ -1985,15 +2140,15 @@ components:
     TokenRequest:
       type: "object"
       title: "TokenRequest"
-      required: ["clientId", "clientSecret", "grantType"]
+      required: ["client_id", "client_secret", "grant_type"]
       properties:
-        clientId:
+        client_id:
           type: "string"
           description: "Client identifier provided by the **Ordering Application**."
-        clientSecret:
+        client_secret:
           type: "integer"
           description: "Client Secret provided by the **Ordering Application**."
-        grantType:
+        grant_type:
           type: "string"
           description: "The OAuth grant type. Currently, the only supported grant type is `client_credentials`."
           enum:
@@ -2002,18 +2157,18 @@ components:
     TokenResponse:
       type: "object"
       title: "TokenResponse"
-      required: [""]
+      required: ["access_token, token_type"]
       properties:
-        accessToken:
+        access_token:
           type: "string"
           format: "date-time"
           description: "A JWT representing the access token."
-        tokenType:
+        token_type:
           type: "string"
           description: "The token type. Currently, the only supported type is `bearer`"
           enum:
             - "bearer"
-        expiresIn:
+        expires_in:
           type: "number"
           description: "The token expiration time in seconds"
 
@@ -2040,7 +2195,6 @@ components:
           example: 500
         id:
           type: "string"
-          format: "UUID"
           description:
               "Unique Identifier. Identifies the merchant in the different systems that the merchant will communicate.
               \n\n Must be formatted with:  
@@ -3180,6 +3334,10 @@ components:
         displayId:
           type: "string"
           description: "Order Id shown in the **Ordering Application** interface for the costumer."
+        sourceAppId:
+          type: "string"
+          format: UUID
+          description: "This field must be filled in with the AppId of the ORDERING APPLICATION that originated the order. This field is to help the applications that will work as a Hub, intermediating the requests from the ORDERING APPLICATION with the SOFTWARE SERVICE."
         createdAt:
           type: "string"
           format: date-time
@@ -3712,6 +3870,10 @@ components:
           type: "string"
           format: date-time
           description: "Order creation date in ISO timestamp format."
+        sourceAppId:
+          type: "string"
+          format: UUID
+          description: "This field must be filled in with the AppId of the ORDERING APPLICATION that originated the order. This field is to help the applications that will work as a Hub, intermediating the requests from the ORDERING APPLICATION with the SOFTWARE SERVICE."
 
     EventMetadataCancel:
       description: Metadata
@@ -3768,7 +3930,6 @@ components:
             metadata:
               type: object
               description: "Information related to the Event Type"
-              required: ["expectedPreparationStartTime", "clientId"]
               properties:
                 # expectedPreparationStartTime: Removed field. See Issue (https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/7)
                 #   type: "string"
@@ -5081,9 +5242,9 @@ components:
     tokenExample:
       summary: New Token
       value:
-        clientId: "123"
-        clientSecret: "asldfias9834023jsdf032j023f02"
-        grantType: "client_credentials"
+        client_id: "user1234"
+        client_secret: "ty23yhmas4ldfias9834023jsdf032j023f02"
+        grant_type: "client_credentials"
 
     orderExample:
       summary: "Sample Order"
