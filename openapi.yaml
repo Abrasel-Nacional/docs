@@ -88,37 +88,37 @@ info:
 
     | |ORDERING APPLICATION|SOFTWARE SERVICE|LOGISTIC SERVICE|
     |-|:------------------:|:--------------:|:--------------:|
-    |**[AUTHENTICATION](https://abrasel-nacional.github.io/docs/#tag/authentication)**|||||
-    |[POST /oauth/token](https://abrasel-nacional.github.io/docs/#operation/getToken)|X||X|
+    |**[AUTHENTICATION](#tag/authentication)**|||||
+    |[POST /oauth/token](#operation/getToken)|X||X|
     |--------------------------------||||
-    |**[MERCHANT](https://abrasel-nacional.github.io/docs/#tag/merchantSection)**|||||
-    |[GET /merchant](https://abrasel-nacional.github.io/docs/#operation/getMerchant)||X||
-    |[POST /merchantUpdate](https://abrasel-nacional.github.io/docs/#operation/menuUpdated)|X||
-    |[GET /merchantStatus](https://abrasel-nacional.github.io/docs/#tag/merchantStatus)|X|||
+    |**[MERCHANT](#tag/merchantSection)**|||||
+    |[GET /merchant](#operation/getMerchant)||X||
+    |[POST /merchantUpdate](#operation/menuUpdated)|X||
+    |[GET /merchantStatus](#tag/merchantStatus)|X|||
     |--------------------------------||||
-    |**[ORDER](https://abrasel-nacional.github.io/docs/#tag/ordersSection)**|||||
-    |[GET /events:polling ](https://abrasel-nacional.github.io/docs/#operation/pollingEvents)|X|||
-    |[POST /events/acknowledgment](https://abrasel-nacional.github.io/docs/#tag/ordersPolling/paths/~1events~1acknowledgment/post)|X|||
-    |[POST /orderUpdate](https://abrasel-nacional.github.io/docs/#operation/newEvent)||X||
+    |**[ORDER](#tag/ordersSection)**|||||
+    |[GET /events:polling ](#operation/pollingEvents)|X|||
+    |[POST /events/acknowledgment](#tag/ordersPolling/paths/~1events~1acknowledgment/post)|X|||
+    |[POST /orderUpdate](#operation/newEvent)||X||
     |||||
-    |[GET /orders/{orderId}](https://abrasel-nacional.github.io/docs/#tag/ordersDetails/paths/~1orders~1{orderId}/get)|X|||
-    |[POST /orders/{orderId}/confirm](https://abrasel-nacional.github.io/docs/#operation/confirmOrder)|X|||
-    |[POST /orders/{orderId}/readyForPickup](https://abrasel-nacional.github.io/docs/#operation/orderReady)|X|||
-    |[POST /orders/{orderId}/dispatch](https://abrasel-nacional.github.io/docs/#operation/dispatchOrder)|X||
+    |[GET /orders/{orderId}](#tag/ordersDetails/paths/~1orders~1{orderId}/get)|X|||
+    |[POST /orders/{orderId}/confirm](#operation/confirmOrder)|X|||
+    |[POST /orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
+    |[POST /orders/{orderId}/dispatch](#operation/dispatchOrder)|X||
     |||||
-    |[POST /orders/{orderId}/requestCancellation](https://abrasel-nacional.github.io/docs/#operation/requestCancellation)|X|||
-    |[POST /orders/{orderId}/acceptCancellation](https://abrasel-nacional.github.io/docs/#operation/cancellationAccepted) |X|||
-    |[POST /orders/{orderId}/denyCancellation](https://abrasel-nacional.github.io/docs/#operation/cancellationDenied)|X|||
+    |[POST /orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
+    |[POST /orders/{orderId}/acceptCancellation](#operation/cancellationAccepted) |X|||
+    |[POST /orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
     |--------------------------------||||
-    |**[LOGISTICS](https://abrasel-nacional.github.io/docs/#tag/logisticsSection)**|||||
-    |[POST /logistics/delivery](https://abrasel-nacional.github.io/docs/#operation/logisticsNewDelivery)|||X|
-    |[POST /logistics/orderPicked/{orderId}](https://abrasel-nacional.github.io/docs/#operation/logisticsPicked)|||X|
-    |[POST /logistics/finishDelivery/{orderId}](https://abrasel-nacional.github.io/docs/#operation/logisticsFinish)|||X|
-    |[POST /logistics/handleProblem/{orderId}](https://abrasel-nacional.github.io/docs/#operation/logisticsProblem)|||X|
-    |[POST /logistics/cancel/{orderId}](https://abrasel-nacional.github.io/docs/#operation/logisticsCancel)|||X|
-    |[GET /logistics/delivery/{orderId}](https://abrasel-nacional.github.io/docs/#tag/logisticDetails/paths/~1logistics~1delivery~1{orderId}/get)|||X|
-    |[POST /logistics/availability](https://abrasel-nacional.github.io/docs/#tag/logisticPrice)|||X|
-    |[POST /deliveryUpdate](https://abrasel-nacional.github.io/docs/#operation/newLogisticEvent) |X|X||
+    |**[LOGISTICS](#tag/logisticsSection)**|||||
+    |[POST /logistics/delivery](#operation/logisticsNewDelivery)|||X|
+    |[POST /logistics/orderPicked/{orderId}](#operation/logisticsPicked)|||X|
+    |[POST /logistics/finishDelivery/{orderId}](#operation/logisticsFinish)|||X|
+    |[POST /logistics/handleProblem/{orderId}](#operation/logisticsProblem)|||X|
+    |[POST /logistics/cancel/{orderId}](#operation/logisticsCancel)|||X|
+    |[GET /logistics/delivery/{orderId}](#tag/logisticDetails/paths/~1logistics~1delivery~1{orderId}/get)|||X|
+    |[POST /logistics/availability](#tag/logisticPrice)|||X|
+    |[POST /deliveryUpdate](#operation/newLogisticEvent) |X|X||
 
      ## Parametrizations
 
@@ -159,7 +159,7 @@ info:
       - **PARAMETERS IN THE SOFTWARE SERVICE/ORDERING APPLICATION  
       (LOGISTIC SERVICE --> SOFTWARE SERVICE/ORDERING APPLICATION)**
 
-        - **{baseURL}** : The {baseURL} is the parameter that indicates which is the base address, i.e. the constant part of the address, where the routes will be called. The LOGISTIC SERVICE can provide up to 2 different base URLs:
+      - **{baseURL}** : The {baseURL} is the parameter that indicates which is the base address, i.e. the constant part of the address, where the routes will be called. The LOGISTIC SERVICE can provide up to 2 different base URLs:
           - {baseURL} for authentication: where the token route will be hosted.
           - {baseURL} for the other routes.
 
@@ -203,16 +203,44 @@ info:
 
     # └► General Guidelines
 
-     - **DateTime, Date and Time values**: For properties that require a DateTime, Date or Time value, use the formats specified in date-time, date and time formats (following the [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14) specifications)
+     - **Date-Time, Date and Time values**: For properties that require a Date-Time, Date or Time value, use the formats specified in date-time, date and time formats (following the [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14) specifications)
+      
+      > **ALL DATES MUST BE SENT USING UTC AS DEFAULT.**   
+      > (This way it is simpler for the receiving agent to convert to local time.)
+
       For example:
       
-      **2017-05-01T06:30:00-03:00** for date-time (As defined by date-time - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))\
+      **2017-05-01T06:30:00Z** for date-time (As defined by date-time - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))\
       **2017-05-01** for date (As defined by full-date - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))\
-      **08:08:00-03:00** for time (As defined by full-time - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))
+      **08:08:00Z** for time (As defined by full-time - [RFC3339](https://xml2rfc.tools.ietf.org/public/rfc/html/rfc3339.html#anchor14))
 
     - **IDs**: Use an id property to identify all unique entities within an entity type. An id is a unique identifier of the entity of that type, but across entities, IDs can overlap.
 
     - **Null** values: Do not use the value null in place of objects. If an object is optional, you must omit it from your feed.
+
+    - **{baseURL}** : Since Open Delivery is not the host of the APIs, it is up to the companies interested in using the standard to provide the {baseURL}. Companies can provide up to two {baseURL}:
+        - {baseURL} for authentication: where the **[Get Access Token](#operation/getToken)** route will be hosted.
+        - {baseURL} for all other routes.
+
+        > It is also possible to use the same {baseURL} for all routes.
+
+    - **Sending arrays as request parameters:**
+
+      To send an array parameter on a request for any endpoint, use the following format:   
+      
+      - For `QUERY` parameters:
+      ```
+      ?param=X&param=Y&param=Z
+      ```
+
+      - For `HEADER` parameters:
+      ```
+          param: X
+          param: Y
+          param: Z
+      ```
+
+
 
     # └► Error Handling
 
@@ -278,7 +306,7 @@ tags:
 # Version Tags
 
   - name: versionSection
-    x-displayName: " ►►►► VERSION 1.0.0-rc.10 ◄◄◄◄"
+    x-displayName: " ►►►► VERSION 1.0.0-rc.11 ◄◄◄◄"
     x-traitTag: true
     description: |-
       All the information listed in this section is planned to be released in version **1.0.0** of the Open Delivery API.
@@ -292,49 +320,23 @@ tags:
     
         Latest Changes:  
         
-        ### Version [1.0.0-rc.10] - Feb 04, 2022
+        ### Version [1.0.0-rc.11] - Feb 21, 2022
 
-        #### Contract Breaking Changes:
-        * The field names of the endpoint [/oauth/token](https://abrasel-nacional.github.io/docs/#operation/getToken) have been changed to meet the oAuth standard, following the rules described in the standard pages:
+        * Added `ITEM` entity as an option to the `entityType` field in the [POST /merchantUpdate](#operation/menuUpdated) endpoint.
+        * Fixed the descriptions of the `preparationStartTime` and `takeoutDatetime` fields in the [GET /orders/{orderId}](#tag/ordersDetails/paths/~1orders~1{orderId}/get) endpoint to make the function of the fields clearer. 
+        * Changed the description of the `latitude` and `longitude` fields of all endpoints that contained this information by removing the incorrect `decimal places <= 5` description.
 
-          - Request: (https://www.oauth.com/oauth2-servers/access-tokens/client-credentials/)
-            - `clientId` to `client_id`.
-            - `clientSecret` to `client_secret`.
-            - `grantType` to `grant_type`.
+        * Added new [Guidelines](#section/General-Guidelines):
+          - All dates should use UTC as Default
+          - Information on how to provide the {baseURLs} of the endpoints
+          - Instructions on how to send array parameters in requests.
 
-          - Response: (https://www.oauth.com/oauth2-servers/access-tokens/access-token-response/)
-            - `accessToken` to `access_token`.
-            - `tokenType` to `token_type`.
-            - `expiresIn` to `expires_in`.
-            
-        * Made two changes to endpoint [/events:polling](https://abrasel-nacional.github.io/docs/#operation/pollingEvents)
-          - Removed the requirement for the `eventType` field in the request. By not entering this field, the ORDERING APPLICATION will return all events that have not yet been ack from the polling merchant, regardless of `eventType`.
-
-          - The HTTP 200 response from the endpoint was incorrectly returning a simple object. The response has been corrected to return an array of objects.  
-          From:  
-          `{ "eventId": "string", "eventType": "CREATED", "orderId": "string", "orderURL": "http://example.com", "createdAt": "2019-08-24T14:15:22Z" }`  
-          to:  
-          `[ { "eventId": "string", "eventType": "CREATED", "orderId": "string", "orderURL": "http://example.com", "createdAt": "2019-08-24T14:15:22Z" } ]`
-
-        #### Other changes
-        * A new field has been added in the [/events:polling](http://localhost:9093/-307623811#operation/pollingEvents) and [/orders/{orderId}](http://localhost:9093/-307623811#tag/ordersDetails/paths/~1orders~1{orderId}/get) endpoints called `sourceAppId` to be used by companies performing the Hub role.
-        * Removed the requirement for the `clientId` field in the `metadata` from the `Event` object when the `eventType` = `CONFIRMED`. 
-        * As the format of the `MerchantId` field has a very specific definition, the UUID format has been removed to be string only. This affects objects and parameters that use the merchant id. The places affected are:
-          - Request parameters:
-            - /merchantStatus
-            - /events:polling
-            - Order Webhook
-          - Objects:
-            - Merchant 
-            - Order
-            
-        * Added a new section called, [How to Start](https://abrasel-nacional.github.io/docs/#section/How-to-Start-(Setup-Guide)) to assist companies with the implementations and parameterizations.
 
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
 
   - name: versionSection2
-    x-displayName: " ►►►► VERSION 1.1.0-rc.4 ◄◄◄◄"
+    x-displayName: " ►►►► VERSION 1.1.0-rc.5 ◄◄◄◄"
     x-traitTag: true
     description: |-
       All the information listed in this section is planned to be released in version **1.1.0** of the Open Delivery API.
@@ -347,16 +349,18 @@ tags:
     
         Latest Changes:  
 
-        ### Version [1.1.0-rc.4] - Feb 04, 2022
+        ### Version [1.1.0-rc.5] - Feb 21, 2022
 
-        * [[Issue #70](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/70)] - As the format of the `MerchantId` field has a very specific definition, the UUID format has been removed to be string only. This affects objects and parameters that use the merchant id. The places affected are:
-          - Request parameters:
-            - Delivery Order Webhook
-          - Objects:
-            - DeliveryOrder
-            - DeliveryOrderEvent
-            - DeliveryAvailabilityPrice
-            - DeliveryOrderDetails
+        * Changed the description of the `latitude` and `longitude` fields of all endpoints that contained this information by removing the incorrect `decimal places <= 5` description.
+        * Removed the requirement to fill in the `latitude` and `longitude` fields in the endpoints :
+          - [POST /logistics/delivery](#operation/logisticsNewDelivery)
+          - [POST /logistics/availability](#tag/logisticPrice)
+        * Added enumerator`INVALID_ADDRESS` as an option to the `rejectReason` field of the endpoint [POST /deliveryUpdate](#operation/newLogisticEvent)
+
+        * Added new [Guidelines](#section/General-Guidelines):
+          - All dates should use UTC as Default
+          - Information on how to provide the {baseURLs} of the endpoints
+          - Instructions on how to send array parameters in requests.
           
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
@@ -2161,7 +2165,6 @@ components:
       properties:
         access_token:
           type: "string"
-          format: "date-time"
           description: "A JWT representing the access token."
         token_type:
           type: "string"
@@ -2184,7 +2187,7 @@ components:
         lastUpdate:
           type: "string"
           format: "date-time"
-          description: "The last modified date and time in ISO timestamp format but with type String. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication."
+          description: "The last modified date and time in ISO timestamp format but with type String. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication. \n\n(UTC date-time in ISO timestamp format)."
           example: "2021-05-27T20:45:10.332Z"
         TTL:
           type: "integer"
@@ -2275,7 +2278,7 @@ components:
         lastUpdate:
           type: "string"
           format: "date-time"
-          description: "The last modified date and time in ISO timestamp format but with type String. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication."
+          description: "The last modified date and time. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication. \n\n(UTC date-time in ISO timestamp format)."
         TTL:
           type: "integer"
           description: "Time to Live (in seconds).
@@ -2481,7 +2484,7 @@ components:
         createdAt:
           type: "string"
           format: date-time
-          description: "Merchant creation date in ISO timestamp format but with type String."
+          description: "Merchant creation date and time. \n\n(UTC date-time in ISO timestamp format)."
 
     ListMerchant:
       type: "array"
@@ -2577,13 +2580,11 @@ components:
             properties:
               latitude:
                 type: "number"
-                multipleOf: 0.00001
-                description: "Indicates the latitude coordinate of the polygon point.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be at least 5 decimal places."
+                description: "Indicates the latitude coordinate of the polygon point.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
                 example: -23.54809
               longitude:
                 type: "number"
-                multipleOf: 0.00001
-                description: "Indicates the longitude coordinate of the polygon point.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be at least 5 decimal places."
+                description: "Indicates the longitude coordinate of the polygon point.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
                 example: -46.63638                 
         price:
           type: "object"
@@ -2602,13 +2603,11 @@ components:
       properties:
         geoMidpointLatitude:
           type: "number"
-          multipleOf: 0.00001
-          description: "Indicates the latitude coordinate at the center of the CIRCLE area.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be at least 5 decimal places."
+          description: "Indicates the latitude coordinate at the center of the CIRCLE area.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
           example: -23.54809
         geoMidpointLongitude:
           type: "number"
-          multipleOf: 0.00001
-          description: "Indicates the longitude coordinate at the center of the CIRCLE area.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be at least 5 decimal places."
+          description: "Indicates the longitude coordinate at the center of the CIRCLE area.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
           example: -46.63638  
         radius:
           type: "array"
@@ -3165,7 +3164,7 @@ components:
         lastRead:
           type: "string"
           format: "date-time"
-          description: "Date of last attempt to read merchant information"
+          description: "Date of last attempt to read merchant information. \n\n(UTC date-time in ISO timestamp format)."
         status:
           type: "string"
           description: "Reading attempt status"
@@ -3185,6 +3184,7 @@ components:
           SERVICE: "#/components/schemas/ServiceUpdate"
           MENU: "#/components/schemas/MenuUpdate"
           CATEGORY: "#/components/schemas/CategoryUpdate"
+          ITEM: "#/components/schemas/ItemUpdate"
           ITEM_OFFER: "#/components/schemas/ItemOfferUpdate"
           OPTION_GROUP: "#/components/schemas/OptionGroupUpdate"
           OPTION: "#/components/schemas/OptionUpdate"
@@ -3214,72 +3214,85 @@ components:
         - type: object
           properties:
             updatedObjects:
-              description: "Updated `Service` entity objects"
+              description: "Updated `Menu` entity objects"
               type: array
               items:
                 allOf:
                   - $ref: "#/components/schemas/Menu"
 
     CategoryUpdate:
-      description: Updated Category Object
+      description: Updated `Category` Object
       allOf:
         - $ref: "#/components/schemas/MerchantUpdate"
         - type: object
           properties:
             updatedObjects:
-              description: "Updated `Service` entity objects"
+              description: "Updated `Category` entity objects"
               type: array
               items:
                 allOf:
                   - $ref: "#/components/schemas/Category"
 
-    ItemOfferUpdate:
-      description: Updated ItemOffer Object
+    ItemUpdate:
+      description: Updated `Item` Object
       allOf:
         - $ref: "#/components/schemas/MerchantUpdate"
         - type: object
           properties:
             updatedObjects:
-              description: "Updated `Service` entity objects"
+              description: "Updated `Item` entity objects"
+              type: array
+              items:
+                allOf:
+                  - $ref: "#/components/schemas/Item"                
+
+    ItemOfferUpdate:
+      description: Updated `ItemOffer` Object
+      allOf:
+        - $ref: "#/components/schemas/MerchantUpdate"
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `ItemOffer` entity objects"
               type: array
               items:
                 allOf:
                   - $ref: "#/components/schemas/ItemOffer"
 
     OptionGroupUpdate:
-      description: Updated OptionGroup Object
+      description: Updated `OptionGroup` Object
       allOf:
         - $ref: "#/components/schemas/MerchantUpdate"
         - type: object
           properties:
             updatedObjects:
-              description: "Updated `Service` entity objects"
+              description: "Updated `OptionGroup` entity objects"
               type: array
               items:
                 allOf:
                   - $ref: "#/components/schemas/OptionGroup"
 
     OptionUpdate:
-      description: Updated Option Object
+      description: Updated `Option` Object
       allOf:
         - $ref: "#/components/schemas/MerchantUpdate"
         - type: object
           properties:
             updatedObjects:
-              description: "Updated `Service` entity objects"
+              description: "Updated `Option` entity objects"
               type: array
               items:
                 allOf:
                   - $ref: "#/components/schemas/Option"
 
     AvailabilityUpdate:
-      description: Updated Availability Object
+      description: Updated `Availability` Object
       allOf:
         - $ref: "#/components/schemas/MerchantUpdate"
         - type: object
           properties:
             updatedObjects:
-              description: "Updated `Service` entity objects"
+              description: "Updated `Availability` entity objects"
               type: array
               items:
                 allOf:
@@ -3341,7 +3354,7 @@ components:
         createdAt:
           type: "string"
           format: date-time
-          description: "Order creation date in ISO timestamp format."
+          description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format)."
         orderTiming:
           type: "string"
           description: "Order Timing. Currently, only `INSTANT` is accepted."
@@ -3349,7 +3362,9 @@ components:
             - "INSTANT"
         preparationStartDateTime:
           type: "string"
-          description: "Order preparation start time."
+          format: "date-time"
+          description: "Suggestion for the preparation start time after Order creation. This can be used by the Ordering Application to inform the merchant to delay the start of the preparation for any reason. Default is the same time as the order creation time.  
+                        \n\n(UTC date-time in ISO timestamp format)."
         merchant:
           type: "object"
           required: [id, "name"]
@@ -3720,22 +3735,20 @@ components:
                   properties:
                     latitude:
                       type: "number"
-                      multipleOf: 0.00001
-                      description: "Latitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be at least 5 decimal places."
+                      description: "Latitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
                       example: -23.54823
                     longitude:
                       type: "number"
-                      multipleOf: 0.00001
-                      description: "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be at least 5 decimal places."
+                      description: "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
                       example: -46.63632
             estimatedDeliveryDateTime:
               type: "string"
               format: date-time
-              description: "Estimated delivery date and time. The same date showed to the costumer, in the ordering application interface."
+              description: "Estimated delivery date and time. The same date showed to the costumer, in the ordering application interface. \n\n(UTC date-time in ISO timestamp format)."
             deliveryDateTime:
               type: "string"
               format: date-time
-              description: "Delivery date. The date time that the delivery actually took place."
+              description: "Delivery date. The date time that the delivery actually took place. \n\n(UTC date-time in ISO timestamp format)."
         takeout:
           type: "object"
           description: "If the chosen `type` is `TAKEOUT`, `DELIVERY` is not required."
@@ -3749,7 +3762,7 @@ components:
             takeoutDateTime:
               type: "string"
               format: date-time
-              description: "Takeout date in ISO timestamp format."
+              description: "Takeout date and time. It can be calculated by the Ordering Application using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
         extraInfo:
           type: "string"
           description: "Extra information, if necessary."
@@ -3765,7 +3778,7 @@ components:
         createdAt:
           type: "string"
           format: date-time
-          description: "Order creation date in ISO timestamp format."
+          description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format)."
         orderExternalCode:
           type: "string"
           description: "External order code, which can be used by merchant or marketplace."
@@ -3869,7 +3882,7 @@ components:
         createdAt:
           type: "string"
           format: date-time
-          description: "Order creation date in ISO timestamp format."
+          description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format)."
         sourceAppId:
           type: "string"
           format: UUID
@@ -3963,11 +3976,11 @@ components:
           orderDate:
             type: "string"
             format: "date-time"
-            description: "Date the order was placed."
+            description: "Date the order was placed. \n\n(UTC date-time in ISO timestamp format)."
           lastProcessingDate:
             type: "string"
             format: "date-time"
-            description: "Last date that the request was processed."
+            description: "Last date that the request was processed. \n\n(UTC date-time in ISO timestamp format)."
           orderStatus:
             type: "string"
             description: "The event type. **[Click here](#operation/pollingEvents)** for definitions of each type."
@@ -4133,7 +4146,7 @@ components:
 
 
 #Common
-
+   
     Address:
       type: "object"
       title: "Address"
@@ -4190,13 +4203,72 @@ components:
           example: "Yellow House"  
         "latitude":
           type: "number"
-          multipleOf: 0.00001
-          description: "Latitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be at least 5 decimal places."
+          description: "Latitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
           example: -23.54809
         "longitude":
           type: "number"
-          multipleOf: 0.00001
-          description: "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be at least 5 decimal places."
+          description: "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          example: -46.63638
+
+    AddressLogistics:
+      type: "object"
+      title: "Address"
+      required:
+        [
+          "country",
+          "state",
+          "city",
+          "district",
+          "street",
+          "number",
+          "postalCode",
+          "complement",
+        ]
+      properties:
+        "country":
+          type: "string"
+          pattern: "^[A-Z]{2}$"
+          description: "Two-letter [ISO 3166-1 alpha-2](https://www.iso.org/standard/72482.html) country code."
+          example: "BR"
+        state:
+          type: "string"
+          description: "State or country subdivision. It is recommended (but not required) that you use the [ISO 3166-2](https://www.iso.org/standard/72483.html) representation. "
+          example: "BR-SP"
+        "city":
+          type: "string"
+          description: "City name."
+          example: "São Paulo"
+        "district":
+          type: "string"
+          description: "District or Neighborhood name."
+          example: "Moema"
+        "street":
+          type: "string"
+          description: "Street Name."
+          example: "Plaza Avenue"
+        "number":
+          type: "string"
+          description: "Street Number."
+          example: "100"
+        "postalCode":
+          type: "string"
+          description: "Postal Code"
+          example: "20111-000"
+        "complement":
+          type: "string"
+          description: "Address complement."
+          example: "BL 02 AP 31"
+        "reference":
+          type: "string"
+          description: "Address reference." 
+          example: "Yellow House"  
+        "latitude":
+          type: "number"
+          description: "Latitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          example: -23.54809
+        "longitude":
+          type: "number"
+          description: "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
           example: -46.63638
 
     ContactPhones:
@@ -4338,7 +4410,7 @@ components:
         pickupAddress:
           description: "Pickup Address."
           allOf:
-            - $ref: "#/components/schemas/Address"
+            - $ref: "#/components/schemas/AddressLogistics"
             - type: object
               properties:
                 pickupLocation:
@@ -4359,7 +4431,7 @@ components:
         deliveryAddress:
           description: "Delivery Address"
           allOf:
-            - $ref: "#/components/schemas/Address"
+            - $ref: "#/components/schemas/AddressLogistics"
             - type: object
               properties:
                 instructions:
@@ -4384,7 +4456,7 @@ components:
             orderCreatedAt:
               type: string
               format: date-time
-              description: "The date and time that the Order was created at the Ordering Application." 
+              description: "The date and time that the Order was created at the Ordering Application. \n\n(UTC date-time in ISO timestamp format)." 
         totalOrderPrice:
           description: "Total order price that was calculated and displayed for the final consumer in the `Ordering Application`. This value may already contain taxes and shipping in addition to the value of the items purchased."
           allOf:
@@ -4500,11 +4572,11 @@ components:
             estimate:
               type: string
               format: date-time
-              description: "Expected date and time for completion."
+              description: "Expected date and time for completion. \n\n(UTC date-time in ISO timestamp format)."
             rejectAfter:
               type: string
               format: date-time
-              description: "Maximum date and time to wait for the acceptance or refusal of the order. After this time the delivery request should be disregarded and a new request should be made."  
+              description: "Maximum date and time to wait for the acceptance or refusal of the order. After this time the delivery request should be disregarded and a new request should be made. \n\n(UTC date-time in ISO timestamp format)."  
         deliveryDetailsURL:
           type: "string"
           format: "uri"
@@ -4604,7 +4676,7 @@ components:
         datetime:
           type: string
           format: date-time
-          description: "Date and time when the event ocurred."
+          description: "Date and time when the event ocurred. \n\n(UTC date-time in ISO timestamp format)."
         rejectionInfo:
           description: "Rejection Info. It should be informed to provide more information when the event type is `REJECTED`."
           allOf:
@@ -4622,6 +4694,7 @@ components:
           NO_DELIVERYMAN_AVAILABLE: "#/components/schemas/DeliveryEventDeniedNoDeliveryMan"
           DOES_NOT_MEET_REQUESTED_TIMES: "#/components/schemas/DeliveryEventDeniedEta"
           REGION_NOT_SERVED: "#/components/schemas/DeliveryEventDenied"
+          INVALID_ADDRESS: "#/components/schemas/DeliveryEventDenied"
           OTHER: "#/components/schemas/DeliveryEventDenied"
       properties:
         reason:
@@ -4722,7 +4795,7 @@ components:
         datetime:
           type: string
           format: date-time
-          description: "Date and time when the problem ocurred."
+          description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format)."
         canFinishDeliver:
           type: boolean
           description: "Informs whether or not it is still possible to finish the delivery."
@@ -4758,7 +4831,7 @@ components:
         datetime:
           type: string
           format: date-time
-          description: "Date and time when the problem ocurred."
+          description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format)."
         resolved:
           type: boolean
           description: "Informs if the problem was resolved or not."
@@ -4772,7 +4845,7 @@ components:
         resolutionDate:
           type: string
           format: date-time
-          description: "Date and time when the problem was resolved."  
+          description: "Date and time when the problem was resolved. \n\n(UTC date-time in ISO timestamp format)."  
 
     ChosenVehicle:
       description: Delivery Order Response Object
@@ -4842,7 +4915,7 @@ components:
         pickupAddress:
           description: "Pickup Address."
           allOf:
-            - $ref: "#/components/schemas/Address"
+            - $ref: "#/components/schemas/AddressLogistics"
             - type: object
               properties:
                 pickupLocation:
@@ -4863,7 +4936,7 @@ components:
         deliveryAddress:
           description: "Delivery Address"
           allOf:
-            - $ref: "#/components/schemas/Address"
+            - $ref: "#/components/schemas/AddressLogistics"
             - type: object
               properties:
                 instructions:
@@ -4888,7 +4961,7 @@ components:
             orderCreatedAt:
               type: string
               format: date-time
-              description: "The date and time that the Order was created at the Ordering Application." 
+              description: "The date and time that the Order was created at the Ordering Application. \n\n(UTC date-time in ISO timestamp format)." 
         totalOrderPrice:
           description: "Total order price that was calculated and displayed for the final consumer in the `Ordering Application`. This value may already contain taxes and shipping in addition to the value of the items purchased."
           allOf:
@@ -4958,18 +5031,18 @@ components:
         pickupEtaDatetime:
           type: string
           format: date-time
-          description: "Pickup Eta Datetime. Informs the date and time the delivery man is expected to arrive at the merchant for order pickup."
+          description: "Pickup Eta Datetime. Informs the date and time the delivery man is expected to arrive at the merchant for order pickup. \n\n(UTC date-time in ISO timestamp format)."
         deliveryEtainMinutes:
           type: integer
           description: "Delivery Eta in **minutes**. Informs how many minutes it will take the delivery man to arrive at the consumer's address for order delivery."
         deliveryEtaDatetime:
           type: string
           format: date-time
-          description: "Delivery Eta Datetime. Informs the date and time the delivery man is expected to arrive at the consumer's address for order delivery."
+          description: "Delivery Eta Datetime. Informs the date and time the delivery man is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
         maxDeliveryTime:
           type: string
           format: date-time
-          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request."
+          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
   
           
     DeliveryMan:
@@ -4998,13 +5071,11 @@ components:
       properties:
         latitude:
           type: "number"
-          multipleOf: 0.00001
-          description: "Indicates the latitude coordinate of the actual position of the delivery man.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be at least 5 decimal places."
+          description: "Indicates the latitude coordinate of the actual position of the delivery man.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
           example: -23.54809
         longitude:
           type: "number"
-          multipleOf: 0.00001
-          description: "Indicates the longitude coordinate of the actual position of the delivery man.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be at least 5 decimal places."
+          description: "Indicates the longitude coordinate of the actual position of the delivery man.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
           example: -46.63638  
         lastAddress:
           description: The last known address that the delivery man was when the event was sent.
@@ -5038,16 +5109,14 @@ components:
               example: "20111-000"
             distanceToPickup:
               type: string
-              format: date-time
               description: "Distance To Pickup in **meters**."
             distanceToDelivery:
               type: string
-              format: date-time
               description: "Distance To Delivery in **meters**."
             timestamp:
               type: string
               format: date-time
-              description: "Date and time when this information is valid."
+              description: "Date and time when this information is valid. \n\n(UTC date-time in ISO timestamp format)."
 
     DeliveryCancel:
       description: Delivery Cancel
@@ -5124,7 +5193,7 @@ components:
         pickupDate:
           type: "string"
           format: date-time
-          description: "Date and time when the order pickup occurred"
+          description: "Date and time when the order pickup occurred. \n\n(UTC date-time in ISO timestamp format)."
         volumePicked:
           type: "integer"
           description: "Number of volumes picked up."
@@ -5140,7 +5209,7 @@ components:
         finishDate:
           type: "string"
           format: date-time
-          description: "Date and time when delivery completion occurred."
+          description: "Date and time when delivery completion occurred. \n\n(UTC date-time in ISO timestamp format)."
         observation:
           type: string
           description: "Free text. It should be used to provide more detailed information."  
@@ -5225,18 +5294,18 @@ components:
         deliveryEtaDate:
           type: string
           format: date-time
-          description: "Delivery Eta Datetime. Informs the date and time the delivery man is expected to arrive at the consumer's address for order delivery."
+          description: "Delivery Eta Datetime. Informs the date and time the delivery man is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
         maxDeliveryTime:
           type: string
           format: date-time
-          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request."
+          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
         isDeliveryFinished:
           type: boolean
           description: "Informs whether or not the delivery is finished."
         deliveryFinishDate:
           type: string
           format: date-time
-          description: "Date and time when the delivery finished."
+          description: "Date and time when the delivery finished. \n\n(UTC date-time in ISO timestamp format)."
 
   examples:
     tokenExample:
@@ -5495,7 +5564,7 @@ components:
                   holidayHours:
                     [
                       {
-                        date: "7/4/2021",
+                        date: "2021-05-27",
                         timePeriods:
                           {
                             startTime: "12:00:00.000Z",
