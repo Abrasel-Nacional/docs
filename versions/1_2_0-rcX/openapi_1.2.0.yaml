@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "'Beta'"
+  version: "'1.2.0-rc.0 - Beta'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -19,35 +19,7 @@ info:
       **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and **Ordering Applications**, establishing a single communication standard for all, through a set of REST APIs.
       Thus, menus and orders are standardized and customer requests are received in a single place, in an organized and efficient way, allowing the merchant to work with more partners in the delivery environment.
 
-    # └► Table Of Contents
-
-    The documentation is separated as follows:
-
-    **[General and Common Information](#section/-GENERAL-INFO-)**    
-    This is information that is valid for all versions that exist so far.
-      - **[How to Start](#section/How-to-Start-(Setup-Guide))**
-      - **[Open Delivery API Evolution](#section/Open-Delivery-API-Evolution)**
-      - **[General Guidelines](#section/General-Guidelines)**
-      - **[Error Handling](#section/Error-Handling)**
-
-
-    **[Version 1.0.0-rc.X](#tag/versionSection)**   
-    Endpoints that will be released with version 1.0.0
-      - **[Changelog](#tag/versionChangelog)**
-      - **[Security](#tag/securitySection)**
-      - **[Merchant](#tag/merchantSection)**
-      - **[Order](#tag/orderSection)**
-
-    **[Version 1.1.0-rc.X](#tag/versionSection2)**  
-    Endpoints that will be released with version 1.1.0
-      - **[Changelog](#tag/versionChangelog2)**
-      - **[Logistics](#tag/logisticsSection)**
-
-
-    > Both versions will be available in this documentation, each one with its own changelog.
-
-    > As both versions are still in release candidate, small changes may still occur until the release date.
-
+    
     # └► Issues and Suggestions
 
     In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
@@ -57,129 +29,6 @@ info:
     # 
     # ► ------- GENERAL INFO -------- ◄
 
-    # └► How to Start (Setup Guide)
-
-    The Open Delivery API proposes the implementation of a single communication standard between the various parts that make up the delivery environment. This documentation contains all the definitions needed for interested systems and platforms to implement it.
-
-    Open Delivery does not have a server or baseURL. It is up to each company that implements the standard to use its infrastructure to host the endpoints.
-
-    This section seeks to summarize the Open Delivery documentation as a whole, helping the different parts of the integrations to understand what needs to be developed and parameterized. 
-
-    First, it is recommended to read all the documentation to understand the different processes and flows of the integrations. 
-
-    After reading and understanding the documentation as a whole, companies interested in implementing the standard in their platforms and systems can use this guide to assist in the implementation.
-
-    ## Parties Involved
-
-    - **ORDERING APPLICATION**: It is the platform where the final consumer will choose his items and place the order. It is responsible for reading the merchant data exposed by the SOFTWARE SERVICE and sending the orders to the SOFTWARE SERVICE as well.
-              
-    - **SOFTWARE SERVICE**: It is the merchant management platform. It is responsible for exposing the merchant data (registration data, service data, and menus) and receiving the orders from the ORDERING APPLICATION.
-
-      > There may also be applications that will perform a hub function, connecting the ORDERING APPLICATION to the SOFTWARE SERVICE. In this context, these intermediate applications, can play the role of both the ORDERING APPLICATION (when communicating with a SOFTWARE SERVICE) as well as the SOFTWARE SERVICE (when communicating with the ORDERING APPLICATION).
-
-    - **LOGISTIC SERVICE**: It is the platform responsible for receiving calls for new deliveries from SOFTWARE SERVICE or ORDERING APPLICATION, and sending the tracking of the deliveries.
-
-    ## Development
-
-    Since Open Delivery is not the host of the APIs, it is up to the companies interested in using the standard to develop the Open Delivery standard APIs in their systems and platforms using this documentation as a guideline. 
-
-    Listed below are the different Routes that each party needs to implement and make available in their systems:
-
-    | |ORDERING APPLICATION|SOFTWARE SERVICE|LOGISTIC SERVICE|
-    |-|:------------------:|:--------------:|:--------------:|
-    |**[AUTHENTICATION](#tag/authentication)**|||||
-    |[POST /oauth/token](#operation/getToken)|X||X|
-    |--------------------------------||||
-    |**[MERCHANT](#tag/merchantSection)**|||||
-    |[GET /merchant](#operation/getMerchant)||X||
-    |[POST /merchantUpdate](#operation/menuUpdated)|X||
-    |[GET /merchantStatus](#tag/merchantStatus)|X|||
-    |--------------------------------||||
-    |**[ORDER](#tag/ordersSection)**|||||
-    |[GET /events:polling ](#operation/pollingEvents)|X|||
-    |[POST /events/acknowledgment](#operation/pollingAcknowledgment)|X|||
-    |[POST /orderUpdate](#operation/newEvent)||X||
-    |||||
-    |[GET /orders/{orderId}](#operation/ordersDetails)|X|||
-    |[POST /orders/{orderId}/confirm](#operation/confirmOrder)|X|||
-    |[POST /orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
-    |[POST /orders/{orderId}/dispatch](#operation/dispatchOrder)|X||
-    |||||
-    |[POST /orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
-    |[POST /orders/{orderId}/acceptCancellation](#operation/cancellationAccepted) |X|||
-    |[POST /orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
-    |--------------------------------||||
-    |**[LOGISTICS](#tag/logisticsSection)**|||||
-    |[POST /logistics/delivery](#operation/logisticsNewDelivery)|||X|
-    |[POST /logistics/orderPicked/{orderId}](#operation/logisticsPicked)|||X|
-    |[POST /logistics/finishDelivery/{orderId}](#operation/logisticsFinish)|||X|
-    |[POST /logistics/handleProblem/{orderId}](#operation/logisticsProblem)|||X|
-    |[POST /logistics/cancel/{orderId}](#operation/logisticsCancel)|||X|
-    |[GET /logistics/delivery/{orderId}](#operation/logisticDetails)|||X|
-    |[POST /logistics/availability](#tag/logisticPrice)|||X|
-    |[POST /deliveryUpdate](#operation/newLogisticEvent) |X|X||
-
-     ## Parametrizations
-
-      > **IMPORTANT: Before reading this section, it is recommended the reading of the complete documentation, for a better understanding of the different required parameterizations.**
-
-      Once the endpoints are implemented, the parties interested in integrating via the Open Delivery stantard should provide some parameters for the other party to correctly connect to its routes. 
-
-      Below is a list of information that each party must provide to the other party for the integrations to occur, i.e., you should consider that the information below will be created as parameters on the endpoint that will call the endpoints.
-
-      - **PARAMETERS IN THE SOFTWARE SERVICE   
-      (ORDERING APPLICATION --> SOFTWARE SERVICE)**
-
-        - **{baseURL}** : The {baseURL} is the parameter that indicates the base address, i.e. the constant part of the address, where the routes will be called. The **Ordering Application** can provide up to 2 different base URLs:
-          - {baseURL} for authentication: where the token route will be hosted.
-          - {baseURL} for the other routes.
-
-          The **Ordering Application** can use only one {baseURL} if it wishes.
-        
-        - **clientId** and **clientSecret**: The **Ordering Application** is responsible for providing the credentials for authentication to be performed through the authentication endpoint. 
-        
-            > IMPORTANT: As described in the authentication section of the documentation, credentials must be generated BY MERCHANT and not by **Software Service**, that is, even if several MERCHANTS use the same **Software Service**, each of the MERCHANT will have a unique clientId and clientSecret.
-
-        - **AppId**: It is the unique ID of the **Ordering Application**. It must be generated by the **Ordering Application** itself, and once generated, it must be informed to all the **Software Service**S that it will integrate. Since the **AppId** is a unique key of the **Ordering Application**, you must not create oneAppId** per **Software Service**S, but the same key for all of them.
-      > The companies that play the role of hub, intermediating the integrations between the **Ordering Application** and the **Software Service**, must also generate their own **AppId**, different from the **Ordering Application**'s AppId.
-
-      - **PARAMETERS IN ORDERING APPLICATION  
-      (SOFTWARE SERVICE --> ORDERING APPLICATION)**
-
-        - **{baseURL} from the `GET /merchant` endpoint:** The **Ordering Application** must be provided with the {baseURL} to access the GET /merchant route to obtain the merchant's information. 
-
-          > IMPORTANT: Each merchant that the **Software Service** works with must have a unique {baseURL}.
-        - **apiKey**: If the GET /merchant endpoint is implemented using authentication, it is necessary that the **Software Service** provides the apiKey referring to the entered merchant.
-        
-        - **Order Event Webhook**: If both parties are going to work with sending order events via webhook, it is necessary to provide the URL of the webhook.   
-      Default webhook route: 
-      `POST {baseURL}/orderEvent`
-
-      - **PARAMETERS IN THE SOFTWARE SERVICE/ORDERING APPLICATION  
-      (LOGISTIC SERVICE --> SOFTWARE SERVICE/ORDERING APPLICATION)**
-
-      - **{baseURL}** : The {baseURL} is the parameter that indicates which is the base address, i.e. the constant part of the address, where the routes will be called. The **Logistic Service** can provide up to 2 different base URLs:
-          - {baseURL} for authentication: where the token route will be hosted.
-          - {baseURL} for the other routes.
-
-          The **Logistic Service** will be able to use only one {baseURL} if it wishes.
-        
-        - **clientId** and **clientSecret**: The **Logistic Service** is responsible for providing the credentials for authentication to be performed through the authentication endpoint. 
-        
-            > IMPORTANT: As described in the authentication section of the documentation, the credentials must be generated BY MERCHANT and not by **Software Service**/**Ordering Application**, that is, even if several MERCHANTS use the same **Software Service**/**Ordering Application**, each of the MERCHANT will have a unique clientId and clientSecret.
-
-        - **AppId**: It is a unique identification of the **Logistic Service**. It must be generated by the **Logistic Service** itself and once generated, it must be informed to all the **Software Service**S/**Ordering Application** to which it will integrate. As the **AppId** is a unique key of the **Logistic Service**, it must not be created an **AppId** per **Software Service**S/**Ordering Application**, but the same key must be informed for all.
-
-      - **PARAMETERS IN THE LOGISTIC SERVICE  
-      (SOFTWARE SERVICE/ORDERING APPLICATION --> LOGISTIC SERVICE)**
-
-        - **Tracking Event Webhook**: It is necessary to inform the URL of the webhook to receive the tracking and event updates of the delivery order.   
-      Default webhook route: 
-      `POST {baseURL}/deliveryEvent`
-
-        - **MerchantId**: It is a unique ID of the MERCHANT. Similar to the **AppId** but for Merchant. It must be generated by **Software Service**S and once generated, it must be informed to all **Logistic Services** it will integrate with. Since the **MerchantId** is a unique key, a **MerchantId** must not be created per **Logistic Service**, but the same key must be informed for all. 
-        The **Ordering Application** must send the **MerchantId** received previously through its integration with the **Software Service**.
-        
     # └► Open Delivery API Evolution
 
      The **Open Delivery** API seeks to respect [SemVer](https://semver.org/). In this sense, compatible changes should not generate a new major version.
@@ -983,69 +832,73 @@ tags:
       **Ordering Application** must provide an endpoint where merchants can view information about sales for orders placed and information about the transfer of funds to the merchant.
 
 x-tagGroups:
-  - name: ".................................................................................................................."
-    tags:
-      - versionSection
-      - versionChangelog
-  - name: ""
-    tags:
-      - securitySection
-      - authentication         
-  - name: ""
-    tags:
-      - merchantSection
-  - name: "└──◌ Overview and Structure"
-    tags:
-      - merchantOverview
-      - merchantStructure
-  - name: "└──◌ api"
-    tags:
-      - merchantEndpoints
-  - name: "└──◌ Updates and Status"
-    tags:
-      - merchantUpdate
-      - merchantStatus
-  - name: ""
-    tags:
-      - ordersSection
-  - name: "└──◌ Overview"
-    tags:
-      - ordersOverview
-  - name: └──◌ Events
-    tags:
-      - ordersPolling
-      - ordersWebhook
-  - name: └──◌ Details
-    tags:
-      - ordersDetails
-  - name: └──◌ Actions
-    tags:
-      - ordersStatus
-      - ordersCancellation
+  # - name: ".................................................................................................................."
+  #   tags:
+  #     - versionSection
+  #     - versionChangelog
   # - name: ""
   #   tags:
-  #     - repositorySection
-  # - name: Repository API
+  #     - securitySection
+  #     - authentication         
+  # - name: ""
   #   tags:
-  #     - repositoryOverview
-  - name: ".................................................................................................................."
-    tags:
-      - versionSection2
-      - versionChangelog2     
-  - name: ""
-    tags:
-      - logisticsSection
-  - name: └──◌ Logistics API
-    tags:
-      - logisticOverview
-      - logisticOrder
-      - logisticTracking
-      - logisticDetails
-      - logisticPrice
+  #     - merchantSection
+  # - name: "└──◌ Overview and Structure"
+  #   tags:
+  #     - merchantOverview
+  #     - merchantStructure
+  # - name: "└──◌ api"
+  #   tags:
+  #     - merchantEndpoints
+  # - name: "└──◌ Updates and Status"
+  #   tags:
+  #     - merchantUpdate
+  #     - merchantStatus
+  # - name: ""
+  #   tags:
+  #     - ordersSection
+  # - name: "└──◌ Overview"
+  #   tags:
+  #     - ordersOverview
+  # - name: └──◌ Events
+  #   tags:
+  #     - ordersPolling
+  #     - ordersWebhook
+  # - name: └──◌ Details
+  #   tags:
+  #     - ordersDetails
+  # - name: └──◌ Actions
+  #   tags:
+  #     - ordersStatus
+  #     - ordersCancellation
+  # # - name: ""
+  # #   tags:
+  # #     - repositorySection
+  # # - name: Repository API
+  # #   tags:
+  # #     - repositoryOverview
+  # - name: ".................................................................................................................."
+  #   tags:
+  #     - versionSection2
+  #     - versionChangelog2     
+  # - name: ""
+  #   tags:
+  #     - logisticsSection
+  # - name: └──◌ Logistics API
+  #   tags:
+  #     - logisticOverview
+  #     - logisticOrder
+  #     - logisticTracking
+  #     - logisticDetails
+  #     - logisticPrice
   - name: ".................................................................................................................."
     tags:
       - versionSection3
-      - versionChangelog3     
+      - versionChangelog3
+  - name: ""
+    tags:
+      - securitySection
+      - authentication                 
   - name: ""
     tags:
       - financialReportSection
