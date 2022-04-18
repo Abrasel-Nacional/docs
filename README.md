@@ -4,7 +4,7 @@
 
 # Documentantion Link
 
-The `oficial` branch of the API can be viewed __[here](https://abrasel-nacional.github.io/docs/)__.
+The `official` branch of the API can be viewed __[here](https://abrasel-nacional.github.io/docs/)__.
 
 The `pre-release` branch of the API can be viewed __[here](https://abrasel-nacional.github.io/docs/beta)__.
 
