@@ -31,8 +31,8 @@ info:
       - **[Error Handling](#section/Error-Handling)**
 
 
-    **[Version 1.0.0-rc.X](#tag/versionSection)**   
-    Endpoints that will be released with version 1.0.0
+    **[Version v1.0.0](#tag/versionSection)**   
+    Endpoints that were released with version 1.0.0
       - **[Changelog](#tag/versionChangelog)**
       - **[Security](#tag/securitySection)**
       - **[Merchant](#tag/merchantSection)**
@@ -346,6 +346,7 @@ tags:
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
 
+
   - name: versionSection2
     x-displayName: " ►►►► VERSION 1.1.0-rc.6 ◄◄◄◄"
     x-traitTag: true
@@ -353,6 +354,7 @@ tags:
       All the information listed in this section is planned to be released in version **1.1.0** of the Open Delivery API.
 
       > This version is still in **'Beta'**, so minor changes may still occur until release.
+ 
   - name: versionChangelog2
     x-displayName: "└─► Changelog"
     x-traitTag: true
@@ -384,6 +386,29 @@ tags:
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG_1.1.x.md 
 
+
+  - name: versionSection3
+    x-displayName: " ►►►► VERSION 1.2.0-rc.0 ◄◄◄◄"
+    x-traitTag: true
+    description: |-
+      All the information listed in this section is planned to be released in version **1.2.0** of the Open Delivery API.
+
+      > This version is still in **'Beta'**, so minor changes may still occur until release.
+
+  - name: versionChangelog3
+    x-displayName: "└─► Changelog"
+    x-traitTag: true
+    description: |-  
+    
+        Latest Changes:  
+        
+        ### Version [1.2.0-rc.0] - Apr 19, 2022
+
+        * Initial Release
+
+        See the full changelog here:  
+        https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md 
+  
 
 # Merchant Tags
 
@@ -809,19 +834,6 @@ tags:
 
       CANCELLATION_DENIED or CANCELLED
 
-# Sales Report Tags
-
-  # - name: salesReportSection
-  #   x-displayName: └─■ SALES REPORT
-  #   x-traitTag: true
-
-  # - name: salesReport
-  #   x-displayName: └───● Sales Report Endpoint
-  #   description: |-
-
-  #     **Ordering Application** must provide an endpoint where merchants can view information about sales for orders placed and information about the transfer of funds to the merchant.
-
-
 # Logistics Tags
 
   - name: logisticsSection
@@ -961,6 +973,96 @@ tags:
       > This endpoint should not be used as a way to get delivery tracking. This is already covered in the events webhook. The purpose of this route is to receive sporadic calls to get missing information or the complete history of events and problems.
         Misuse of this endpoint can result in blockages by **Logistic Service**.
 
+# Financial Report Tags
+
+  - name: financialReportSection
+    x-displayName: └─■ RECONCILIATION
+    x-traitTag: true
+    description: |-
+      This section covers the API referring to the operations with **`Financial Reconciliation`**. 
+      
+      > The information below are still in release candidate (BETA) and will be tested in the coming months.
+
+      The expected release of the logistics API is at **Version 1.2.0**    
+
+  - name: financialReport
+    x-displayName: └───● Financial Reports
+    description: |-
+
+      **Ordering Application** must provide an endpoint where merchants can view information about sales for orders placed and information about the transfer of funds to the merchant.
+
+# Contract Tags
+
+  - name: contractSection
+    x-displayName: └─■ CONTRACT
+    x-traitTag: true
+    description: |-
+      This section covers the API referring to the operations with `Contracts`. 
+      
+      > The information below are still in release candidate (BETA) and will be tested in the coming months.
+
+      The expected release of the logistics API is at **Version 1.2.0**
+
+  - name: contractSummaryOverview
+    x-displayName: └───● Overview
+    description: |-
+      
+      Open Delivery is providing a way to standardize the information that is being or was negotiated between the Merchant and the Ordering Application through a set of standard fields, called Contract Summary Sheet.
+
+      The idea is that whenever necessary, the Ordering Application will be able to provide the Merchant with the Contract Summary Sheet so that the Merchant is aware of all the information related to the contract, such as Fees, Payment Information, Contract Duration, and Registration and Contact Information of the parties. 
+
+      The template for the Contract Summary Sheet is provided below and can be downloaded and used by Ordering Applications.
+
+      <div align="center">
+        <a href="https://abrasel-nacional.github.io/docs/files/contractSummary_ptbr.docx">Download Contract Summary Sheet Template</a>
+      </div>
+
+      The Contract Summary Sheet can also be accessed through the endpoint described below.
+
+  - name: contractSummary
+    x-displayName: └───● Endpoint
+
+  - name: contractSignupOverview
+    x-displayName: └───● Overview
+    description: |-
+      
+      Besides standardizing the Contract Summary Sheet, Open Delivery is proposing, through some standard APIs, a way for the Software Services, partnering with Ordering Applications, to create a Hiring Service.
+
+      Through a sequence of steps, the Software Service can display on its platform, information regarding plans and proposals from several Ordering Applications, so that its merchants can compare these rates and plans and choose the one they want to work with.
+
+      The Software Services can then send this contracting intention to the Ordering Applications, facilitating the contract signature and onboarding of these merchants.
+
+      Below are the steps to implement this contracting environment:
+
+
+      <div align="center">
+        <img src="https://abrasel-nacional.github.io/docs/images/signUpService.png" />
+      </div>
+
+      **1 -** The Software Services and Ordering Application shall contact each other, to partner so that the Software plataform can access and display its plans and rates, and send contracting intentions. The Software Service should also receive a set of credentials with access to the APIs of this Sign-Up Service.
+
+      **2 -** With the credentials in hand, the Software Service makes a request to the GET endpoint /signup/contractConditions, informing some initial merchant data.  
+      The Ordering Application returns a set of plans and rates to the Software Service.
+
+      The Software Service should use this response to display to the Merchant, all the information returned, so that the Merchant has a clear view of everything being offered.
+
+      **3 -** After the Merchant has analyzed and compared the rates and plans, it may indicate an intention to contract with one or more Ordering Applications that the Software Service has partnered with. The Software Service then sends the chosen plans to the Ordering Application, via the POST endpoint /signup/chosenConditions.  
+      In response the Software Service will receive a contract ID and instructions for the Merchant to sign the contract (or term of service).
+
+      **4 -** Merchant performs the signing of the contract or term (in an environment external to the Software Service).
+
+      **5 -** Software Service checks the contract Status and conditions through the GET /signup/contractStatus endpoint. It is through this endpoint that the Software will know when the signing has occurred and whether the contracting process is proceeding successfully or not.
+
+      **6 -** Software Service performs the onboarding of the complementary registration information through the PUT /signup/merchantAccount endpoint.
+
+      **7 -** Contract between Merchant and Ordering Application becomes active, and both parties can now send and receive orders.
+
+  - name: contractSignup
+    x-displayName: └───● Actions
+    description: |-
+
+      Actions to provide a way to consult Ordering Applications contract plans and conditions, as well as signal the intention to contract a specific Ordering Application and finally perform onboarding on its plataform.
+
 x-tagGroups:
   - name: ".................................................................................................................."
     tags:
@@ -1001,18 +1103,6 @@ x-tagGroups:
     tags:
       - ordersStatus
       - ordersCancellation
-  # - name: ""
-  #   tags:
-  #     - salesReportSection
-  # - name: └──◌ Sales Report API
-  #   tags:
-  #     - salesReport
-  # - name: ""
-  #   tags:
-  #     - repositorySection
-  # - name: Repository API
-  #   tags:
-  #     - repositoryOverview
   - name: ".................................................................................................................."
     tags:
       - versionSection2
@@ -1027,9 +1117,28 @@ x-tagGroups:
       - logisticTracking
       - logisticDetails
       - logisticPrice
+  - name: ".................................................................................................................."
+    tags:
+      - versionSection3
+      - versionChangelog3           
+  - name: ""
+    tags:
+      - financialReportSection
+  - name: "└──◌ FINANCIAL REPORTS"
+    tags:
+      - - financialReport 
+  - name: ""
+    tags:
+      - contractSection
+  - name: "└──◌ CONTRACT SUMMARY"
+    tags:
+      - contractSummaryOverview
+      - contractSummary     
+  - name: "└──◌ CONTRACT SIGN-UP SERVICE"
+    tags:  
+      - contractSignupOverview
+      - contractSignup       
 
-#    - logisticStatus
-#    - logisticCancellationProblems
 
 paths:
   # Authentication
@@ -1514,115 +1623,6 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  # # Sales Report
-
-  # /salesReport:
-  #   get:
-  #     operationId: "salesReport"
-  #     tags:
-  #       - "salesReport"
-  #     summary: "Sales Report endpoint"
-  #     description: |-
-  #       This endpoint is responsible for the sales report.
-  #       <br /><br />
-  #       <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
-
-  #       <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
-  #       <div align="center">
-  #         <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
-  #       </div>
-  #     parameters:
-  #       - name: id
-  #         in: "query"
-  #         required: true
-  #         schema:
-  #           type: "string"
-  #           format: "UUID"
-  #       - name: "startDate"
-  #         required: true
-  #         in: "query"
-  #         schema:
-  #           type: "string"
-  #           format: "date-time"
-  #       - name: "endDate"
-  #         required: true
-  #         in: "query"
-  #         schema:
-  #           type: "string"
-  #           format: "date-time"
-  #     responses:
-  #       "200":
-  #         description: "Successfully returns the report."
-  #         content:
-  #           "application/json":
-  #             schema:
-  #               $ref: "#/components/schemas/SalesByMerchant"
-  #       "400":
-  #         $ref: "#/components/responses/BadRequest"
-  #       "403":
-  #         $ref: "#/components/responses/AccessDenied"
-  #       "404":
-  #         $ref: "#/components/responses/NotFound"
-  #       "503":
-  #         $ref: "#/components/responses/ServiceUnavailable"
-
-  # Repository
-
-  /repository:
-    get:
-      operationId: "getRepository"
-      tags:
-        - "repositoryOverview"
-      summary: "List companies under a Open Delivery participant"
-      description: |-
-        > This endpoint MUST be provided by the merchant **Software Service**.
-
-        Endpoint used by the repository indexing system to list companies under a **Software Service**.
-      responses:
-        "200":
-          description: "Companies Info"
-          content:
-            "application/json":
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Repository"
-        "403":
-          $ref: "#/components/responses/AccessDenied"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "503":
-          $ref: "#/components/responses/ServiceUnavailable"
-
-  /merchantList:
-    get:
-      tags:
-        - "repositoryOverview"
-      summary: "Returns the name and URL of the merchant."
-      security: []
-      description: |-
-        Endpoint responsible for returning merchants and their URLs, if registered.
-        <br /><br />
-        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **SOFTWARE SERVICE**
-
-        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
-        <div align="center">
-          <img src="https://abrasel-nacional.github.io/docs/images/directionGETOA_SS.png" />
-        </div>
-      responses:
-        "200":
-          description: "Successfully returns the merchant list."
-          content:
-            "application/json":
-              schema:
-                $ref: "#/components/schemas/ListMerchant"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "503":
-          $ref: "#/components/responses/ServiceUnavailable"
-
   # Logistics
 
   /logistics/availability:
@@ -1651,8 +1651,6 @@ paths:
           $ref: "#/components/responses/NotFound"
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
-
-
 
   /logistics/delivery:
     post:
@@ -1857,6 +1855,349 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
+
+# Financial Report
+
+  /paymentBatchByIds:
+    get:
+      operationId: "paymentBatchId"
+      tags:
+        - "financialReport"
+      summary: "Get Payments Batches by Id"
+      description: |-
+        This endpoint is responsible for returning a complete report for one or more payment batches so that the merchant can perform its bank reconciliation..
+
+        It is necessary to inform at least one `batchId` in the request query.
+
+        > **IMPORTANT: All values that will be _credited_ to the merchant must be filled with POSITIVE values. Likewise, all the values that will be __charged__ to the merchant must be filled with NEGATIVE values.**
+        
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
+        </div>
+      parameters:
+        - name: batchIds
+          in: "query"
+          required: true
+          description: "List of `batchId` to be returned."
+          schema:
+            type: array
+            items:
+              type: "string"
+              description: batchId
+      responses:
+        "200":
+          description: "Successfully returns the report."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PaymentsByBatchId"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /paymentBatchByDate:
+    get:
+      operationId: "paymentBatchDate"
+      tags:
+        - "financialReport"
+      summary: "Get Payments Batches by Dates"
+      description: |-
+        This endpoint is responsible for returning a summary report for one or more payment batches so that the merchant can perform its bank reconciliation..
+
+        The requisition can be filtered by a date range, or by batch or payment status.
+
+        This endpoint does not return the detailed information on order values and extra charges, only the batch payment information. To get this information use the **Get Payments Batches by Id** endpoint
+
+        > **IMPORTANT: Each system that implements this endpoint will have a different processing capacity, so the number of records that will be returned may vary from one system to another. The enpoint will always return a maximum number of records (which varies from system to system), even if the search has found more records than it returned. Check the `summary` object to know if all the records from the period informed were returned, or if a new search is necessary, with more restrictive filters.**
+
+        > **IMPORTANT: All values that will be _credited_ to the merchant must be filled with POSITIVE values. Likewise, all the values that will be __charged__ to the merchant must be filled with NEGATIVE values.**
+        
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
+        </div>
+      parameters:
+        - name: "startOrderDate"
+          required: false
+          in: "query"
+          schema:
+            type: "string"
+            format: "date-time"
+            description: "Initial order date for filtering. \n\n(UTC date-time in ISO timestamp format)."
+        - name: "endOrderDate"
+          required: false
+          in: "query"
+          schema:
+            type: "string"
+            format: "date-time"
+            description: "Final order date for filtering. \n\n(UTC date-time in ISO timestamp format)."
+        - name: "startPaymentDate"
+          required: false
+          in: "query"
+          schema:
+            type: "string"
+            format: "date-time"
+            description: "Initial payment date for filtering. \n\n(UTC date-time in ISO timestamp format)."
+        - name: "endPaymentDate"
+          required: false
+          in: "query"
+          schema:
+            type: "string"
+            format: "date-time"
+            description: "Final payment date for filtering \n\n(UTC date-time in ISO timestamp format)."
+        - name: "batchStatus"
+          required: false
+          in: "query"
+          schema:
+            type: "string"
+            description: "Batch Status. This status refers only to the order period, not to the batch payment."
+            enum:
+              - "OPEN"
+              - "CLOSED"
+        - name: "paymentStatus"
+          required: false
+          in: "query"
+          schema:
+            type: "string"
+            description: "Payment Status."
+            enum:
+              - "SCHEDULED"
+              - "PAID"
+              - "REJECTED"
+              - "WAITING_MERCHANT_PAYMENT"
+              - "PAYMENT_RECEIVED"
+              - "DEBIT_IN_THE_NEXT_BATCH"           
+      responses:
+        "200":
+          description: "Successfully returns the report."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/PaymentsByBatchDate"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"          
+
+
+# Contract Summary
+
+  /contractSummary:
+    get:
+      operationId: "getContractSummary"
+      tags:
+        - "contractSummary"
+      summary: "Get Contract Summary for Merchant"
+      description: |-
+        This endpoint is responsible for returning the contract summary tab for a particular merchant. The summary sheet is a set of standard fields that give an overview of all the parties and terms negotiated in the contract between the Ordering Application and the Merchant.
+
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
+        </div>
+      parameters:
+      - in: "query"
+        name: "merchantId"
+        required: true
+        schema:
+          type: string
+          description: "The Id of the Merchant for whom you want to get the contract summary."
+      responses:
+        "200":
+          description: "Successfully returns the report."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ContractSummaryResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+# Contract Sign-Up
+
+  /signup/contractConditions:
+    post:
+      operationId: "postContractConditions"
+      tags:
+        - "contractSignup"
+      summary: "Get Contract Conditions for Merchant"
+      description: |-
+        This endpoint is responsible for returning the contract conditions for a particular merchant. 
+
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div>
+      requestBody:
+          required: true
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ContractConditionsRequest"
+      responses:
+        "200":
+          description: "Successfully returns the report."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ContractConditionsResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /signup/chosenConditions:
+      post:
+        operationId: "postContractChosenConditions"
+        tags:
+          - "contractSignup"
+        summary: "Send the Contract Conditions chosen by the Merchant"
+        description: |-
+          This endpoint is responsible for sending to the **Ordering Application** the conditions and terms chosen by the merchant.  
+
+          This endpoint does not oonclude the sign-up process in the ordering application, it only tells them what plans and terms the merchant has chosen.
+
+          <br /><br />
+          <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+          <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+          <div align="center">
+            <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+          </div>
+        requestBody:
+            required: true
+            content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/ContractChosenConditionsRequest"
+        responses:
+          "200":
+            description: "Successfully returns the report."
+            content:
+              "application/json":
+                schema:
+                  $ref: "#/components/schemas/ContractChosenConditionsResponse"
+          "400":
+            $ref: "#/components/responses/BadRequest"
+          "403":
+            $ref: "#/components/responses/AccessDenied"
+          "404":
+            $ref: "#/components/responses/NotFound"
+          "503":
+            $ref: "#/components/responses/ServiceUnavailable"
+
+  /signup/contractStatus:
+    get:
+      operationId: "getContractStatus"
+      tags:
+        - "contractSignup"
+      summary: "Get Contract Status and Terms"
+      description: |-
+        This endpoint is responsible for returning the contract conditions for a particular merchant. 
+
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionGETSS_OA.png" />
+        </div>
+      parameters:
+      - in: "query"
+        name: "contractId"
+        required: true
+        schema:
+          type: string
+          description: "The Id of the Contract for whom you want to get the status and terms."
+      responses:
+        "200":
+          description: "Successfully returns the information requested."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/ContractStatus"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /signup/merchantAccount:
+    put:
+      operationId: "putMerchantAccount"
+      tags:
+        - "contractSignup"
+      summary: "Put Merchant Account Onboarding"
+      description: |-
+        Endpoint to be used to complete the merchant registration in the Ordering Application. 
+        
+        This endpoint can also be used to make changes to some registration information. 
+
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPUTSS_OA.png" />
+        </div>
+      parameters:
+      - in: "query"
+        name: "contractId"
+        required: true
+        schema:
+          type: string
+          description: "The Id of the Merchant for whom you want to get the contract summary."
+      responses:
+        "200":
+          description: "Successfully returns the report."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/MerchantAccount"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"          
+
+
 x-webhooks:
   # Merchant
 
@@ -2013,6 +2354,7 @@ x-webhooks:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
+
 components:
 
   securitySchemes:
@@ -2144,10 +2486,7 @@ components:
         "application/json":
           schema:
             $ref: "#/components/schemas/DeliveryCancel"
-          # examples:
-          #   newEvent:
-          #     $ref: "#/components/examples/orderDeliveryEventExample"           
-
+   
   responses:
     Accepted:
       description: "Request has been accepted for processing."
@@ -3997,200 +4336,6 @@ components:
                   type: "string"
                   description: "The ID of the client system that generated the action that resulted in this event (to be used with application with multiple stations)"
 
-#Sales Report
-
-    # SalesByMerchant:
-    #   type: "array"
-    #   description: "Sales made by merchant."
-    #   items:
-    #     type: "object"
-    #     required:
-    #       [
-    #         id,
-    #         "orderDate",
-    #         "lastProcessingDate",
-    #         "orderStatus",
-    #         "companyName",
-    #         "documentNumber",
-    #         "payment",
-    #         "businessModelOrder",
-    #       ]
-    #     properties:
-    #       "@orderId":
-    #         type: "string"
-    #         format: "UUID"
-    #       orderDate:
-    #         type: "string"
-    #         format: "date-time"
-    #         description: "Date the order was placed. \n\n(UTC date-time in ISO timestamp format)."
-    #       lastProcessingDate:
-    #         type: "string"
-    #         format: "date-time"
-    #         description: "Last date that the request was processed. \n\n(UTC date-time in ISO timestamp format)."
-    #       orderStatus:
-    #         type: "string"
-    #         description: "The event type. **[Click here](#operation/pollingEvents)** for definitions of each type."
-    #         enum:
-    #           - "CREATED"
-    #           - "CONFIRMED"
-    #           - "DISPATCHED"
-    #           - "READY_FOR_PICKUP"
-    #           - "PICKUP_AREA_ASSIGNED"
-    #           - "CONCLUDED"
-    #           - "CANCELLATION_REQUESTED"
-    #           - "CANCELLATION_REQUEST_DENIED"
-    #           - "CANCELLED"
-    #           - "ORDER_CANCELLATION_REQUEST"
-    #       companyName:
-    #         type: "string"
-    #       documentNumber:
-    #         type: "string"
-    #         description: "Company registration document."
-    #       businessModelOrder:
-    #         type: "string"
-    #         enum:
-    #           - "MARKETPLACE"
-    #       payment:
-    #         type: "object"
-    #         required: ["type", "method", "liability", "billing", "transfer"]
-    #         description: "All payment information related to the orders."
-    #         properties:
-    #           type:
-    #             type: "string"
-    #             description: "How the payment was made. Payment online, via apps, or in cash (offline)."
-    #             enum:
-    #               - "ONLINE"
-    #               - "OFFLINE"
-    #           method:
-    #             type: "string"
-    #             description: "Method used to pay the order."
-    #             enum:
-    #               - "CREDIT"
-    #               - "DEBIT"
-    #               - "MEAL_VOUCHER"
-    #               - "FOOD_VOUCHER"
-    #               - "DIGITAL_WALLET"
-    #               - "PIX"
-    #               - "CASH"
-    #               - "CREDIT_DEBIT"
-    #               - "COUPON"
-    #               - "REDEEM"
-    #               - "PREPAID_REDEEM"
-    #               - "OTHER"
-    #           brand:
-    #             type: "string"
-    #             description: "Brand name of the credit card or other means of payment that has a brand."
-    #           liability:
-    #             type: "string"
-    #             enum:
-    #               - "MERCHANT"
-    #           cardNumber:
-    #             type: "string"
-    #           billing:
-    #             type: "object"
-    #             description: "Information related to order collections."
-    #             required:
-    #               [
-    #                 "gmv",
-    #                 "totalBag",
-    #                 "deliveryFee",
-    #                 "benefitMarkeplace",
-    #                 "benefitMerchant",
-    #                 "commission",
-    #                 "acquirerFee",
-    #                 "deliveryCommission",
-    #                 "commissionRate",
-    #                 "acquirerFeeRate",
-    #                 "anticipationFee",
-    #                 "anticipationFeeRate",
-    #                 "totalDebit",
-    #                 "totalCredit",
-    #               ]
-    #             properties:
-    #               gmv:
-    #                 type: "number"
-    #                 description: "Gross Merchandise Value"
-    #               totalBag:
-    #                 type: "number"
-    #                 description: "Total order in cart."
-    #               deliveryFee:
-    #                 type: "number"
-    #                 description: "Delivery fee."
-    #               benefitMarkeplace:
-    #                 type: "number"
-    #                 description: "Marketplace-related benefits."
-    #               benefitMerchant:
-    #                 type: "number"
-    #                 description: "Merchant-related benefits."
-    #               commission:
-    #                 type: "number"
-    #                 description: "Sales-related commission."
-    #               acquirerFee:
-    #                 type: "number"
-    #                 description: "Acquirer-related fee."
-    #               deliveryCommission:
-    #                 type: "number"
-    #                 description: "Commission related to the delivery of the order."
-    #               commissionRate:
-    #                 type: "number"
-    #                 format: "double"
-    #                 description: "Commission Fee."
-    #               acquirerFeeRate:
-    #                 type: "number"
-    #                 format: "double"
-    #                 description: "Acquirer-related fee rate."
-    #               anticipationFee:
-    #                 type: "number"
-    #                 description: "Possible fee received in advance."
-    #               anticipationFeeRate:
-    #                 type: "number"
-    #                 format: "double"
-    #                 description: "Anticipation fee rate."
-    #               totalDebit:
-    #                 type: "number"
-    #                 description: "Total debit of the order."
-    #               totalCredit:
-    #                 type: "number"
-    #                 description: "Total credit of the order."
-    #           transfer:
-    #             type: "object"
-    #             required: ["expectedTransferDate", "expectedBankAccount"]
-    #             description: "Related to transferring the order values."
-    #             properties:
-    #               expectedTransferDate:
-    #                 type: "string"
-    #                 format: "date-time"
-    #               expectedBankAccount:
-    #                 type: "object"
-    #                 required:
-    #                   [
-    #                     "bankNumber",
-    #                     "bankName",
-    #                     "branchCode",
-    #                     "accountNumber",
-    #                     "accountNumberDigit",
-    #                   ]
-    #                 properties:
-    #                   bankNumber:
-    #                     type: "string"
-    #                     description: "Bank registration number."
-    #                   bankName:
-    #                     type: "string"
-    #                     description: "Bank name."
-    #                   branchCode:
-    #                     type: "string"
-    #                     description: "Branch number."
-    #                   branchCodeDigit:
-    #                     type: "string"
-    #                     description: "Branch code, if required."
-    #                   accountNumber:
-    #                     type: "string"
-    #                     description: "Account number."
-    #                   accountNumberDigit:
-    #                     type: "string"
-    #                     description: "Digit of the account number."
-
-
 #Common
    
     Address:
@@ -4316,6 +4461,59 @@ components:
           type: "number"
           description: "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
           example: -46.63638
+
+    AddressContract:
+      type: "object"
+      title: "Address"
+      required:
+        [
+          "country",
+          "state",
+          "city",
+          "district",
+          "street",
+          "number",
+          "postalCode",
+          "complement",
+        ]
+      properties:
+        "country":
+          type: "string"
+          pattern: "^[A-Z]{2}$"
+          description: "Two-letter [ISO 3166-1 alpha-2](https://www.iso.org/standard/72482.html) country code."
+          example: "BR"
+        state:
+          type: "string"
+          description: "State or country subdivision. It is recommended (but not required) that you use the [ISO 3166-2](https://www.iso.org/standard/72483.html) representation. "
+          example: "BR-SP"
+        "city":
+          type: "string"
+          description: "City name."
+          example: "São Paulo"
+        "district":
+          type: "string"
+          description: "District or Neighborhood name."
+          example: "Moema"
+        "street":
+          type: "string"
+          description: "Street Name."
+          example: "Plaza Avenue"
+        "number":
+          type: "string"
+          description: "Street Number."
+          example: "100"
+        "postalCode":
+          type: "string"
+          description: "Postal Code"
+          example: "20111-000"
+        "complement":
+          type: "string"
+          description: "Address complement."
+          example: "BL 02 AP 31"
+        "reference":
+          type: "string"
+          description: "Address reference." 
+          example: "Yellow House"  
 
     ContactPhones:
       type: "object"
@@ -5112,7 +5310,6 @@ components:
           format: date-time
           description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
   
-          
     DeliveryMan:
       description: Delivery Man
       type: object
@@ -5282,7 +5479,6 @@ components:
           type: string
           description: "Free text. It should be used to provide more detailed information."  
 
-          
     DeliveryOrderDetails:
       description: Delivery Order Details Object
       type: object
@@ -5353,8 +5549,6 @@ components:
           format: "URI"
           description: "External URL, provided by the logistics service to track the delivery on a specific page. Example: Real-time map view, or delivery timeline."   
         
-
-       
     DeliveryTimes:
       description: ETA
       type: object
@@ -5375,6 +5569,1690 @@ components:
           type: string
           format: date-time
           description: "Date and time when the delivery finished. \n\n(UTC date-time in ISO timestamp format)."
+
+
+#Financial Report
+
+    PaymentsByBatchId:
+      type: "array"
+      items:
+        type: "object"
+        required:
+          [
+            "batchId",
+            "batchStatus",
+            "createdAt",
+            "orderStatus",
+            "totals",
+            "ordersPeriod",
+            "batchPaymentInfo",
+            "charges",
+          ]
+        properties:
+          batchId:
+            type: "string"
+            format: "UUID"
+            description: "Unique Payment Batch Identification."
+          batchStatus:
+            type: "string"
+            description: "Payment Batch Status. This status refers only to the order period, not to the batch payment."
+            enum:
+              - "OPEN"
+              - "CLOSED"
+          createdAt:
+            type: "string"
+            format: "date-time"
+            description: "Date and time of the payment batch creation. \n\n(UTC date-time in ISO timestamp format)."
+          totals:
+            type: object
+            required: ["orders","extras", "batchTotal"]
+            description: "Contains the total amounts that make up the batch payment."
+            properties:
+              orders:
+                description: "This is the total amount for the values related to completed orders."
+                allOf:
+                - $ref: "#/components/schemas/Price"
+              extras:
+                description: "This is the total amount referring to extra values, such as monthly fees, chargebacks and cancellations."
+                allOf:
+                - $ref: "#/components/schemas/Price"
+              batchTotal:
+                description: "This value refers to the sum of the `orders` and `extras`."
+                allOf:
+                - $ref: "#/components/schemas/Price"
+          ordersPeriod:
+            type: object
+            required: ["startDate","endDate"]
+            description: "Period in which the orders were considered to be included in this batch."
+            properties:
+              startDate:
+                type: "string"
+                format: "date-time"
+                description: "Date and time of the start of the period where orders are being considered within this payment batch. \n\n(UTC date-time in ISO timestamp format)."
+              endDate:
+                type: "string"
+                format: "date-time"
+                description: "Date and time of the end of the period where orders are being considered within this payment batch. \n\n(UTC date-time in ISO timestamp format)."               
+          batchPaymentInfo:
+                description: "It contains Information related to the payment of this batch."
+                allOf:
+                - $ref: "#/components/schemas/BatchPaymentInfo"
+          charges:
+                description: "Breakdown of all the values that make up the total values of the batch."
+                allOf:
+                - $ref: "#/components/schemas/PaymentBatchDetails"   
+
+    PaymentsByBatchDate:
+      type: "array"
+      items:
+        type: "object"
+        required:
+          [
+            summary
+          ]
+        properties:
+          summary:
+            type: object
+            description: "Summary of the response results."
+            properties:
+              searchedPeriod:
+                type: object
+                description: "Filtered period."
+                properties:
+                  startDate:
+                    type: "string"
+                    format: "date-time"
+                    description: "Initial date of the period. You must consider the most distant date informed in the requisition filters.  \n\n(UTC date-time in ISO timestamp format)."
+                  endDate:
+                    type: "string"
+                    format: "date-time"
+                    description: "Final date of the period. The most current date entered in the requisition filters should be considered. \n\n(UTC date-time in ISO timestamp format)."
+              totalRecordsFound:
+                type: integer
+                description: "Total amount of records found considering the filters informed."
+              totalRecordsReturned:
+                type: integer
+                description: "Total records that actually returned in the response. Depending on the filtering applied, it is possible that this number is smaller than `totalRecordsFound`. In this case a new request should be made, informing more restrictive filters."
+              warningMessage:
+                type: string
+                description: "This message must return, when the `totalRecordsFound` and `totalRecordsReturned` fields are not equal, informing the systems that there are more records found than those returned, and if possible perform a new search with stricter filters. "
+          batches:
+            type: object
+            required:
+              [
+                "batchId",
+                "batchStatus",
+                "createdAt",
+                "orderStatus",
+                "totals",
+                "ordersPeriod",
+                "batchPaymentInfo",
+              ]
+            description: "Details of all returned payments batches."
+            properties:      
+              batchId:
+                type: "string"
+                format: "UUID"
+                description: "Unique Payment Batch Identification."
+              ordersPeriod:
+                type: object
+                description: "Period in which the orders were considered to be included in this batch."
+                properties:
+                  startDate:
+                    type: "string"
+                    format: "date-time"
+                    description: "Date and time of the start of the period where orders are being considered within this payment batch. \n\n(UTC date-time in ISO timestamp format)."
+                  endDate:
+                    type: "string"
+                    format: "date-time"
+                    description: "Date and time of the end of the period where orders are being considered within this payment batch. \n\n(UTC date-time in ISO timestamp format)."         
+              batchStatus:
+                type: "string"
+                description: "Batch Status. This status refers only to the order period, not to the batch payment."
+                enum:
+                  - "OPEN"
+                  - "CLOSED"
+              totals:
+                type: object
+                description: "Contains the total amounts that make up the batch payment."
+                properties:
+                  orders:
+                    description: "This is the total amount for the values related to completed orders."
+                    allOf:
+                    - $ref: "#/components/schemas/Price"
+                  extras:
+                    description: "This is the total amount referring to extra values, such as monthly fees, chargebacks and cancellations."
+                    allOf:
+                    - $ref: "#/components/schemas/Price"
+                  batchTotal:
+                    description: "This value refers to the sum of the `orders` and `extras`."
+                    allOf:
+                    - $ref: "#/components/schemas/Price"
+              createdAt:
+                type: "string"
+                format: "date-time"
+                description: "Date and time of the payment batch creation. \n\n(UTC date-time in ISO timestamp format)."                            
+              batchPaymentInfo:
+                description: "It contains Information related to the payment of this batch."
+                allOf:
+                - $ref: "#/components/schemas/BatchPaymentInfo"
+              merchantsConsolidated:
+                type: array
+                description: "Ids of different merchants that are involved in the payment batch."
+                items:
+                  type: string
+                  description: "Merchant Id"
+
+                  
+    BatchPaymentInfo:
+      type: object
+      required:
+        [
+          "paymentMethod",
+          "paymentStatus",
+          "expectedPaymentDate",
+          "paymentExecutionDate",
+        ]
+      properties:
+        paymentMethod:
+          type: string
+          description: "The payment method used to make the payment for this batch. If the batch total is zero or negative (meaning that the merchant has a debit with the marketplace), then use `NO_TRANSFER`."
+          enum:
+            - "PIX"
+            - "TED"
+            - "DOC"
+            - "OTHER"
+            - "NO_TRANSFER"
+        endToEndPixId:
+          type: string
+          description: "PIX end to end identification. \n\n**Required** if `paymentMethod` is `PIX`."
+        pixKey:
+          type: string
+          description: "The PIX key to where the transfer was made. \n\n**Required** if `paymentMethod` is `PIX`."     
+        creditedAccount:
+             type: object
+             description: "The bank account to where the transfer was made. \n\n**Required** if `paymentMethod` is  `TED` or `DOC`."
+             properties:
+              bankName:
+                type: string
+                description: "The name of the Bank."
+              bankNumber:
+                type: integer
+                description: "The number of the Bank."
+              accountNumber:
+                type: string
+                description: "Account number. If it has a digit, include it at the end of the account number."
+              branchCode:
+                type: string
+                description: "Branch Code. If it has a digit, include it at the end of the account number."
+              document:
+                type: object
+                description: "Information about the document of the person responsible for the credited account."
+                properties:
+                  type:
+                    type: string
+                    description: "The type of the registration document."
+                    enum:
+                      - "CPF"
+                      - "CNPJ"
+                      - "OTHER"
+                  number:
+                    type: string
+                    description: "Person or Company registration document number (only numbers)."
+                    maxLength: 14
+                  documentHolderName:
+                    type: string
+                    description: "Person or Company name."   
+        paymentStatus:
+          type: string
+          description: |-
+                The payment status. 
+
+                - If the batch total is positive, which means the merchant will receive a credit from the marketplace, then the following statuses should be used:
+                `SCHEDULED`, `PAID`, `REJECTED`
+                > These statuses should also be used if the batch total is zero.
+
+                - If the batch total is negative, which means that the merchant has a debit with the marketplace, then the following statuses should be used:
+                `WAITING_MERCHANT_PAYMENT`, `PAYMENT_RECEIVED` `DEBIT_IN_THE_NEXT_BATCH`
+          enum:
+            - "SCHEDULED"
+            - "PAID"
+            - "REJECTED"
+            - "WAITING_MERCHANT_PAYMENT"
+            - "PAYMENT_RECEIVED"
+            - "DEBIT_IN_THE_NEXT_BATCH"   
+        expectedPaymentDate:
+          type: string
+          format: "date-time"
+          description: "Expected payment date and time. \n\n(UTC date-time in ISO timestamp format)."
+        paymentExecutionDate:
+          type: string
+          format: "date-time"
+          description: "Date and time when the payment was executed. \n\n(UTC date-time in ISO timestamp format)."
+          
+    PaymentBatchDetails:
+      type: object
+      required:
+        [
+          "merchants",
+        ]
+      properties:
+        merchants:
+          type: array
+          description: "List of the merchants that are included in the batch. For each merchant there will be a list of orders and extra fees."
+          items:
+            type: object
+            required:
+              - "id"
+              - "name"
+              - "orders"
+            properties:
+              id:
+                type: string
+                description: "Merchant Id."
+              name:
+                type: string
+                description: "Merchant name."  
+              orders:
+                type: array
+                description: "Details of all the orders that make up this batch."
+                items:
+                  allOf:
+                  - $ref: "#/components/schemas/PaymentBatchOrders"
+              extras:
+                type: array
+                description: "Details of all the extra charges that make up this batch."
+                items:
+                  allOf:
+                  - $ref: "#/components/schemas/PaymentBatchExtras"    
+
+    PaymentBatchOrders:
+      type: object
+      required:
+        - "orderInfo"
+        - "paymentInfo"
+        - "fees"
+        - "totalDebit"
+        - "totalCredit"        
+      properties:
+        orderInfo:
+          type: object
+          description: "Basic information and identification of the order."
+          properties:
+            id:
+              type: string
+              description: "A unique identifier of the order."
+            displayId:
+              type: "string"
+              description: "Order Id shown in the **Ordering Application** interface for the costumer."
+            createdAt:              
+              type: string
+              format: "date-time"
+              description: "Date and time of order creation. \n\n(UTC date-time in ISO timestamp format)."
+            status:
+              type: string
+              description: "Order status at the time of batch request."      
+              enum:
+                - "CONCLUDED"
+                - "CANCELLED"                     
+        paymentInfo:
+          type: object
+          description: "Information regarding the payment of the order."
+          properties:
+            itemsTotal:
+              description: "Total price of the items in the order, without considering fees."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            deliveryFee:
+              description: "Delivery Fee charged on the order."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            serviceFee:
+              description: "Service Fee charged on the order."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            tipValue:
+              description: "Tip given on order."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            benefits:
+              type: object
+              description: "Total benefits that applied to this order. Benefits may have been funded by the marketplace or the merchant."
+              properties:
+                marketplace:
+                  description: "Total amount of benefits funded by the marketplace."
+                  allOf:
+                  - $ref: "#/components/schemas/Price"
+                merchant:
+                  description: "Total amount of benefits funded by the merchant."
+                  allOf:
+                  - $ref: "#/components/schemas/Price"
+            orderTotal:
+              description: "Total order value."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            paymentType:
+              type: string
+              description: "Payment type.
+
+                            \n\nIf the payment has been made through the **Ordering Application** itself, and the customer does not need to pay any money upon receipt of the order, then the type to use is `ONLINE`. 
+
+                            \n\nOtherwise use `OFFLINE`."
+              enum:
+                - "ONLINE"
+                - "OFFLINE"
+            receivedBy:
+              type: string
+              description: |- 
+                            By whom payment for the order was received. 
+                            > For cases where payment has been made through the **Ordering Application**, but an external voucher company will be used as the payment method, then enter `VOUCHER`.
+              enum:
+                - "MERCHANT"
+                - "MARKETPLACE"
+                - "VOUCHER"
+                - "OTHERS"
+            paymentMethod:
+              type: string
+              description: "Method used to pay for the order."
+              enum:
+                - "CREDIT"
+                - "DEBIT"
+                - "MEAL_VOUCHER"
+                - "FOOD_VOUCHER"
+                - "DIGITAL_WALLET"
+                - "PIX"
+                - "CASH"
+                - "CREDIT_DEBIT"
+                - "COUPON"
+                - "REDEEM"
+                - "PREPAID_REDEEM"
+                - "OTHER"
+            methodDetails:
+              type: string
+              description: "Free field. Use this field to provide more details about the payment method used. (Example: Card brand or Wallet name)"
+            voucherNSU:
+              type: string
+              description: "Field to inform the NSU of the transaction made between the **Ordering Application** and the Voucher company. \n\n**Required** if methodDetails is `MEAL_VOUCHER` or `FOOD_VOUCHER`"
+        fees:
+          type: object
+          description: "Details of the fees charged on the order."
+          properties:
+            orderCommissionValue:
+              description: "Value of the commission charged on the order."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            orderCommissionPercentual:
+              type: number
+              description: "Percentual of the commission charged on the order."
+            transactionFeeValue:
+              description: "Value of the transaction fee (or acquisition fee) charged on the order."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            transactionFeePercentual:
+              type: number
+              description: "Percentual of the transaction fee (or acquisition fee) charged on the order."
+            deliveryComissionValue:
+              description: "Value of the commission charged on the order delivery fee."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            deliveryComissionPercentual:
+              type: number
+              description: "Percentual of the commission charged on the order delivery fee."
+        totalDebit:
+            description: "Total of all the values that will be charged to the merchant. It is the sum of all the negative values of the order. \n\nThis field must be a negative value."
+            allOf:
+            - $ref: "#/components/schemas/Price"                             
+        totalCredit:
+            description: "Total of all values that will be credited to the merchant. It is the sum of all the positive values of the order. \n\nThis field must be a positive value."
+            allOf:
+            - $ref: "#/components/schemas/Price"
+
+    PaymentBatchExtras:
+      type: object
+      properties:
+        ordersCancellations:
+          type: object
+          description: "Breakdown of the amounts referring to order cancellations."
+          properties:
+            orderId:
+              type: string
+              description: "A unique identifier of the order."
+            amount:
+              description: "Amount canceled. It does not necessarily have to be the full amount of the order."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            liability:
+              type: string
+              description: "Indicates who is responsible for paying for the cancellation."
+              enum:
+                - "MARKETPLACE"
+                - "MERCHANT"
+            cancellationDate:
+              type: string
+              format: "date-time"
+              description: "Date and time of order cancellation. This date and time is when the cancellation was registered by the Ordering Application. \n\n(UTC date-time in ISO timestamp format)."
+            cancelattionReason:
+              type: string
+              description: "Free field to indicate the reason for the cancellation."                                             
+        ordersChargebacks:
+          type: object
+          description: "Breakdown of the amounts referring to order chargebacks."
+          properties:
+            orderId:
+              type: string
+              description: "A unique identifier of the order."
+            amount:
+              type: string
+              description: "Amount reversed. It does not necessarily have to be the full amount of the order."
+            chargebackDate:
+              type: string
+              format: "date-time"
+              description: "Date and time when the chargeback ocurred. This date and time is when the chargeback was registered by the Ordering Application. \n\n(UTC date-time in ISO timestamp format)."
+            chargebackReason:
+              type: string
+              description: "Free field to indicate the reason for the chargeback." 
+        others:
+          type: object
+          description: "This section should be used to indicate other charges that might be added to the batch total, not necessarily linked to purchase orders."
+          properties:
+            type:
+              type: string
+              description: "The type of charge."
+              enum:
+                - "MONTHLY_FEES"
+                - "MARKETING_FEES"
+                - "LOANS_FEES"
+                - "TAXES" 
+                - "PAYMENT_IN_ADVANCE_FEES"
+                - "PREVIOUS_DEBITS_PAYMENTS"
+                - "OTHER"
+            description:
+              type: string
+              description: "Detailed description of the charge."  
+            amount:
+              description: "Charge amount."
+              allOf:
+              - $ref: "#/components/schemas/Price"
+            referenceId:
+              type: string
+              description: "This field should be used, if necessary, to indicate some reference ID related to the type of charge chosen, in order to facilitate the merchant's identification of the charge. This is a generic field, so any type of identification can be used.  (Example: Indicate which previous batch is being charged)."
+            observations:
+              type: string
+              description: "Free field to indicate any remarks that may apply."
+        totalDebit:
+            description: "Total of all the values that will be charged to the merchant. It is the sum of all the negative values. \n\nThis field must be a negative value."
+            allOf:
+            - $ref: "#/components/schemas/Price"                             
+        totalCredit:
+            description: "Total of all values that will be credited to the merchant. It is the sum of all the positive values. \n\nThis field must be a positive value."
+            allOf:
+            - $ref: "#/components/schemas/Price"
+
+#Contract
+
+### Contract Summary
+
+    ContractSummaryResponse:
+      type: "object"
+      required: ["orderingApplicationInfo", "merchantsInfo", "contractInfo", "contractedPlan", "recurringFees", "oneTimeFees", "paymentBatchInfo"]
+      properties:
+        orderingApplicationInfo:
+            description: "Ordering Application registration information."
+            allOf:
+            - $ref: "#/components/schemas/ContractOrderingAppInfo"  
+        merchantsInfo:
+            type: "array"
+            description: "Information about the merchants that are party to this contract."
+            items:
+              allOf:
+              - $ref: "#/components/schemas/ContractMerchantsInfo"  
+        contractInfo:
+            description: "Information on contract terms."
+            allOf:
+            - $ref: "#/components/schemas/ContractInfo"  
+        contractedPlan:
+            type: "string"
+            description: |-
+              Which Ordering Application Plan has been contracted.
+
+              Plans can be:
+
+              `ORDERS`: It means that the Ordering Application will only exercise the order originator service, leaving the logistics part of the responsibility of the Merchant.
+
+              `ORDERS+LOGISTICS`: It means that the Ordering Application will perform the service of order originator, and also the part of logistic services (Fullservice).
+            enum:
+              - "ORDERS"
+              - "ORDERS+LOGISTICS"
+        recurringFees:
+            type: "array"
+            description: |-
+                Details of the contract's recurring fees.  
+                You can enter multiple sets of fees for a specific period of months (no overlapping).
+                Example:  
+                Set 1: From 1 to 6 months  
+                Set 2: From 7 to 12 months
+            items:        
+              allOf:
+              - $ref: "#/components/schemas/ContractRecurringFees"   
+        oneTimeFees:
+            description: "Details of the contract's one time charge fees."
+            allOf:
+            - $ref: "#/components/schemas/ContractOneTimeFees"   
+        paymentBatchInfo:
+            description: "Information on how payments will be split and paid by the Ordering Application to the Merchant."
+            allOf:
+            - $ref: "#/components/schemas/ContractPaymentBatchInfo"   
+        specialConditions:
+            type: "string"
+            description: "Free text detailing special conditions that do not fit into the above properties."  
+
+    ContractOrderingAppInfo:
+        type: "object"
+        required: ["document", "name", "corporateName", "address", "contactInfo"]
+        properties:
+          document:
+            type: "string"
+            description: "Ordering Application registration document (eg. CNPJ)."
+            pattern: "/^\\d{14}$/"
+            example: "22815773000169"
+          name:
+            type: "string"
+            description: "Ordering Application public name."   
+          corporateName:
+            type: "string"
+            description: "Ordering Application corporate name."       
+          stateRegistration:
+            type: "string"
+            description: "Ordering Application state registration number."       
+          municipalRegistration:
+            type: "string"
+            description: "Ordering Application municipal registration number."       
+          address:
+            description: "Ordering Application comercial address."
+            allOf:
+              - $ref: "#/components/schemas/AddressContract"
+          contactInfo:
+            type: "object"
+            description: "Ordering Application contact information."
+            properties:
+              contactEmail:
+                type: "string"
+                description: "Ordering Application email."
+              contactPhone:
+                type: "string"
+                description: "Ordering Application phone."
+              contactName: 
+                type: "string"
+                description: "Name of contact responsible for the contract."  
+
+    ContractMerchantsInfo:
+        type: "object"
+        required: ["type", "document", "name", "corporateName", "chain", "registrationAddress", "merchantEmails", "merchantPhones", "contactsInfo"]
+        properties:
+          type:
+            type: "string"
+            description: "Informs whether the Merchant is a head office or branch office."
+            enum:
+              - "HEAD_OFFICE"
+              - "BRANCH"
+          chain:
+            type: "object"
+            description: "Information about company chain."
+            required: ["isPartOfChain"]
+            properties:
+              isPartOfChain:
+                type: boolean
+                description: "Informs if the merchant is part of a chain."
+              chainName:
+                type: string
+                description: "The chain name. \n\nRequired if `isPartOfChain` is `true`."  
+          document:
+            type: "string"
+            description: "Merchant registration document (eg. CNPJ)."
+            pattern: "/^\\d{14}$/"
+            example: "22815773000169"
+          name:
+            type: "string"
+            description: "Merchant public name."  
+          corporateName:
+            type: "string"
+            description: "Merchant corporate name." 
+          stateRegistration:
+            type: "string"
+            description: "Merchant state registration number."       
+          municipalRegistration:
+            type: "string"
+            description: "Merchant municipal registration number."       
+          registrationAddress:
+            description: "Merchant commercial registration address. This is the legal address of the establishment, used for fiscal purposes."
+            allOf:
+              - $ref: "#/components/schemas/AddressContract"
+          operationalAddress:
+            description: "Merchant operation address. This is the merchant operation address, where orders will be placed and picked."
+            allOf:
+              - $ref: "#/components/schemas/AddressContract"   
+          merchantEmails:
+            type: "array"
+            description: "Merchant contact emails."
+            items:
+              type: "string"
+          merchantPhones:
+            type: "object"
+            description: "Merchant contact phones."
+            allOf:
+              - $ref: "#/components/schemas/ContactPhones"                         
+          contactsInfo:
+            type: "object"
+            required: ["contractManager"]            
+            description: "Contact information for the people responsible for each area of the merchant."
+            properties:
+              contractManager:
+                type: "object"
+                required: ["name", "emails", "phones"]                 
+                description: "Contract manager information. Person responsible for the contract as a whole."
+                properties:
+                  name:
+                    type: "string"
+                    description: "Contract manager name."                 
+                  emails:
+                    type: "array"
+                    description: "Contract manager emails."
+                    items:
+                      type: "string"
+                  phones:
+                    description: "Contract manager phones."
+                    allOf:
+                      - $ref: "#/components/schemas/ContactPhones"  
+                  registrationDocument:
+                    type: "string"
+                    description: "Contract manager registration document (eg. RG)."
+                  individualDocument:
+                    type: "string"
+                    description: "Contract manager individual document (eg. CPF)."                        
+              financial:
+                type: "object"
+                required: ["name", "emails", "phones"]                   
+                description: "Financial contact. Person responsible for issues related to finance and payments."
+                properties:
+                  name:
+                    type: "string"
+                    description: "Financial contact name."                 
+                  emails:
+                    type: "array"
+                    description: "Financial contact emails."
+                    items:
+                      type: "string"
+                  phones:
+                    description: "Financial contact phones."
+                    allOf:
+                      - $ref: "#/components/schemas/ContactPhones"  
+              operational:
+                type: "object"
+                required: ["name", "emails", "phones"]                   
+                description: "Operational contact. Person responsible for day-to-day issues."
+                properties:
+                  name:
+                    type: "string"
+                    description: "Operational contact name."                 
+                  emails:
+                    type: "array"
+                    description: "Operational contact emails."
+                    items:
+                      type: "string"
+                  phones:
+                    description: "Operational contact phones."
+                    allOf:
+                      - $ref: "#/components/schemas/ContactPhones"  
+
+    ContractInfo:
+        type: "object"
+        required: ["contractDuration", "contractTerm"]   
+        properties:
+          contractDuration:
+            type: "object"
+            required: ["contractPeriod", "daysOfNoticeOfTermination"]  
+            description: "Information about the duration of the contract."
+            properties:
+                contractPeriod:
+                  type: "string"
+                  description: "Informs whether the contract is valid for a fixed or indefinite period."
+                  enum:
+                    - "INDEFINITE"
+                    - "FIXED"
+                contractedMonths:
+                  type: "integer"
+                  description: "Informs how many months the contract is valid for. \n\nRequired only when `contractPeriod` is `FIXED`"
+                autoRenovation:
+                  type: "boolean"
+                  description: "Informs you whether the contract automatically renews after the contracted months or whether a new contact with the Ordering Application is required. \n\nRequired only when `contractPeriod` is `FIXED`"                              
+                daysOfNoticeOfTermination:
+                  type: "string"
+                  description: "Informs how many days in advance is it necessary to notify the ordering application of a contract termination."               
+          contractTerm:
+            type: "object"
+            required: ["startDate"]
+            description: "Dates of contract validity."
+            properties:
+                startDate:
+                  type: "string"
+                  format: "date-time"
+                  description: "Contract start date. \n\n(UTC date-time in ISO timestamp format)."
+                endDate:
+                  type: "string"
+                  format: "date-time"
+                  description: "Contract end date. \n\nRequired if `contractPeriod` is `FIXED`. \n\n(UTC date-time in ISO timestamp format)."       
+
+    ContractRecurringFees:
+        type: "object"
+        required: ["startMonth", "endMonth", "comissionPercentuals", "monthlyFee", "acquirerFee"]   
+        properties:
+          startMonth:
+            type: integer
+            description: "Starting month of the fee set."    
+          endMonth:
+            type: integer
+            description: "Ending month of the fee set."    
+          comissionPercentuals:
+            type: "object"
+            description: "Commission per order type. At least the fee of one of the types must be filled in."
+            properties:
+              delivery:
+                type: number
+                description: "Percentage of commission charged for DELIVERY type orders."    
+              takeout:
+                type: number
+                description: "Percentage of commission charged for TAKEOUT type orders."    
+              indoor:
+                type: number
+                description: "Percentage of commission charged for INDOOR type orders."              
+          monthlyFee:
+            type: "object"
+            required: ["amount"]   
+            description: "Monthly Fee informarion."
+            properties:
+              amount:
+                description: "Amount charged for the monthly fee."  
+                allOf:
+                  - $ref: "#/components/schemas/Price"  
+              noChargeAt:
+                  description: "Informs the exemption of the monthly fee payment if the monthly billing is equal or higher than the one informed here."
+                  allOf:
+                    - $ref: "#/components/schemas/Price" 
+          acquirerFee:
+            type: array
+            description: |-
+                Information about acquirer fees. 
+                
+                It is necessary to specify the fee per payment method. If all fees are equal, use the `ALL` payment method. 
+                
+                If at least one payment method is informed (different from `ALL`) the others that were not informed should be considered as `amount` = 0.00 .
+            items:
+              type: "object"
+              required: ["paymentMethod"]   
+              properties:
+                paymentMethod:
+                  type: "string"
+                  description: "Payment method regarding the informed acquisition fee."    
+                  enum:
+                  - "ALL"
+                  - "PIX"
+                  - "CREDIT"
+                  - "DEBIT"
+                  - "OTHERS"
+                amount:
+                  description: "Amount charged for the acquiring fee for this payment method (Absolute values)."  
+                  allOf:
+                    - $ref: "#/components/schemas/Price"                      
+                percentual:
+                  type: "string"
+                  description: "Amount charged for the acquiring fee for this payment method (Percentual values)."                  
+                noChargeAt:
+                  description: "Informs the exemption of the acquiring fee payment if the monthly billing is equal or higher than the one informed here."
+                  allOf:
+                    - $ref: "#/components/schemas/Price"                         
+
+    ContractOneTimeFees:
+        type: "object"
+        required: ["activationFee"]
+        properties:
+          activationFee:
+            description: "Amount charged for the activation fee."
+            allOf:
+              - $ref: "#/components/schemas/Price"               
+
+    ContractPaymentBatchInfo:
+        type: "object"
+        required: ["batchDuration", "daysToTransfer", "transferMethod", "creditedAccountInfo"] 
+        properties:
+          batchDuration:
+            type: "string"
+            description: |-
+                The time the batch stays open before consolidating orders and sending payments.
+
+                `DAILY`: Daily batches contain information only on orders completed on a given day. They open and close on the same day.
+
+                `PER_PERIOD`: Period batches contain information about completed orders from a certain time period. They close after a period of days.
+            enum:
+              - "DAILY"
+              - "PER_PERIOD"               
+          period:
+            type: "object"
+            required: ["days", "cutoffDate"]
+            description: "Information about the batch period. \n\nOnly required when `batchDuration` is `PER_PERIOD`"
+            properties:
+              days:
+                type: integer
+                description: "Number of days considered for the payment batch. The orders placed within these days are included into the same payment batch." 
+              cutoffDate:
+                type: "object"
+                required: ["type", "day"]
+                description: "Cut-off date of the batch. Informs the day when the batch will be closed and no more orders will be included."
+                properties:
+                  type:
+                    type: "string"
+                    description: "Informs whether the cutoff day is a week day or a month day"
+                    enum:
+                      - "DAY_OF_MONTH"
+                      - "DAY_OF_WEEK" 
+                  day:
+                    type: "string"
+                    description: |-
+                        Inform the cutting day.
+
+                        If type is `DAY_OF_MONTH` then fill in a number from 1 to 31.
+
+                        If type is `DAY_OF_WEEK` then fill in one of the options: `SUNDAY`, `MONDAY`, `TUESDAY`, `WEDNESDEY`, `THURSDAY`, `FRIDAY`, `SATURDAY`.                
+          daysToTransfer:
+            type: integer
+            description: "Period of days from the order execution date when the batch payment will be made (D + daysToTransfer)."                           
+          transferMethod:
+            type: "object"
+            required: ["method", "transferFee"]
+            description: "Information about transferring the batch payment to the merchant."
+            properties:
+              method:
+                type: "string"
+                description: "Method in which the batch payment will be transferred to the merchant."
+                enum:
+                  - "PIX"
+                  - "TED"
+                  - "DOC" 
+              transferFee:
+                description: "Fee charged for the transfer."
+                allOf:
+                  - $ref: "#/components/schemas/Price" 
+          creditedAccountInfo:
+            type: object
+            description: "Information about the account that will be credited."
+            properties:           
+              pixKey:
+                type: string
+                description: "The PIX key to where the transfer was made. \n\n**Required** if `transferMethod` is `PIX`."     
+              creditedAccount:
+                  type: object
+                  required: ["bankName", "bankNumber", "accountNumber", "branchCode", "document"]                  
+                  description: "The bank account to where the transfer was made. \n\n**Required** if `transferMethod` is  `TED` or `DOC`."
+                  properties:
+                    bankName:
+                      type: string
+                      description: "The name of the Bank."
+                    bankNumber:
+                      type: integer
+                      description: "The number of the Bank."
+                    accountNumber:
+                      type: string
+                      description: "Account number. If it has a digit, include it at the end of the account number."
+                    branchCode:
+                      type: string
+                      description: "Branch Code. If it has a digit, include it at the end of the account number."
+                    document:
+                      type: object
+                      required: ["type", "number", "documentHolderName"] 
+                      description: "Information about the document of the person responsible for the credited account."
+                      properties:
+                        type:
+                          type: string
+                          description: "The type of the registration document."
+                          enum:
+                            - "CPF"
+                            - "CNPJ"
+                            - "OTHER"
+                        number:
+                          type: string
+                          description: "Person or Company registration document number (only numbers)."
+                          maxLength: 14
+                        documentHolderName:
+                          type: string
+                          description: "Person or Company name."                        
+
+##Sign-Up Service
+
+    ContractConditionsRequest:
+      type: "object"
+      required: ["companyInfo", "state", "city", "operationTime", "merchantType", "merchantCategories", "ordersInformation"]
+      properties:
+        companyInfo:
+            type: "object"
+            required: ["type", "document", "name"]
+            description: "Merchant registration information."
+            properties:
+              type:
+                type: "string"
+                description: "Informs whether the Merchant is a head office or branch office."
+                enum:
+                  - "HEAD_OFFICE"
+                  - "BRANCH"
+              document:
+                type: "string"
+                description: "Merchant registration document (eg. CNPJ)."
+                pattern: "/^\\d{14}$/"
+                example: "22815773000169"
+              headOfficeDocument:
+                type: "string"
+                description: "Merchant head office registration document (eg. CNPJ). \n\nOnly required when `type` is `BRANCH`."
+                pattern: "/^\\d{14}$/"
+                example: "22815773000169"                
+              name:
+                type: "string"
+                description: "Merchant public name."     
+              chain:
+                type: "object"
+                description: "Information about company chain."
+                properties:
+                  isPartOfChain:
+                    type: boolean
+                    description: "Informs if the merchant is part of a chain."
+                  chainName:
+                    type: string
+                    description: "The chain name."                                                                              
+        state:
+            type: "string"
+            description: "State where the merchant is located."  
+        city:
+            type: "string"
+            description: "City where the merchant is located"  
+        operationTime:
+            type: array
+            description: "Times of day when the restaurant is able to take orders." 
+            items:
+              type: "string"
+              description: "Time of the day."
+              enum:
+                - "MORNING"
+                - "AFTERNOON"
+                - "EVENING"                                               
+        merchantsInTheMarketplace:
+            type: "object"
+            required: [""]
+            description: "Information about other merchants of the same owner."
+            properties:
+              documentOfMerchantsAlreadyActive:
+                type: array
+                description: "Documents of the merchants that are already active in the Ordering Application." 
+                items:
+                  type: string
+                  description: "Merchant registration document (eg. CNPJ)."
+              documentOfFutureMerchants:
+                type: array
+                description: "Documents of the establishments that may contract the Ordering Application in the future." 
+                items:
+                  type: string
+                  description: "Merchant registration document (eg. CNPJ)." 
+        merchantType:
+            type: "string"
+            description: "Merchant Type. \n\nCurrently, only `RESTAURANT` is accepted."
+            enum:
+              - "RESTAURANT"
+            example: "RESTAURANT"
+        merchantCategories:
+          type: "array"
+          description: "Merchant Categories / Cuisines."
+          items:
+            type: "string"
+            enum:
+              - "BURGERS"
+              - "PIZZA"
+              - "FAST_FOOD"
+              - "HOT_DOG"
+              - "JAPANESE"
+              - "DESSERTS"
+              - "AMERICAN"
+              - "ICE_CREAM"
+              - "BBQ"
+              - "SANDWICH"
+              - "MEXICAN"
+              - "BRAZILIAN"
+              - "PASTRY"
+              - "ARABIAN"
+              - "COMFORT_FOOD"
+              - "VEGETARIAN"
+              - "VEGAN"
+              - "BAKERY"
+              - "HEALTHY"
+              - "ITALIAN"
+              - "CHINESE"
+              - "JUICE_SMOOTHIES"
+              - "SEAFOOD"
+              - "CAFE"
+              - "SALADS"
+              - "COFFEE_TEA"
+              - "PASTA"
+              - "BREAKFAST_BRUNCH"
+              - "LATIN_AMERICAN"
+              - "CONVENIENCE"
+              - "PUB"
+              - "HAWAIIAN"
+              - "EUROPEAN"
+              - "FAMILY_MEALS"
+              - "FRENCH"
+              - "INDIAN"
+              - "PORTUGUESE"
+              - "SPANISH"
+              - "GOURMET"
+              - "KIDS_FRIENDLY"
+              - "SOUTH_AMERICAN"
+              - "SPECIALTY_FOODS"
+              - "ARGENTINIAN"
+              - "PREMIUM"
+              - "AFFORDABLE_MEALS"
+          example: ["PIZZA", "PASTA", "FAMILY_MEALS", "PREMIUM"]
+        ordersInformation:
+            type: "object"
+            required: ["monthlyOrdersQuantity", "averageTicketPrice"]
+            description: "Information about merchant orders."
+            properties:
+              monthlyOrdersQuantity:
+                type: string
+                description: "Average number of orders received in the last 90 days."
+              averageTicketPrice:
+                description: "Average Ticket Price charged for the orders."      
+                allOf:
+                  - $ref: "#/components/schemas/Price"           
+
+    ContractConditionsResponse:
+      type: "object"
+      required: ["orderingApplicationInfo", "contractInfo", "plans", "paymentBatchInfo"]
+      properties:
+        orderingApplicationInfo:
+            type: "object"
+            required: ["type", "document", "name"]
+            description: "Ordering Application information."
+            properties:
+              document:
+                type: "string"
+                description: "Merchant registration document (eg. CNPJ)."
+              name:
+                type: "string"
+                description: "Merchant public name."                
+        informationGoodTrhu:
+            type: "string"
+            description: "Field to inform for how many days the information presented here will be valid. Important: \n\nIf the Software Service makes a new call to the [POST /signup/contractConditions](#operation/postContractConditions) endpoint, then the information will be renewed, always discarding the previous query."  
+        contractInfo:
+            type: "object"
+            required: ["contractPeriod", "daysOfNoticeOfTermination"]  
+            description: "Information about the duration of the contract."
+            properties:
+                contractPeriod:
+                  type: array
+                  description: "Shows the options for the contract duration are available to choose from." 
+                  items:
+                    type: "string"
+                    description: "Informs whether the contract is valid for a fixed or indefinite period."
+                    enum:
+                      - "INDEFINITE"
+                      - "FIXED"
+                contractedMonths:
+                  type: "integer"
+                  description: "Informs for how many months the contract is valid for. \n\nRequired only when `contractPeriod` is `FIXED`"
+                autoRenovation:
+                  type: array
+                  description: "Shows the options for whether the contract automatically renews after the contracted months or whether a new contact with the Ordering Application is required. \n\nRequired only when `contractPeriod` is `FIXED`."
+                  items:                  
+                    type: "boolean"
+                    description: "Informs you whether the contract automatically renews after the contracted months or whether a new contact with the Ordering Application is required. \n\nRequired only when `contractPeriod` is `FIXED`"                              
+                
+                daysOfNoticeOfTermination:
+                  type: "string"
+                  description: "Informs how many days in advance is it necessary to notify the ordering application of a contract termination."                                                                                   
+        plans:
+            type: array
+            description: "Information about the fee plans made available by the marketplace."
+            items:
+              type: "object"
+              required: ["planId", "planType", "daysToTransfer", "recurringFees", "monthlyFee"]
+              description: "Plan informations and fees."
+              properties:
+                planId:
+                  type: "string"
+                  description: "Plan Id. This field should be used to tell the Ordering Application which plan has been chosen." 
+                planType:
+                  type: "string"
+                  description: |-
+                    Which Ordering Application Plan has been contracted.
+
+                    Plans can be:
+
+                    `ORDERS`: It means that the Ordering Application will only exercise the order originator service, leaving the logistics part of the responsibility of the Merchant.
+
+                    `ORDERS+LOGISTICS`: It means that the Ordering Application will perform the service of order originator, and also the part of logistic services (Fullservice).
+                  enum:
+                    - "ORDERS"
+                    - "ORDERS+LOGISTICS"
+                daysToTransfer:
+                  type: integer
+                  description: "Period of days from the order execution date to when the batch payment will be made (D + daysToTransfer)."                    
+                recurringFees:
+                  type: "object"
+                  required: ["startMonth", "endMonth", "comissionPercentuals", "monthlyFee", "acquirerFee"] 
+                  description: |-
+                    Details of the plan's recurring fees.  
+                    It can return multiple sets of fees for a specific period of months (no overlapping).
+                    Example:  
+                    Set 1: From 1 to 6 months  
+                    Set 2: From 7 to 12 months  
+                  properties:
+                    startMonth:
+                      type: integer
+                      description: "Starting month of the fee set."    
+                    endMonth:
+                      type: integer
+                      description: "Ending month of the fee set."    
+                    comissionPercentuals:
+                      type: "object"
+                      description: "Commission per order type. At least the fee of one of the types must be filled in."
+                      properties:
+                        delivery:
+                          type: number
+                          description: "Percentage of commission charged for DELIVERY type orders."    
+                        takeout:
+                          type: number
+                          description: "Percentage of commission charged for TAKEOUT type orders."    
+                        indoor:
+                          type: number
+                          description: "Percentage of commission charged for INDOOR type orders."              
+                    monthlyFee:
+                      type: "object"
+                      required: ["amount"]   
+                      description: "Monthly Fee informarion."
+                      properties:
+                        amount:
+                          description: "Amount charged for the monthly fee."  
+                          allOf:
+                            - $ref: "#/components/schemas/Price"  
+                        noChargeAt:
+                            description: "Informs the exemption of the monthly fee payment if the monthly billing is equal or higher than the one informed here."
+                            allOf:
+                              - $ref: "#/components/schemas/Price" 
+                    acquirerFee:
+                      type: array
+                      description: "acquirerFee"
+                      items:
+                        type: "object"
+                        required: ["paymentMethod"]   
+                        properties:
+                          paymentMethod:
+                            type: "string"
+                            description: "Payment method regarding the informed acquisition fee."    
+                            enum:
+                            - "ALL"
+                            - "PIX"
+                            - "CREDIT"
+                            - "DEBIT"
+                            - "OTHERS"
+                          amount:
+                            description: "Amount charged for the acquiring fee for this payment method (Absolute values)."  
+                            allOf:
+                              - $ref: "#/components/schemas/Price"                      
+                          percentual:
+                            type: "string"
+                            description: "Amount charged for the acquiring fee for this payment method (Percentual values)."                  
+                          noChargeAt:
+                            description: "Informs the exemption of the acquiring fee payment if the monthly billing is equal or higher than the one informed here."
+                            allOf:
+                              - $ref: "#/components/schemas/Price"        
+                oneTimeFees:
+                    description: "Details of the contract's one time charge fees."
+                    allOf:
+                    - $ref: "#/components/schemas/ContractOneTimeFees"   
+                specialConditions:
+                    type: "string"
+                    description: "Free text detailing special conditions that do not fit into the above properties."    
+        paymentBatchInfo:
+          type: "object"
+          required: ["batchDuration", "daysToTransfer", "transferMethod", "creditedAccountInfo"] 
+          description: "Information on how payments will be split and paid by the Ordering Application to the Merchant."
+          properties:
+            paymentBatchId:
+              type: "string"
+              description: "Payment Batch Id. This field should be used to tell the Ordering Application which Payment Batch options has been chosen."          
+            batchDuration:
+              type: "string"
+              description: |-
+                  The time the batch stays open before consolidating orders and sending payments.
+
+                  `DAILY`: Daily batches contain information only on orders completed on a given day. They open and close on the same day.
+
+                  `PER_PERIOD`: Period batches contain information about completed orders from a certain time period. They close after a period of days.
+              enum:
+                - "DAILY"
+                - "PER_PERIOD"               
+            period:
+              type: "object"
+              required: ["days", "cutoffDate"]
+              description: "Information about the batch period. \n\nOnly required when `batchDuration` is `PER_PERIOD`"
+              properties:
+                days:
+                  type: integer
+                  description: "Number of days considered for the payment batch. The orders placed within these days are included into the same payment batch." 
+                cutoffDate:
+                  type: "object"
+                  required: ["type", "day"]
+                  description: "Cut-off date of the batch. Informs the day when the batch will be closed and no more orders will be included."
+                  properties:
+                    type:
+                      type: "string"
+                      description: "Informs whether the cutoff day is a week day or a month day"
+                      enum:
+                        - "DAY_OF_MONTH"
+                        - "DAY_OF_WEEK" 
+                    day:
+                      type: "string"
+                      description: |-
+                          Inform the cutting day.
+
+                          If type is `DAY_OF_MONTH` then fill in a number from 1 to 31.
+
+                          If type is `DAY_OF_WEEK` then fill in one of the options: `SUNDAY`, `MONDAY`, `TUESDAY`, `WEDNESDEY`, `THURSDAY`, `FRIDAY`, `SATURDAY`.                                         
+            transferMethod:
+              type: "object"
+              required: ["method", "transferFee"]
+              description: "Information about transferring the batch payment to the merchant."
+              properties:
+                method:
+                  type: "string"
+                  description: "Method in which the batch payment will be transferred to the merchant."
+                  enum:
+                    - "PIX"
+                    - "TED"
+                    - "DOC" 
+                transferFee:
+                  description: "Fee charged for the transfer."
+                  allOf:
+                    - $ref: "#/components/schemas/Price"                                              
+
+
+    ContractChosenConditionsRequest:
+      type: "object"
+      required: ["chosenTerms", "merchantInfo"]
+      properties:
+        chosenTerms:
+            type: "object"
+            required: ["contractPeriod"]
+            description: "Chosen contract terms."
+            properties:
+                contractPeriod:
+                  type: "string"
+                  description: "Chosen contract period."
+                  enum:
+                    - "INDEFINITE"
+                    - "FIXED"
+                autoRenovation:
+                  type: "boolean"
+                  description: "Chosen option whether the contract will be auto-renewed after the end of the contracted months. \n\nRequired only when `contractPeriod` is `FIXED`"                                         
+        merchantInfo:
+          type: "object"
+          required: ["type", "document", "name", "corporateName", "registrationAddress", "merchantEmails", "merchantPhones", "contractManagerContact"]
+          description: "Information about the merchant who wants to do the signing up."
+          properties:
+            type:
+                type: "string"
+                description: "Informs whether the Merchant is a head office or branch office."
+                enum:
+                  - "HEAD_OFFICE"
+                  - "BRANCH"
+            document:
+              type: "string"
+              description: "Merchant registration document (eg. CNPJ)."
+              pattern: "/^\\d{14}$/"
+              example: "22815773000169"
+            headOfficeDocument:
+                type: "string"
+                description: "Merchant head office registration document (eg. CNPJ). \n\nOnly required when `type` is `BRANCH`."
+                pattern: "/^\\d{14}$/"
+                example: "22815773000169"                  
+            name:
+              type: "string"
+              description: "Merchant public name."  
+            corporateName:
+              type: "string"
+              description: "Merchant corporate name." 
+            stateRegistration:
+              type: "string"
+              description: "Merchant state registration number."       
+            municipalRegistration:
+              type: "string"
+              description: "Merchant municipal registration number."       
+            registrationAddress:
+              description: "Merchant commercial registration address. This is the legal address of the establishment, used for fiscal purposes."
+              allOf:
+                - $ref: "#/components/schemas/AddressContract"
+            merchantEmails:
+              type: "array"
+              description: "Merchant contact emails."
+              items:
+                type: "string"
+            merchantPhones:
+              type: "object"
+              description: "Merchant contact phones."
+              allOf:
+                - $ref: "#/components/schemas/ContactPhones"                         
+            contractManagerContact:
+              type: "object"
+              required: ["name", "emails", "phones"]                 
+              description: "Contract manager information. Person responsible for the contract as a whole."
+              properties:
+                name:
+                  type: "string"
+                  description: "Contract manager name."                 
+                emails:
+                  type: "array"
+                  description: "Contract manager emails."
+                  items:
+                    type: "string"
+                phones:
+                  description: "Contract manager phones."
+                  allOf:
+                    - $ref: "#/components/schemas/ContactPhones"  
+                registrationDocument:
+                  type: "string"
+                  description: "Contract manager registration document (eg. RG)."
+                individualDocument:
+                  type: "string"
+                  description: "Contract manager individual document (eg. CPF)."                    
+
+    ContractChosenConditionsResponse:
+      type: "object"
+      required: ["contractId", "signUpInstrcutions"]
+      properties:
+        contractId:
+            type: "string"
+            description: "Id of the contract generated by the Ordering Application. This Id will be the contract's identification for querying its status and chosen conditions."
+        signUpInstrcutions:
+          type: "string"
+          description: "Since the sign-up process will be done externally, this field should contain the instructions for the merchant to continue the sign-up process with the ordering application. "
+          pattern: "/^\\d{14}$/"
+          example: "22815773000169"
+
+    ContractStatus:
+      type: "object"
+      required: ["chosenTerms", "merchantInfo"]
+      properties:
+        contractId:
+          type: "string"
+          description: "Contract Id provided by Ordering Application."                                         
+        orderingAppMerchantId:
+          type: "string"
+          description: "Merchant Id on the Ordering Application platform."        
+        contractStatus:
+          type: "string"
+          description: |-
+            The last contract status. Valid status:
+              - `Negotiating` = Ordering Application knows about the intention and has already given instructions to the merchant (Restaurant has not yet signed the contract or term);
+              - `Awaiting Onboarding` = Merchant has already done the signing process with Ordering Application and the software needs to send the onboarding information for the restaurant to become active on the platform;
+              - `Active` = Merchant can now receive orders via Ordering Application;
+              - `Rejected` = Contract was rejected for some reason; 
+              - `Cancelled` = Contract is cancelled and no longer valid for this merchant".                                                               
+          enum:
+            - "NEGOTIATING"
+            - "AWAITING ONBOARDING"
+            - "ACTIVE"
+            - "REJECTED"
+            - "CANCELLED"
+        rejectionReason:
+          type: "string"
+          description: "Free Text. The reason why the signing up process was rejected."        
+        contractSummary:
+          type: "object"
+          required: ["orderingApplicationInfo", "merchantsInfo", "contractInfo", "contractedPlan", "recurringFees", "oneTimeFees", "paymentBatchInfo"]
+          properties:
+            contractInfo:
+                  description: "Information on contract terms."
+                  allOf:
+                  - $ref: "#/components/schemas/ContractInfo"  
+            contractedPlan:
+                type: "string"
+                description: |-
+                  Which Ordering Application Plan has been contracted.
+
+                  Plans can be:
+
+                  `ORDERS`: It means that the Ordering Application will only exercise the order originator service, leaving the logistics part of the responsibility of the Merchant.
+
+                  `ORDERS+LOGISTICS`: It means that the Ordering Application will perform the service of order originator, and also the part of logistic services (Fullservice).
+                enum:
+                  - "ORDERS"
+                  - "ORDERS+LOGISTICS"
+            recurringFees:
+                type: "array"
+                description: |-
+                    Details of the contract's recurring fees.  
+                    You can enter multiple sets of fees for a specific period of months (no overlapping).
+                    Example:  
+                    Set 1: From 1 to 6 months  
+                    Set 2: From 7 to 12 months
+                items:        
+                  allOf:
+                  - $ref: "#/components/schemas/ContractRecurringFees"   
+            oneTimeFees:
+                description: "Details of the contract's one time charge fees."
+                allOf:
+                - $ref: "#/components/schemas/ContractOneTimeFees"   
+            paymentBatchInfo:
+                description: "Information on how payments will be split and paid by the Ordering Application to the Merchant."
+                allOf:
+                - $ref: "#/components/schemas/ContractPaymentBatchInfo"   
+            specialConditions:
+                type: "string"
+                description: "Free text detailing special conditions that do not fit into the above properties."  
+        upcomingFeeUpdate:
+          type: "object"
+          required: ["orderingApplicationInfo", "merchantsInfo", "contractInfo", "contractedPlan", "recurringFees", "oneTimeFees", "paymentBatchInfo"]
+          description: "Fees updates information."
+          properties: 
+            date:       
+              type: "string"
+              description: "The next date on which one or more merchant fees will change."        
+            message:       
+              type: "string"
+              description: "Free text. Message with information and guidance about rate updates to be displayed to Merchant, via its Software Service."        
+        nextRequestDate:
+          type: "string"
+          description: "Next date on which the Software Service should make a new request for this endpoint."        
+        orderingAppAPIInfo:
+          type: "object"
+          required: ["orderingApplicationInfo", "merchantsInfo", "contractInfo", "contractedPlan", "recurringFees", "oneTimeFees", "paymentBatchInfo"]
+          description: "Ordering Application's API Access Information."
+          properties: 
+            baseURL:       
+              type: "string"
+              description: "Ordering Application's API base URL."        
+            merchantCredentials:       
+              type: "object"
+              required: ["orderingApplicationInfo", "merchantsInfo", "contractInfo", "contractedPlan", "recurringFees", "oneTimeFees", "paymentBatchInfo"]
+              description: "Merchant's credentials to access the Ordering Application's API."   
+              properties: 
+                client_Id:       
+                  type: "string"
+                  description: "Merchant's client_id."
+                client_secret:       
+                  type: "string"
+                  description: "Merchant's client_secret."  
+
+    MerchantAccount:
+      type: "object"
+      required: ["contractId", "signUpInstrcutions"]
+      properties:
+        contactsInfo:
+            type: "object"
+            required: ["contractManager"]            
+            description: "Contact information for the people responsible for each area of the merchant."
+            properties:
+              contractManager:
+                type: "object"
+                required: ["name", "emails", "phones"]                 
+                description: "Contract manager information. Person responsible for the contract as a whole."
+                properties:
+                  name:
+                    type: "string"
+                    description: "Contract manager name."                 
+                  emails:
+                    type: "array"
+                    description: "Contract manager emails."
+                    items:
+                      type: "string"
+                  phones:
+                    description: "Contract manager phones."
+                    allOf:
+                      - $ref: "#/components/schemas/ContactPhones"  
+                  registrationDocument:
+                    type: "string"
+                    description: "Contract manager registration document (eg. RG)."
+                  individualDocument:
+                    type: "string"
+                    description: "Contract manager individual document (eg. CPF)."                        
+              financial:
+                type: "object"
+                required: ["name", "emails", "phones"]                   
+                description: "Financial contact. Person responsible for issues related to finance and payments."
+                properties:
+                  name:
+                    type: "string"
+                    description: "Financial contact name."                 
+                  emails:
+                    type: "array"
+                    description: "Financial contact emails."
+                    items:
+                      type: "string"
+                  phones:
+                    description: "Financial contact phones."
+                    allOf:
+                      - $ref: "#/components/schemas/ContactPhones"  
+              operational:
+                type: "object"
+                required: ["name", "emails", "phones"]                   
+                description: "Operational contact. Person responsible for day-to-day issues."
+                properties:
+                  name:
+                    type: "string"
+                    description: "Operational contact name."                 
+                  emails:
+                    type: "array"
+                    description: "Operational contact emails."
+                    items:
+                      type: "string"
+                  phones:
+                    description: "Operational contact phones."
+                    allOf:
+                      - $ref: "#/components/schemas/ContactPhones" 
+        creditedAccountInfo:
+            type: object
+            description: "Information about the account that will be credited."
+            properties:           
+              pixKey:
+                type: string
+                description: "The PIX key to where the transfer was made. \n\n**Required** if `transferMethod` is `PIX`."     
+              creditedAccount:
+                  type: object
+                  required: ["bankName", "bankNumber", "accountNumber", "branchCode", "document"]                  
+                  description: "The bank account to where the transfer was made. \n\n**Required** if `transferMethod` is  `TED` or `DOC`."
+                  properties:
+                    bankName:
+                      type: string
+                      description: "The name of the Bank."
+                    bankNumber:
+                      type: integer
+                      description: "The number of the Bank."
+                    accountNumber:
+                      type: string
+                      description: "Account number. If it has a digit, include it at the end of the account number."
+                    branchCode:
+                      type: string
+                      description: "Branch Code. If it has a digit, include it at the end of the account number."
+                    document:
+                      type: object
+                      required: ["type", "number", "documentHolderName"] 
+                      description: "Information about the document of the person responsible for the credited account."
+                      properties:
+                        type:
+                          type: string
+                          description: "The type of the registration document."
+                          enum:
+                            - "CPF"
+                            - "CNPJ"
+                            - "OTHER"
+                        number:
+                          type: string
+                          description: "Person or Company registration document number (only numbers)."
+                          maxLength: 14
+                        documentHolderName:
+                          type: string
+                          description: "Person or Company name."                               
+        acceptedCardBrands:
+          type: array
+          description: ""
+          items:
+            type: "string"
+            description: "Since the sign-up process will be done externally, this field should contain the instructions for the merchant to continue the sign-up process with the ordering application. "
+            enum:
+            - "VISA"
+            - "MASTERCARD"
+            - "DINERS"
+            - "AMEX"
+            - "HIPERCARD"
+            - "HIPER"
+            - "ELO"
+            - "AURA"
+
+        acceptedVouchers:
+          type: array
+          description: ""
+          items:
+            type: "string"
+            description: "Since the sign-up process will be done externally, this field should contain the instructions for the merchant to continue the sign-up process with the ordering application. "
+            enum:
+            - "ALELO"
+            - "SODEXO"
+            - "VR"
+            - "TICKET"
+    
+        taxInfo:
+          type: "object"
+          required: ["name", "emails", "phones"]                 
+          description: "Information on specific taxes."
+          properties:
+            brazil:
+              type: "object"
+              required: ["name", "emails", "phones"]                 
+              description: "Brazil-specific taxes and tax information."
+              properties:
+                optSimplesNacional:
+                  type: "boolean"
+                  description: "Informs whether the merchant is opting for '_Simples Nacional_'"                 
+                possuiSubstituicaoTributariaISS:
+                  type: "boolean"
+                  description: "Informs whether the merchant has _subsituição tributária de ISS_."
+        merchantAPIInfo:
+          type: "object"
+          required: ["orderingApplicationInfo", "merchantsInfo", "contractInfo", "contractedPlan", "recurringFees", "oneTimeFees", "paymentBatchInfo"]
+          description: "Information about this merchant's [GET /merchant](#operation/getMerchant) API access. This API has the necessary information for the Ordering Application to be able to make the merchant's sales catalog available."
+          properties: 
+            baseURL:       
+              type: "string"
+              description: "The URL for accessing the endpoint."        
+            API_KEY:       
+              type: "string"
+              description: "The API_KEY for accessing the endpoint"
+
 
   examples:
     tokenExample:
@@ -5891,146 +7769,4 @@ components:
                       }
                     ]}]
 
-    # orderDeliveryExample:
-    #   summary: New Delivery example
-    #   value:
-    #     "orderId": "0c15c9dd-36d3-467e-af54-1bbf7ef91836"
-    #     "orderDisplayId": "1234SA6"
-    #     "pickupAddress":
-    #         "city": "Santos"
-    #         "country": "BR"
-    #         "lat": -23.9518858
-    #         "lng": -46.3276869
-    #         "neighborhood": "Encruzilhada"
-    #         "postalCode": "11015-504"
-    #         "state": "SP"
-    #         "streetName": "Av Senador Feijó"
-    #         "streetNumber": "686"
-    #         "complement": "Ap 21"
-    #         "pickupLocation": "BALCAO"
-    #         "parkingSpace": "YES"
-    #         "instructions": "Portao 4 loja 12, 2º andar"
-    #     "returnToMerchant": "TRUE"
-    #     "wirellesPos / paymentMachine": "TRUE"
-    #     "canCombine": "FALSE"
-    #     "deliveryAddress":
-    #         "city": "Santos"
-    #         "country": "BR"
-    #         "lat": -23.9518858
-    #         "lng": -46.3276869
-    #         "neighborhood": "Encruzilhada"
-    #         "postalCcode": "11015-504"
-    #         "state": "SP"
-    #         "streetName": "Av Senador Feijó"
-    #         "streetNumber": "686"
-    #         "complement": "Ap 21"
-    #         "instructions": "Condominio fechado"
-    #     "customerName": "Maria"
-    #     "vehicle":
-    #         "type": [
-    #             "MOTO_BAU | MOTO_BOLSA | CARRO | BICICLETA | PATINETE | VUC |"
-    #         ]
-    #         "bag": [
-    #             "NORMAL",
-    #             "TERMICA"
-    #         ]
-    #         "observation": "Texto livre"
-    #     "limitTimes":
-    #         "pickupLimit": "10"
-    #         "deliveryLimit": "40"
-    #         "orderCreatedAt": "2021-01-26T18:14:20+03:00"
-    #     "totalPrice":
-    #         "value": 39.5
-    #         "currency": "BRL"
-    #     "totalWeight": 89
-    #     "volumes": 2
-    #     "specialInstructions": "Pratos quentes"
-    #     "additionalPricePerc": 10
-    #     "payments": {
-    #       "online": "true",
-    #       "method": [
-    #           {
-    #               "type": [
-    #                   "CREDITO",
-    #                   "DEBITO",
-    #                   "DINHEIRO"
-    #               ],
-    #               "amount": {
-    #                   "value": 39.5,
-    #                   "currency": "BRL"
-    #               }
-    #           }
-    #       ],
-    #       "change": "0"
-    #     }
-
-    #orderDeliveryEventExample:
-    # summary: New Delivery Event
-    # value:
-    #   "id": "0c15c9dd-36d3-467e-af54-1bbf7ef91836"
-    #   "orderId": "0c15c9dd-36d3-467e-af54-1bbf7ef91836"
-    #   "shortOrderId": "1234SA6"
-    #   "routeId": "0c15c9dd-36d3-467e-af54-1bbf7ef91836"
-    #   "event": "ENTREGA SOLICITADA / PENDENTE | ACEITE / ENTREGADOR ASSOCIADO | ENTREGADOR A CAMINHO DA COLETA | ENTREGADOR AGUARDANDO LIBERAÇÃO COLETA | COLETA LIBERADA | PEDIDO COLETADO | ENTREGADOR A CAMINHO DO CLIENTE | ENTREGADOR AGUARDANDO NO CLIENTE | ENTREGA EFETUADA | ENTREGADOR RETORNOU AO ESTABELECIMENTO | ENTREGA CANCELADA | ENTREGA FINALIZADA"
-    #   "eventMessage": "Em breve será coletado na loja"
-    #   "eventStartDate": "2018-06-15T12:48:26-03:00"
-    #   "problem": {
-    #       "reason": "OCORRÊNCIA COM O ENTREGADOR | PROBLEMAS PAGAMENTO | PRODUTO ERRADO | PEDIDO DEMOROU DEMAIS / ATRASADO | PEDIDO DANIFICADO / VIOLADO | O CLIENTE NÃO FEZ NENHUM PEDIDO | ENDEREÇO DO CLIENTE ERRADO | PEDIDO INCOMPLETO | NINGUÉM PARA RECEBER O PEDIDO | ENTREGADOR ESPERANDO PAGAMENTO DE PEDIDO JÁ PAGO | PEDIDO ENTREGUE SEM PAGAMENTO | OUTRO MOTIVO | EXTRAVIO",
-    #       "problemMessage": "Mensagem livre explicando o problema mais detalhadamente",
-    #       "canFinishDeliver": "TRUE | FALSE",
-    #       "needMerchantAction": "TRUE | FALSE",
-    #       "problemResolved": "TRUE | FALSE",
-    #       "actionTaken": "RETORNAR AO ESTABELECIMENTO | FINALIZAR A ENTREGA | CANCELAR A ENTREGA"
-    #   }
-    #   "customer": {
-    #       "name": "Maria"
-    #   }
-    #   "modal": {
-    #       "type": [
-    #           "MOTO_BAU | MOTO_BOLSA | CARRO | BICICLETA | PATINETE | VUC | OUTRO"
-    #       ],
-    #       "bag": [
-    #           "NORMAL",
-    #           "TERMICA"
-    #       ],
-    #       "observation": "Texto livre"
-    #   }
-    #   "ETAs": {
-    #       "delivery_eta_minute": "40",
-    #       "delivery_eta_datetime": "2018-06-15T12:48:26Z",
-    #       "pickup_eta_minute": "10",
-    #       "pickup_eta_datetime": "2018-06-15T12:48:26Z",
-    #       "max_delivery_time": "2021-01-26T18:14:20+03:00"
-    #   }
-    #   "geoLocalization": {
-    #       "latitude": "-8.0632543",
-    #       "longitude": "-34.8722561",
-    #       "lastAddress": {
-    #           "city": "Santos",
-    #           "country": "BR",
-    #           "neighborhood": "Encruzilhada",
-    #           "postalCcode": "11015-504",
-    #           "state": "SP",
-    #           "streetName": "Av Senador Feijó"
-    #       },
-    #       "distanceToPickup": "0.5",
-    #       "distanceToDelivery": "2",
-    #       "timestamp": "2020-09-22T19:09:23+00:00"
-    #   }
-    #   "deliveryMan": {
-    #       "id": 1167,
-    #       "name": "Rafael José da Silva Junior",
-    #       "pic_url": "http://image.com",
-    #       "phone": "81995000000"
-    #   }
-    #   "combinedOrder": "TRUE | FALSE"
-    #   "combinedOrdersIds": [
-    #       "0c15c9dd-36d3-467e-af54-1bbf7ef91836",
-    #       "0c15c9dd-36d3-467e-af54-1bbf7ef91836"
-    #   ]
-    #   "deliveryPrice": {
-    #       "value": 30.98,
-    #       "currency": "BRL"
-    #   }
-    #   "priceTable": "NORMAL | DINAMICA"
-    #   "additionalPricePerc": 5
+   
