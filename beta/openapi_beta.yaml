@@ -2176,11 +2176,11 @@ paths:
         </div>
       parameters:
       - in: "query"
-        name: "contractId"
+        name: "merchantId"
         required: true
         schema:
           type: string
-          description: "The Id of the Merchant for whom you want to get the contract summary."
+          description: "The Id of the Merchant for whom you want to complete or change registration info."
       responses:
         "200":
           description: "Successfully returns the report."
