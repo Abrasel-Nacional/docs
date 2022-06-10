@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "'Beta'"
+  version: "'Beta Version'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -14,6 +14,11 @@ info:
 
   description: |-
     # ► ------- OPEN DELIVERY ------- ◄
+
+    # └► 'BETA' VERSION WARNING
+    > **THIS DOCUMENTATION CONTAINS INFORMATION THAT HAS NOT YET BEEN OFFICIALLY RELEASED AND IS STILL IN RELEASE CANDIDATE STAGE. THE INFORMATION CONTAINED HERE IS STILL UNDERGOING TESTING AND VALIDATION AND MAY BE SUBJECT TO CHANGE (SEE THE [CHANGELOG](#TAG/VERSIONCHANGELOG) SECTION FOR THE LATEST CHANGES).**
+
+    > **TO VIEW THE OFFICIAL RELEASE (CURRENTLY VERSION V1.0.0) FOLLOW THIS LINK.** 
 
     # └► Introduction
       **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and **Ordering Applications**, establishing a single communication standard for all, through a set of REST APIs.
@@ -31,22 +36,18 @@ info:
       - **[Error Handling](#section/Error-Handling)**
 
 
-    **[Version v1.0.0](#tag/versionSection)**   
+    **[Version v1.0.1-rc0](#tag/versionSection)**   
     Endpoints that were released with version 1.0.0
       - **[Changelog](#tag/versionChangelog)**
       - **[Security](#tag/securitySection)**
       - **[Merchant](#tag/merchantSection)**
       - **[Order](#tag/orderSection)**
-
-    **[Version 1.1.0-rc.X](#tag/versionSection2)**  
-    Endpoints that will be released with version 1.1.0
-      - **[Changelog](#tag/versionChangelog2)**
       - **[Logistics](#tag/logisticsSection)**
+      - **[Reconciliation](#tag/financialReportSection)**
+      - **[Contracts](#tag/contractSection)**      
 
 
-    > Both versions will be available in this documentation, each one with its own changelog.
-
-    > As both versions are still in release candidate, small changes may still occur until the release date.
+    > As this version is in release candidate, small changes may still occur until the release date.
 
     # └► Issues and Suggestions
 
@@ -288,6 +289,8 @@ info:
        * __Meaning__: Indicates that the service took longer than expected to return.
        * __HTTP Status Code__: [504 Gateway Timeout](https://tools.ietf.org/html/rfc7231#section-6.6.5).
 
+#############################################################
+
 tags:
   # Authentication
   - name: securitySection
@@ -305,7 +308,7 @@ tags:
 # Version Tags
 
   - name: versionSection
-    x-displayName: " ►►►► VERSION 1.0.0-rc.13 ◄◄◄◄"
+    x-displayName: " ►►►► VERSION 1.0.1-rc.0 ◄◄◄◄"
     x-traitTag: true
     description: |-
       All the information listed in this section is planned to be released in version **1.0.0** of the Open Delivery API.
@@ -318,30 +321,6 @@ tags:
     description: |-  
     
         Latest Changes:  
-        
-        ### Version [1.0.0-rc.13] - Mar 21, 2022
-
-        ### Breaking Changes:
-        * [[Issue #79](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/79)] - Changed the name of some fields from the `delivery` > `deliveryAddress` object of the endpoint [GET /orders/{orderId}](#operation/ordersDetails)
-
-          * `streetName` to `street`
-          * `streetNumber` to `number`
-          * `neighborhood` to `district`
-
-            These changes are intended to standardize the fields with the rest of the documentation.
-
-        * Corrected the type of `index` fields in some entities to `integer`, thus standardizing with the rest of the documentation.
-        The entities updated were:
-
-          Merchant: [GET /merchant](#operation/getMerchant)
-          * `Category` - previously was `string`
-
-          Orders: [GET /orders/{orderId}](#operation/ordersDetails)
-          * `items` - previously was `number`
-          * `options` - previously was `number`
-
-        * Added the `merchantStatus` field to the [POST /merchantUpdate](#operation/menuUpdated) endpoint. This field should be used to Open or Close the **Merchant** within the **Ordering Application**. The endpoint description has also been updated to reflect the addition of the field.
-
 
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
@@ -1139,6 +1118,7 @@ x-tagGroups:
       - contractSignupOverview
       - contractSignup       
 
+#############################################################
 
 paths:
   # Authentication
@@ -2354,6 +2334,7 @@ x-webhooks:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
+#############################################################
 
 components:
 
@@ -3278,7 +3259,7 @@ components:
       type: "object"
       title: "Menu"
       required:
-        [id, "name", "description", "externalCode", "disclaimer", "categoryId"]
+        [id, "name", "externalCode", "categoryId"]
       properties:
         id:
           type: "string"
@@ -3326,7 +3307,6 @@ components:
           id,
           "index",
           "name",
-          "description",
           "externalCode",
           "status",
           "availabilityId",
@@ -3428,7 +3408,6 @@ components:
           id,
           "index",
           "name",
-          "description",
           "externalCode",
           "status",
           "minPermitted",
@@ -4147,6 +4126,23 @@ components:
               type: "string"
               format: date-time
               description: "Takeout date and time. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
+        indoor:
+          type: "object"
+          description: "Information for indoor orders. Required if the chosen `type` is `INDOOR`."
+          required: ["mode", "indoor"]
+          properties:
+            mode:
+              type: "string"
+              enum:
+                - "DEFAULT"
+                - "TABLE"
+            indoorDateTime:
+              type: "string"
+              format: date-time
+              description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
+            table:
+              type: "string"
+              description: "Table identifier (Required if mode is `TABLE`)"
         extraInfo:
           type: "string"
           description: "Extra information, if necessary."
@@ -4666,6 +4662,12 @@ components:
                 instructions:
                   type: string
                   description: "Any instructions that may help the delivery."
+        notifyPickup:
+          type: boolean
+          description: "Inform whether the **`Logistic Service`** to wait for a notification that the order has actually been picked. This notification happens via the endpoint: [POST /logistics/orderPicked/{orderId}](#operation/logisticsPicked)"
+        notifyConclusion:
+          type: boolean
+          description: "Inform whether the **`Logistic Service`** to wait for a delivery finish notification from the requester, before actually finalizing the delivery in its system. This notification is made via the endpoint: [POST /logistics/finishDelivery/{orderId}](#operation/logisticsFinish)"         
         returnToMerchant:
           type: boolean
           description: "Inform whether the delivery man should return to the pickup address after the delivery has been made."
@@ -4774,6 +4776,12 @@ components:
               description: If type is `CASH`, tells how much change will be needed.
               allOf:
                 - $ref: "#/components/schemas/Price"
+        combinedOrdersIds:
+          type: "array"
+          description: "Combined Orders Ids. Informs the logistics service of the Id of other orders already in progress so that the operator can combine these orders. This combination may or may not be accepted by the logistic service, respecting the contracted policies."
+          items:
+            type: string
+            format: UUID
 
     Vehicle:
       description: Vehicle Object.
@@ -4805,7 +4813,7 @@ components:
             - "SMALL"
             - "MEDIUM"
             - "LARGE"
-            - "EXTRA LARGE"           
+            - "EXTRA_LARGE"           
         instruction:
           type: "string"
           description: "Free text to describe special instructions that may apply. These instructions can be used to give some special guidance to the delivery person at the time of the pickup or delivery."
@@ -4930,9 +4938,9 @@ components:
             - ARRIVED_AT_MERCHANT
             - ORDER_PICKED
             - DELIVERY_ONGOING
-            - ARRIVED_AT_COSTUMER
+            - ARRIVED_AT_CUSTOMER
             - ORDER_DELIVERED
-            - RETURNING_TO MERCHANT
+            - RETURNING_TO_MERCHANT
             - RETURNED_TO_MERCHANT
             - DELIVERY_FINISHED
             - CANCELLED
@@ -5134,6 +5142,14 @@ components:
           enum:
             - "NORMAL"
             - "THERMIC"
+        containerSize:
+          type: string
+          description: "Vehicle container (bag) size."   
+          enum:
+            - "SMALL"
+            - "MEDIUM"
+            - "LARGE"
+            - "EXTRA_LARGE"                 
         instruction:
           type: "string"
           description: "Special Instructions."
@@ -5152,7 +5168,7 @@ components:
           description: "Indicates what list was used to calculate the delivery price."
           enum:
             - "NORMAL"
-            - "DINAMIC"
+            - "DYNAMIC"
         additionalPricePercentual:
           type: integer
           description: |-
@@ -5235,6 +5251,9 @@ components:
         totalWeight:
           type: integer
           description: "Total Weight in **grams**"
+        packageVolume:
+          type: number
+          description: "The cubage of the packaging in **cubic meters (m³)**."          
         volumes:
           type: integer
           description: |-
@@ -5291,6 +5310,17 @@ components:
       type: object
       required: [pickupEtaMinutes, pickupEtaDatetime, deliveryEtainMinutes, deliveryEtaDatetime, maxDeliveryTime]
       properties:
+        updateMethod:
+          type: string
+          description: |-
+            Update Method: Indicates how the times will be updated in the events.
+
+            `OFFLINE`: The time will be calculated in the event `ACCEPTED` and will no longer be updated in the following events.  
+            
+            `ONLINE`: The time will be updated in all events. In this case, when the collection has already occurred, the `pickupEtaMinutes` property will be set to **0** and the `pickupEtaDatetime` property will be the time when the collection occurred.
+          enum:
+            - OFFLINE
+            - ONLINE
         pickupEtaMinutes:
           type: integer
           description: "Pickup Eta in **minutes**. Informs how many minutes it will take the delivery man to arrive at the merchant for order pickup."
