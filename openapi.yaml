@@ -40,9 +40,12 @@ info:
       
       Latest Changes:  
     >  
-    >  ### Version [1.0.0] - Apr 18, 2022
+    >  ### Version [v1.0.0] - Apr 18, 2022
     >
     >  - Initial release.
+
+    See the full changelog here:
+    https://github.com/Abrasel-Nacional/docs/releases
 
     # └► Issues and Suggestions
 
@@ -268,30 +271,6 @@ tags:
 
         <!-- ReDoc-Inject: <security-definitions> -->
 
-  # Version Tags
-
-    - name: versionSection
-      x-displayName: " ►►►► VERSION 1.0.0-rc.13 ◄◄◄◄"
-      x-traitTag: true
-      description: |-
-        All the information listed in this section is planned to be released in version **1.0.0** of the Open Delivery API.
-
-        > This version is still in **'Beta'**, so minor changes may still occur until release.
-
-    - name: versionChangelog
-      x-displayName: "└─► Changelog"
-      x-traitTag: true
-      description: |-  
-      
-          Latest Changes:  
-          
-          ### Version [1.0.0] - Mar 18, 2022
-
-          - Version release.
-
-          See the full changelog here:  
-          https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
-  
   # Merchant Tags
 
     - name: merchantSection
@@ -703,7 +682,7 @@ tags:
         code: OTHER_CANCELLATION_REASON
         ```
 
-        Ordering Aplications may cancel the order for reasons other than via costumer.
+        Ordering Aplications may cancel the order for reasons other than via customer.
 
         **Cancellation Handshake**
 
@@ -2687,7 +2666,7 @@ components:
               - "TAKEOUT"
           displayId:
             type: "string"
-            description: "Order Id shown in the **Ordering Application** interface for the costumer."
+            description: "Order Id shown in the **Ordering Application** interface for the customer."
           sourceAppId:
             type: "string"
             format: UUID
@@ -2831,7 +2810,7 @@ components:
             items:
               type: "object"
               required:
-                ["name", "type", "receivedBy", "receiverDocument", "price"]
+                ["name", "type", "receivedBy", "price"]
               properties:
                 name:
                   type: "string"
@@ -3087,7 +3066,7 @@ components:
               estimatedDeliveryDateTime:
                 type: "string"
                 format: date-time
-                description: "Estimated delivery date and time. The same date showed to the costumer, in the **Ordering Application** interface. \n\n(UTC date-time in ISO timestamp format)."
+                description: "Estimated delivery date and time. The same date showed to the customer, in the **Ordering Application** interface. \n\n(UTC date-time in ISO timestamp format)."
               deliveryDateTime:
                 type: "string"
                 format: date-time
