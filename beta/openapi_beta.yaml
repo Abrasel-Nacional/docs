@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "'Beta Version'"
+  version: "'Pré Release Version'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -16,9 +16,9 @@ info:
     # ► ------- OPEN DELIVERY ------- ◄
 
     # └► 'BETA' VERSION WARNING
-    > **THIS DOCUMENTATION CONTAINS INFORMATION THAT HAS NOT YET BEEN OFFICIALLY RELEASED AND IS STILL IN RELEASE CANDIDATE STAGE. THE INFORMATION CONTAINED HERE IS STILL UNDERGOING TESTING AND VALIDATION AND MAY BE SUBJECT TO CHANGE (SEE THE [CHANGELOG](#TAG/VERSIONCHANGELOG) SECTION FOR THE LATEST CHANGES).**
+    > **THIS DOCUMENTATION CONTAINS INFORMATION THAT HAS NOT YET BEEN OFFICIALLY RELEASED AND IS STILL IN RELEASE CANDIDATE STAGE OR IN A BETA STAGE. THE INFORMATION CONTAINED HERE IS STILL UNDERGOING TESTING AND VALIDATION AND MAY BE SUBJECT TO CHANGE (SEE THE [CHANGELOGS](#section/Table-Of-Contents) SECTION FOR THE LATEST CHANGES).**
 
-    > **TO VIEW THE OFFICIAL RELEASE (CURRENTLY VERSION V1.0.0) FOLLOW THIS LINK.** 
+    > **TO VIEW THE OFFICIAL RELEASE (CURRENTLY VERSION V1.0.0) FOLLOW THIS [LINK](https://abrasel-nacional.github.io/docs/).** 
 
     # └► Introduction
       **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and **Ordering Applications**, establishing a single communication standard for all, through a set of REST APIs.
@@ -36,18 +36,22 @@ info:
       - **[Error Handling](#section/Error-Handling)**
 
 
-    **[Version v1.0.1-rc0](#tag/versionSection)**   
-    Endpoints that were released with version 1.0.0
+    **Release Candidate: Currently: [Version v1.0.1-rc1](#tag/versionSection)**  
+    Information that will be released with version 1.0.1
       - **[Changelog](#tag/versionChangelog)**
       - **[Security](#tag/securitySection)**
       - **[Merchant](#tag/merchantSection)**
       - **[Order](#tag/orderSection)**
+
+    > As this version is in release candidate, small changes may still occur until the release date.
+
+    **Beta Test**: 
+      - **[Changelog](#tag/versionChangelog2)**
       - **[Logistics](#tag/logisticsSection)**
       - **[Reconciliation](#tag/financialReportSection)**
       - **[Contracts](#tag/contractSection)**      
 
-
-    > As this version is in release candidate, small changes may still occur until the release date.
+    > As this information is still in beta test stage, breaking changes can occur at any time until release. After release, it will follow semantic versioning from there on out.
 
     # └► Issues and Suggestions
 
@@ -92,33 +96,33 @@ info:
     |[POST /oauth/token](#operation/getToken)|X||X|
     |--------------------------------||||
     |**[MERCHANT](#tag/merchantSection)**|||||
-    |[GET /merchant](#operation/getMerchant)||X||
-    |[POST /merchantUpdate](#operation/menuUpdated)|X||
-    |[GET /merchantStatus](#tag/merchantStatus)|X|||
+    |[GET /v1/merchant](#operation/getMerchant)||X||
+    |[POST /v1/merchantUpdated](#operation/menuUpdated)|X||
+    |[GET /v1/merchantStatus](#tag/merchantStatus)|X|||
     |--------------------------------||||
     |**[ORDER](#tag/ordersSection)**|||||
-    |[GET /events:polling ](#operation/pollingEvents)|X|||
-    |[POST /events/acknowledgment](#operation/pollingAcknowledgment)|X|||
-    |[POST /orderUpdate](#operation/newEvent)||X||
+    |[GET /v1/events:polling ](#operation/pollingEvents)|X|||
+    |[POST /v1/events/acknowledgment](#operation/pollingAcknowledgment)|X|||
+    |[POST /v1/orderUpdate](#operation/newEvent)||X||
     |||||
-    |[GET /orders/{orderId}](#operation/ordersDetails)|X|||
-    |[POST /orders/{orderId}/confirm](#operation/confirmOrder)|X|||
-    |[POST /orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
-    |[POST /orders/{orderId}/dispatch](#operation/dispatchOrder)|X||
+    |[GET /v1/orders/{orderId}](#operation/ordersDetails)|X|||
+    |[POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)|X|||
+    |[POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
+    |[POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)|X||
     |||||
-    |[POST /orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
-    |[POST /orders/{orderId}/acceptCancellation](#operation/cancellationAccepted) |X|||
-    |[POST /orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
+    |[POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
+    |[POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted) |X|||
+    |[POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
     |--------------------------------||||
     |**[LOGISTICS](#tag/logisticsSection)**|||||
-    |[POST /logistics/delivery](#operation/logisticsNewDelivery)|||X|
-    |[POST /logistics/orderPicked/{orderId}](#operation/logisticsPicked)|||X|
-    |[POST /logistics/finishDelivery/{orderId}](#operation/logisticsFinish)|||X|
-    |[POST /logistics/handleProblem/{orderId}](#operation/logisticsProblem)|||X|
-    |[POST /logistics/cancel/{orderId}](#operation/logisticsCancel)|||X|
-    |[GET /logistics/delivery/{orderId}](#operation/logisticDetails)|||X|
-    |[POST /logistics/availability](#tag/logisticPrice)|||X|
-    |[POST /deliveryUpdate](#operation/newLogisticEvent) |X|X||
+    |[POST /v1/logistics/delivery](#operation/logisticsNewDelivery)|||X|
+    |[POST /v1/logistics/orderPicked/{orderId}](#operation/logisticsPicked)|||X|
+    |[POST /v1/logistics/finishDelivery/{orderId}](#operation/logisticsFinish)|||X|
+    |[POST /v1/logistics/handleProblem/{orderId}](#operation/logisticsProblem)|||X|
+    |[POST /v1/logistics/cancel/{orderId}](#operation/logisticsCancel)|||X|
+    |[GET /v1/logistics/delivery/{orderId}](#operation/logisticDetails)|||X|
+    |[POST /v1/logistics/availability](#tag/logisticPrice)|||X|
+    |[POST /v1/deliveryUpdate](#operation/newLogisticEvent) |X|X||
 
      ## Parametrizations
 
@@ -308,31 +312,80 @@ tags:
 # Version Tags
 
   - name: versionSection
-    x-displayName: " ►►►► VERSION 1.0.1-rc.0 ◄◄◄◄"
+    x-displayName: " ►►►► VERSION 1.0.1-rc.1 ◄◄◄◄"
     x-traitTag: true
     description: |-
-      All the information listed in this section is planned to be released in version **1.0.0** of the Open Delivery API.
+      All the information listed in this section is planned to be released in version **1.0.1** of the Open Delivery API.
 
-      > This version is still in **'Beta'**, so minor changes may still occur until release.
+      > This version is still in **'Release Candidate'**, so minor changes is expected until release.
 
   - name: versionChangelog
     x-displayName: "└─► Changelog"
     x-traitTag: true
     description: |-  
-    
-        Latest Changes:  
+        Latest Changes:      
+
+        ### Version [1.0.1-rc.1]
+
+        - Added a new endpoint so that **Merchant** can send information related to its [GET /merchant](#operation/getMerchant) endpoint to the **Ordering APPLICATION**:
+
+          - [PUT /v1/merchantOnboarding](#operation/putMerchantOnboarding) 
+
+        - Added the possibility to indicate orders with scheduled delivery.  
+        With this the following changes were made:
+
+          - [GET /merchant](#operation/getMerchant)
+            - `service` > Added a new optional field `orderTiming`, where the merchant can indicate the delivery timing available for that service.
+
+          - [GET /orders/{orderId}](#operation/ordersDetails)
+            - Added `SCHEDULED` option to the `orderTiming` field.
+
+            - Added a new property called `schedule` where the delivery window for scheduled orders will be specified with the following structure:
+        
+        ### Version [1.0.1-rc.0]
+
+        - Added the `ITEM_OFFER` and `OPTION` entites as options to the `entityType` property on the [POST /merchantUpdate](#operation/menuUpdated) endpoint.
+
+        - Removed the **requirement** of the fields:
+          - [GET /merchant](#operation/getMerchant)
+            - `menu` > `description`
+            - `menu` > `disclaimer`
+            - `category` > `description`
+            - `optionGroup` > `description`
+
+        - Added a new service type called **INDOOR**.  
+          The following places are affected:
+
+          - [GET /merchant](#operation/getMerchant)
+            - added option `INDOOR` to `type` field of entity `service`.
+
+          - [GET /orders/{orderId}](#operation/ordersDetails)
+            - added new property: `indoor` with the following structure:     
+
+          ```
+            {
+              ...
+              "indoor": {
+                "mode": "DEFAULT",
+                "indoorDateTime": "2019-08-24T14:15:22Z",
+                "table": "string"
+              },
+              ...
+            }
+          ```
 
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md  
 
 
+
   - name: versionSection2
-    x-displayName: " ►►►► VERSION 1.1.0-rc.6 ◄◄◄◄"
+    x-displayName: " ►►►►►► BETA TEST ◄◄◄◄◄◄"
     x-traitTag: true
     description: |-
-      All the information listed in this section is planned to be released in version **1.1.0** of the Open Delivery API.
+      All the information listed in this section is planned to be released after testing and validation.
 
-      > This version is still in **'Beta'**, so minor changes may still occur until release.
+      > This version is still in **'Beta'**, so minor and major changes may still occur until release.
  
   - name: versionChangelog2
     x-displayName: "└─► Changelog"
@@ -341,26 +394,13 @@ tags:
     
         Latest Changes:  
 
-        ### Version [1.1.0-rc.6] - Mar 12, 2022
+        ### Version [BETA] - Mar 12, 2022
 
-        #### Breaking changes:
-        * [Issue #81](https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues/81)] - Added `customerName` field to the [POST /logistics/delivery](#operation/logisticsNewDelivery) endpoint.
-        * Changed `deliveryDetailsURL` field name to `externalTrackingURL` on [GET /logistics/delivery/{orderId}](#operation/logisticDetails)
-        * Changed the name of the `volumes` field to `packageQuantity` on the [POST /logistics/delivery](#operation/logisticsNewDelivery) endpoint
-        * Changed the name of some events:
-          - `PICKUP_STARTED` to `PICKUP_ONGOING`
-          - `DELIVERY_STARTED` to `DELIVERY_ONGOING`
+        - Added new fields in [POST /logistics/delivery](#operation/logisticsNewDelivery) endpoint
 
-        #### Other Changes
-        * Added `packageVolume` field to the [POST /logistics/delivery] endpoint (#operation/logisticsNewDelivery)
-        * Added `externalTrackingURL` field to [POST /deliveryUpdate](#operation/newLogisticEvent) endpoint
-        * Added `containerSize` field to `Vehicle` object
-          Appended endpoints:
-          - [POST /logistics/delivery](#operation/logisticsNewDelivery)
-          - [POST /logistics/availability](#tag/logisticPrice)
-          - [POST /deliveryUpdate](#operation/newLogisticEvent)
-          - [GET /logistics/delivery/{orderId}](#operation/logisticDetails)
-        * Added a new section to the [logistics events](#tag/logisticOrder) explanations explaining how retries of a rejected request work.
+          - `notifyPickup`: Used to let the logistic service know that it needs to be notified of the pickup.
+          - `notifyConclusion`: Used to let the logistic service know that it needs to be notified of the finalization of the delivery.
+          - `combinedOrdersIds`: This field was missing in the documentation.
           
         See the full changelog here:  
         https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG_1.1.x.md 
@@ -532,11 +572,10 @@ tags:
     description: |-
 
   - name: merchantStatus
-    x-displayName: "└───● Merchant Status"
+    x-displayName: "└───● Onboarding and Status"
     description: |-
-      ## Health Check
 
-      The **Ordering Application** must provide an **[endpoint](#operation/getMerchantStatus)** to let the merchant **Software Service** knows if its merchant information is being correctly read by the **Ordering Application**.
+      This section contains routes for registering and updating the Merchant endpoint information, as well as the read status of this endpoint.
 
   - name: merchantUpdate
     x-displayName: "└───● Merchant Update"
@@ -800,7 +839,7 @@ tags:
       code: OTHER_CANCELLATION_REASON
       ```
 
-      Ordering Aplications may cancel the order for reasons other than via costumer.
+      Ordering Aplications may cancel the order for reasons other than via customer.
 
       **Cancellation Handshake**
 
@@ -822,8 +861,6 @@ tags:
       This section covers the API referring to the operations with `**Logistic Services**`. 
       
       > The information below are still in release candidate (BETA) and will be tested in the coming months.
-
-      The expected release of the logistics API is at **Version 1.1.0**
 
   - name: logisticOverview
     x-displayName: └───● Logistic Overview
@@ -962,8 +999,6 @@ tags:
       
       > The information below are still in release candidate (BETA) and will be tested in the coming months.
 
-      The expected release of the logistics API is at **Version 1.2.0**    
-
   - name: financialReport
     x-displayName: └───● Financial Reports
     description: |-
@@ -979,8 +1014,6 @@ tags:
       This section covers the API referring to the operations with `Contracts`. 
       
       > The information below are still in release candidate (BETA) and will be tested in the coming months.
-
-      The expected release of the logistics API is at **Version 1.2.0**
 
   - name: contractSummaryOverview
     x-displayName: └───● Overview
@@ -1095,11 +1128,7 @@ x-tagGroups:
       - logisticOrder
       - logisticTracking
       - logisticDetails
-      - logisticPrice
-  - name: ".................................................................................................................."
-    tags:
-      - versionSection3
-      - versionChangelog3           
+      - logisticPrice   
   - name: ""
     tags:
       - financialReportSection
@@ -1121,7 +1150,8 @@ x-tagGroups:
 #############################################################
 
 paths:
-  # Authentication
+
+# Authentication
 
   /oauth/token:
     post:
@@ -1152,9 +1182,9 @@ paths:
         "500":
           description: "Unexpected error"
 
-  # Merchant
+# Merchant
 
-  /merchant:
+  /v1/merchant:
     get:
       tags:
         - "merchantEndpoints"
@@ -1193,7 +1223,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /merchantStatus:
+  /v1/merchantStatus:
     get:
       parameters:
         - in: "query"
@@ -1232,9 +1262,62 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  # Orders
+  /v1/merchantOnboarding:
+    put:
+      tags:
+        - "merchantStatus"
+      operationId: "putMerchantOnboarding"
+      summary: "[NEW] Register / Update Merchant endpoint info"
+      security:
+        - OAuth2: [od.all]
+      description: |-
+        Register and update the **Merchant** endpoint [GET /merchant](#operation/getMerchant) information in the **Ordering Application**.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
 
-  "/events:polling":
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPUTSS_OA.png" />
+        </div>
+      parameters:
+      - in: "query"
+        name: "merchantId"
+        required: true
+        schema:
+          type: string
+          description: "The Id of the Merchant for whom you want to complete or change registration info."
+      requestBody:
+          required: true
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/MerchantAPIInfo"          
+      responses:
+        "200":
+          description: "Request has been processed."
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/MerchantAPIInfo"
+        "201":
+          description: "Resource has been created."  
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/MerchantAPIInfo"                
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"      
+
+
+# Orders
+
+  "/v1/events:polling":
     get:
       operationId: pollingEvents
       parameters:
@@ -1304,7 +1387,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /events/acknowledgment:
+  /v1/events/acknowledgment:
     post:
       requestBody:
         $ref: "#/components/requestBodies/AckEvents"
@@ -1335,7 +1418,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /orders/{orderId}:
+  /v1/orders/{orderId}:
     get:
       parameters:
         - name: "orderId"
@@ -1378,7 +1461,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /orders/{orderId}/confirm:
+  /v1/orders/{orderId}/confirm:
     post:
       parameters:
         - name: id
@@ -1419,7 +1502,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /orders/{orderId}/requestCancellation:
+  /v1/orders/{orderId}/requestCancellation:
     post:
       parameters:
         - name: id
@@ -1457,7 +1540,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /orders/{orderId}/acceptCancellation:
+  /v1/orders/{orderId}/acceptCancellation:
     post:
       parameters:
         - name: id
@@ -1493,7 +1576,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /orders/{orderId}/denyCancellation:
+  /v1/orders/{orderId}/denyCancellation:
     post:
       parameters:
         - name: id
@@ -1531,7 +1614,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /orders/{orderId}/readyForPickup:
+  /v1/orders/{orderId}/readyForPickup:
     post:
       parameters:
         - name: id
@@ -1567,7 +1650,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /orders/{orderId}/dispatch:
+  /v1/orders/{orderId}/dispatch:
     post:
       parameters:
         - name: id
@@ -1605,7 +1688,7 @@ paths:
 
   # Logistics
 
-  /logistics/availability:
+  /v1/logistics/availability:
     post:
       requestBody:
         content:
@@ -1632,7 +1715,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /logistics/delivery:
+  /v1/logistics/delivery:
     post:
       requestBody:
         $ref: "#/components/requestBodies/DeliveryOrder"
@@ -1660,7 +1743,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /logistics/delivery/{orderId}:
+  /v1/logistics/delivery/{orderId}:
     get:
       parameters:
         - name: orderId
@@ -1689,7 +1772,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /logistics/orderPicked/{orderId}:
+  /v1/logistics/orderPicked/{orderId}:
     post:
       parameters:
         - name: orderId
@@ -1721,7 +1804,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /logistics/finishDelivery/{orderId}:
+  /v1/logistics/finishDelivery/{orderId}:
     post:
       parameters:
         - name: orderId
@@ -1753,7 +1836,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /logistics/handleProblem/{orderId}:
+  /v1/logistics/handleProblem/{orderId}:
     post:
       parameters:
         - name: orderId
@@ -1792,7 +1875,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /logistics/cancel/{orderId}:
+  /v1/logistics/cancel/{orderId}:
     post:
       parameters:
         - name: orderId
@@ -1838,7 +1921,7 @@ paths:
 
 # Financial Report
 
-  /paymentBatchByIds:
+  /v1/paymentBatchByIds:
     get:
       operationId: "paymentBatchId"
       tags:
@@ -1884,7 +1967,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /paymentBatchByDate:
+  /v1/paymentBatchByDate:
     get:
       operationId: "paymentBatchDate"
       tags:
@@ -1978,7 +2061,7 @@ paths:
 
 # Contract Summary
 
-  /contractSummary:
+  /v1/contractSummary:
     get:
       operationId: "getContractSummary"
       tags:
@@ -2019,7 +2102,7 @@ paths:
 
 # Contract Sign-Up
 
-  /signup/contractConditions:
+  /v1/signup/contractConditions:
     post:
       operationId: "postContractConditions"
       tags:
@@ -2057,7 +2140,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /signup/chosenConditions:
+  /v1/signup/chosenConditions:
       post:
         operationId: "postContractChosenConditions"
         tags:
@@ -2097,7 +2180,7 @@ paths:
           "503":
             $ref: "#/components/responses/ServiceUnavailable"
 
-  /signup/contractStatus:
+  /v1/signup/contractStatus:
     get:
       operationId: "getContractStatus"
       tags:
@@ -2136,7 +2219,7 @@ paths:
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
-  /signup/merchantAccount:
+  /v1/signup/merchantAccount:
     put:
       operationId: "putMerchantAccount"
       tags:
@@ -2161,13 +2244,25 @@ paths:
         schema:
           type: string
           description: "The Id of the Merchant for whom you want to complete or change registration info."
+      requestBody:
+          required: true
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/MerchantAccount"          
       responses:
         "200":
-          description: "Successfully returns the report."
+          description: "Request has been processed."  
           content:
             "application/json":
               schema:
                 $ref: "#/components/schemas/MerchantAccount"
+        "201":
+          description: "Resource has been created."  
+          content:
+            "application/json":
+              schema:
+                $ref: "#/components/schemas/MerchantAccount"                
         "400":
           $ref: "#/components/responses/BadRequest"
         "403":
@@ -2175,13 +2270,13 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
         "503":
-          $ref: "#/components/responses/ServiceUnavailable"          
+          $ref: "#/components/responses/ServiceUnavailable"      
 
 
 x-webhooks:
   # Merchant
 
-  /menuUpdated:
+  /v1/menuUpdated:
     post:
       summary: New Merchant Update Notification
       description: |-
@@ -2237,7 +2332,7 @@ x-webhooks:
 
   # Order
 
-  newEvent:
+  /v1/newEvent:
     post:
       parameters:
         - in: "header"
@@ -2292,7 +2387,7 @@ x-webhooks:
 
   # Logistic
 
-  newLogisticEvent:
+  /v1/newLogisticEvent:
     post:
       parameters:
         - in: "header"
@@ -2469,8 +2564,14 @@ components:
             $ref: "#/components/schemas/DeliveryCancel"
    
   responses:
+    OK:
+      description: "Request has been processed."  
     Accepted:
       description: "Request has been accepted for processing."
+    Created:
+      description: "Resource has been created."  
+    NoContent:
+      description: "Request has been processed."  
     BadRequest:
       description: "Bad Request"
       content:
@@ -2885,6 +2986,7 @@ components:
           enum:
             - DELIVERY
             - TAKEOUT
+            - INDOOR
           example: "DELIVERY"
         menuId:
           description: "The id value of the `Menu` entity correlated to this `Service` entity."
@@ -3707,7 +3809,7 @@ components:
             - "TAKEOUT"
         displayId:
           type: "string"
-          description: "Order Id shown in the **Ordering Application** interface for the costumer."
+          description: "Order Id shown in the **Ordering Application** interface for the customer."
         sourceAppId:
           type: "string"
           format: UUID
@@ -3721,6 +3823,7 @@ components:
           description: "Order Timing. Currently, only `INSTANT` is accepted."
           enum:
             - "INSTANT"
+            - "SCHEDULED"
         preparationStartDateTime:
           type: "string"
           format: "date-time"
@@ -3851,7 +3954,7 @@ components:
           items:
             type: "object"
             required:
-              ["name", "type", "receivedBy", "receiverDocument", "price"]
+              ["name", "type", "receivedBy", "price"]
             properties:
               name:
                 type: "string"
@@ -4024,6 +4127,19 @@ components:
             ordersCountOnMerchant:
               description: "Total number of orders that the consumer already placed within the merchant."
               type: "number"
+        schedule:
+          type: "object"
+          description: "Information for indoor orders. Required if the chosen `type` is `INDOOR`."
+          required: ["scheduledDateTimeStart", "scheduledDateTimeEnd"]
+          properties:
+            scheduledDateTimeStart:
+              type: "string"
+              format: date-time
+              description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
+            scheduledDateTimeEnd:
+              type: "string"
+              format: date-time
+              description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."       
         delivery:
           type: "object"
           description: "If the chosen `type` is `DELIVERY`, then `TAKEOUT` is not required."
@@ -4107,7 +4223,7 @@ components:
             estimatedDeliveryDateTime:
               type: "string"
               format: date-time
-              description: "Estimated delivery date and time. The same date showed to the costumer, in the **Ordering Application** interface. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Estimated delivery date and time. The same date showed to the customer, in the **Ordering Application** interface. \n\n(UTC date-time in ISO timestamp format)."
             deliveryDateTime:
               type: "string"
               format: date-time
@@ -4634,7 +4750,7 @@ components:
           description: "The orderId generated by the **`Ordering Application`**."
         orderDisplayId:
           type: string
-          description: "Order Id shown in the **`Ordering Application`** interface for the costumer."
+          description: "Order Id shown in the **`Ordering Application`** interface for the customer."
           example: "96b41025"
         merchant:
           type: "object"
@@ -4865,7 +4981,7 @@ components:
           description: "The orderId generated by the **`Ordering Application`**."
         orderDisplayId:
           type: string
-          description: "Order Id shown in the **`Ordering Application`** interface for the costumer."
+          description: "Order Id shown in the **`Ordering Application`** interface for the customer."
           example: "96b41025"
         merchant:
           type: "object"
@@ -5524,7 +5640,7 @@ components:
           description: "The orderId generated by the **`Ordering Application`**."
         orderDisplayId:
           type: string
-          description: "Order Id shown in the **`Ordering Application`** interface for the costumer."
+          description: "Order Id shown in the **`Ordering Application`** interface for the customer."
           example: "96b41025"
         merchant:
           type: "object"
@@ -5914,7 +6030,7 @@ components:
               description: "A unique identifier of the order."
             displayId:
               type: "string"
-              description: "Order Id shown in the **Ordering Application** interface for the costumer."
+              description: "Order Id shown in the **Ordering Application** interface for the customer."
             createdAt:              
               type: string
               format: "date-time"
@@ -7272,17 +7388,20 @@ components:
                   type: "boolean"
                   description: "Informs whether the merchant has _subsituição tributária de ISS_."
         merchantAPIInfo:
-          type: "object"
-          required: ["orderingApplicationInfo", "merchantsInfo", "contractInfo", "contractedPlan", "recurringFees", "oneTimeFees", "paymentBatchInfo"]
-          description: "Information about this merchant's [GET /merchant](#operation/getMerchant) API access. This API has the necessary information for the Ordering Application to be able to make the merchant's sales catalog available."
-          properties: 
-            baseURL:       
-              type: "string"
-              description: "The URL for accessing the endpoint."        
-            API_KEY:       
-              type: "string"
-              description: "The API_KEY for accessing the endpoint"
-
+          allOf:
+          - $ref: "#/components/schemas/MerchantAPIInfo"  
+    
+    MerchantAPIInfo:
+      type: "object"
+      required: ["baseURL"]
+      description: "Information about this merchant's [GET /merchant](#operation/getMerchant) API access. This API has the necessary information for the Ordering Application to be able to make the merchant's sales catalog available."
+      properties: 
+        baseURL:       
+          type: "string"
+          description: "The URL for accessing the endpoint."        
+        API_KEY:       
+          type: "string"
+          description: "The API_KEY for accessing the endpoint (see [AUTHENTICATION](#tag/authentication) section form more information)."
 
   examples:
     tokenExample:
