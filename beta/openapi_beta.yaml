@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "'Pré Release Version'"
+  version: "'Pre Release Version'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -461,11 +461,9 @@ tags:
         <img src="https://abrasel-nacional.github.io/docs/images/menu_flow.png" />
       </div>
 
-      The **Ordering Application** can check for merchant updates in the following ways:
+      The **Ordering Application** can check for merchant updates in the following ways:  
       1.	Make a new request on the **[/merchant](#operation/getMerchant)** endpoint whenever the TTL expires;
-
       2.	The **Ordering Application** can optionally provide a **[webhook](#operation/menuUpdated)** , where the merchant **Software Service** can send a merchant update notification;
-
       3.	If the **Software Service** **[refuses](#operation/cancelDenied)** an order for any reason, upon receiving the refusal, it is recommended that the **Ordering Application** make a new request on the **[/merchant](#operation/getMerchant)** endpoint.
 
   - name: merchantStructure
