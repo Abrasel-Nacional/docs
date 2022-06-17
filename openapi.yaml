@@ -140,8 +140,9 @@ info:
         - **apiKey**: If the GET /merchant endpoint is implemented using authentication, it is necessary that the **Software Service** provides the apiKey referring to the entered merchant.
         
         - **Order Event Webhook**: If both parties are going to work with sending order events via webhook, it is necessary to provide the URL of the webhook.   
-      Default webhook route: 
-      `POST {baseURL}/orderEvent`
+          Default webhook route: 
+
+          `POST {baseURL}/newEvent`
 
     # └► Open Delivery API Evolution
 
@@ -416,7 +417,6 @@ tags:
     - name: merchantStatus
       x-displayName: "└───● Merchant Status"
       description: |-
-        ## Health Check
 
         The **Ordering Application** must provide an **[endpoint](#operation/getMerchantStatus)** to let the merchant **Software Service** knows if its merchant information is being correctly read by the **Ordering Application**.
 
@@ -1304,7 +1304,7 @@ x-webhooks:
             description: "SHA256 hash of the request body, using the client secret as the key"
       summary: New Order Event Notification
       description: |-
-        > **POST /v1/event** 
+        > **POST /v1/newEvent** 
         
         Information about a new event in the systems
         <br /><br />
@@ -2965,9 +2965,10 @@ components:
               id:
                 type: "string"
                 format: "UUID"
-                description: "A unique identifier related to the consumer."
+                description: "A unique identifier related to the consumer. If the Ordering Application does not have an Id for the customer, this Id can be generated when creating the order. "
               phone:
                 type: "object"
+                description: "Customer's phone. Here you can enter the customer's phone number directly (provided that the customer has given permission for this data to be shared, according to local policies) or another phone number (such as the ordering application's call center phone number) where the merchant can communicate about order issues that affect the customer (such as health issues)."
                 required: ["number"]
                 properties:
                   number:
@@ -2975,13 +2976,13 @@ components:
                   extension:
                     type: "string"
               documentNumber:
-                description: "Consumer document."
+                description: "Customer document. This document is mandatory for dealing with tax issues."
                 type: "string"
               name:
                 type: "string"
-                description: "Consumer's name."
+                description: "Customer's name."
               ordersCountOnMerchant:
-                description: "Total number of orders that the consumer already placed within the merchant."
+                description: "Total number of orders that the customer already placed within the merchant."
                 type: "number"
           delivery:
             type: "object"
