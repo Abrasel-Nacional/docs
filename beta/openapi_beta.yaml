@@ -157,8 +157,9 @@ info:
         - **apiKey**: If the GET /merchant endpoint is implemented using authentication, it is necessary that the **Software Service** provides the apiKey referring to the entered merchant.
         
         - **Order Event Webhook**: If both parties are going to work with sending order events via webhook, it is necessary to provide the URL of the webhook.   
-      Default webhook route: 
-      `POST {baseURL}/orderEvent`
+          Default webhook route: 
+
+          `POST {baseURL}/newEvent`
 
       - **PARAMETERS IN THE SOFTWARE SERVICE/ORDERING APPLICATION  
       (LOGISTIC SERVICE --> SOFTWARE SERVICE/ORDERING APPLICATION)**
@@ -335,13 +336,23 @@ tags:
         With this the following changes were made:
 
           - [GET /merchant](#operation/getMerchant)
-            - `service` > Added a new optional field `orderTiming`, where the merchant can indicate the delivery timing available for that service.
+            - `service` > Added a new optional field `serviceTiming`, where the merchant can indicate the delivery timing available for that service.
 
           - [GET /orders/{orderId}](#operation/ordersDetails)
             - Added `SCHEDULED` option to the `orderTiming` field.
 
             - Added a new property called `schedule` where the delivery window for scheduled orders will be specified with the following structure:
-        
+              ```
+                  {
+                    ...
+                    "schedule": {
+                      "scheduledDateTimeStart": "2019-08-24T14:15:22Z",
+                      "scheduledDateTimeEnd": "2019-08-24T14:15:22Z"
+                      },
+                    ...
+                  }
+              ```
+
         ### Version [1.0.1-rc.0]
 
         - Added the `ITEM_OFFER` and `OPTION` entites as options to the `entityType` property on the [POST /merchantUpdate](#operation/menuUpdated) endpoint.
@@ -2988,6 +2999,15 @@ components:
             - TAKEOUT
             - INDOOR
           example: "DELIVERY"
+        serviceTiming:
+          type: "array"
+          description: "Indicates whether the service accepts orders with immediate delivery or scheduled delivery. Please inform all accepted types in the field. If not informed, default considers only the `INSTANT` option."
+          items:
+            type: "string"
+            enum:
+              - INSTANT
+              - SCHEDULED
+          example: ["INSTANT", "SCHEDULED"]          
         menuId:
           description: "The id value of the `Menu` entity correlated to this `Service` entity."
           type: string
@@ -3820,7 +3840,7 @@ components:
           description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format)."
         orderTiming:
           type: "string"
-          description: "Order Timing. Currently, only `INSTANT` is accepted."
+          description: "Order Timing. Indicates whether the ORDER will have immediate or scheduled delivery."
           enum:
             - "INSTANT"
             - "SCHEDULED"
@@ -4109,9 +4129,10 @@ components:
             id:
               type: "string"
               format: "UUID"
-              description: "A unique identifier related to the consumer."
+              description: "A unique identifier related to the consumer. If the Ordering Application does not have an Id for the customer, this Id can be generated when creating the order. "
             phone:
               type: "object"
+              description: "Customer's phone. Here you can enter the customer's phone number directly (provided that the customer has given permission for this data to be shared, according to local policies) or another phone number (such as the ordering application's call center phone number) where the merchant can communicate about order issues that affect the customer (such as health issues)."
               required: ["number"]
               properties:
                 number:
@@ -4119,13 +4140,13 @@ components:
                 extension:
                   type: "string"
             documentNumber:
-              description: "Consumer document."
+              description: "Customer document. This document is mandatory for dealing with tax issues."
               type: "string"
             name:
               type: "string"
-              description: "Consumer's name."
+              description: "Customer's name."
             ordersCountOnMerchant:
-              description: "Total number of orders that the consumer already placed within the merchant."
+              description: "Total number of orders that the customer already placed within the merchant."
               type: "number"
         schedule:
           type: "object"
