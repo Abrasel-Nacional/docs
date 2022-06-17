@@ -7399,7 +7399,7 @@ components:
         baseURL:       
           type: "string"
           description: "The URL for accessing the endpoint."        
-        API_KEY:       
+        apiKey:       
           type: "string"
           description: "The API_KEY for accessing the endpoint (see [AUTHENTICATION](#tag/authentication) section form more information)."
 
