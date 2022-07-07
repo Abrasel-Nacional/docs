@@ -1200,7 +1200,7 @@ paths:
       operationId: "getMerchant"
       summary: "Get information of a Merchant"
       security:
-        - []
+        - {}
         - apiKey: []
       description: |-
         Endpoint to get all data of a specific merchant, such as basic info, menus, and services.
