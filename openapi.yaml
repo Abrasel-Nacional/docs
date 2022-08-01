@@ -41,7 +41,7 @@ info:
       
       Latest Changes:
       
-      ### Version [1.0.1]
+      ### Version [1.0.1] - Aug 01, 2022
 
       - Added the possibility to indicate orders with scheduled delivery.  
       With this the following changes were made:
@@ -2515,6 +2515,13 @@ components:
           type: "string"
           description: "Item External Code. (Tipically the merchant **Software Service** item code)"
           example: "233467"
+        status:
+          type: "string"
+          description: "Indicates if the entity is Avaliable or Unavaliable. Only use this type when you must disable the entity due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays). Default is `AVAILABLE`."
+          enum:
+            - AVAILABLE
+            - UNAVAILABLE
+          example: "AVAILABLE"        
         image:
           type: "object"
           description: "Image of the item"
@@ -2764,6 +2771,13 @@ components:
           type: integer
           description: "ItemOffer display index."
           example: 0
+        status:
+          type: "string"
+          description: "Indicates if the entity is Avaliable or Unavaliable. Only use this type when you must disable the entity due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays). Default is `AVAILABLE`."
+          enum:
+            - AVAILABLE
+            - UNAVAILABLE
+          example: "AVAILABLE"        
         price:
           type: "object"
           description: "Price of the menu item offer. Original and actual values can be informed, for showing discounts."
@@ -2865,7 +2879,7 @@ components:
           example: 0
         status:
           type: "string"
-          description: "Indicates if the entity is Avaliable or Unavaliable. Only use this type when you must disable the entity due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays). Default is AVAILABLE."
+          description: "Indicates if the entity is Avaliable or Unavaliable. Only use this type when you must disable the entity due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays). Default is `AVAILABLE`."
           enum:
             - AVAILABLE
             - UNAVAILABLE
@@ -3422,7 +3436,7 @@ components:
               format: "decimal"
         schedule:
           type: "object"
-          description: "Information for indoor orders. Required if the chosen `type` is `INDOOR`."
+          description: "Information for scheduled orders. Required if `orderTiming` is `SCHEDULED`."
           required: ["scheduledDateTimeStart", "scheduledDateTimeEnd"]
           properties:
             scheduledDateTimeStart:
