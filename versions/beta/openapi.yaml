@@ -35,17 +35,6 @@ info:
       - **[General Guidelines](#section/General-Guidelines)**
       - **[Error Handling](#section/Error-Handling)**
 
-
-    **Release Candidate: Currently: [Version v1.0.1-rc1](#tag/versionSection)**  
-    Information that will be released with version 1.0.1
-      - **[Changelog](#tag/versionChangelog)**
-      - **[Working Versions](#tag/versionsSection)
-      - **[Security](#tag/securitySection)**
-      - **[Merchant](#tag/merchantSection)**
-      - **[Order](#tag/orderSection)**
-
-    > As this version is in release candidate, small changes may still occur until the release date.
-
     **Beta Test**: 
       - **[Changelog](#tag/versionChangelog2)**
       - **[Logistics](#tag/logisticsSection)**
@@ -100,31 +89,12 @@ info:
 
     Since Open Delivery is not the host of the APIs, it is up to the companies interested in using the standard to develop the Open Delivery standard APIs in their systems and platforms using this documentation as a guideline. 
 
-    Listed below are the different Routes that each party needs to implement and make available in their systems:
+    Listed below are the different Routes routes offered by the Open Delivery standard and which party is responsible for being the host of it.
 
     | |ORDERING APPLICATION|SOFTWARE SERVICE|LOGISTIC SERVICE|
     |-|:------------------:|:--------------:|:--------------:|
     |**[AUTHENTICATION](#tag/authentication)**|||||
     |[POST /oauth/token](#operation/getToken)|X||X|
-    |--------------------------------||||
-    |**[MERCHANT](#tag/merchantSection)**|||||
-    |[GET /v1/merchant](#operation/getMerchant)||X||
-    |[POST /v1/merchantUpdated](#operation/menuUpdated)|X||
-    |[GET /v1/merchantStatus](#tag/merchantStatus)|X|||
-    |--------------------------------||||
-    |**[ORDER](#tag/ordersSection)**|||||
-    |[GET /v1/events:polling ](#operation/pollingEvents)|X|||
-    |[POST /v1/events/acknowledgment](#operation/pollingAcknowledgment)|X|||
-    |[POST /v1/orderUpdate](#operation/newEvent)||X||
-    |||||
-    |[GET /v1/orders/{orderId}](#operation/ordersDetails)|X|||
-    |[POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)|X|||
-    |[POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
-    |[POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)|X||
-    |||||
-    |[POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
-    |[POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted) |X|||
-    |[POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
     |--------------------------------||||
     |**[LOGISTICS](#tag/logisticsSection)**|||||
     |[POST /v1/logistics/delivery](#operation/logisticsNewDelivery)|||X|
@@ -135,6 +105,19 @@ info:
     |[GET /v1/logistics/delivery/{orderId}](#operation/logisticDetails)|||X|
     |[POST /v1/logistics/availability](#tag/logisticPrice)|||X|
     |[POST /v1/deliveryUpdate](#operation/newLogisticEvent) |X|X||
+    |--------------------------------||||
+    |**[FINANCIAL RECONCILIATION](#tag/financialReportSection)**|||||
+    |[GET /v1/paymentBatchByIds](#operation/paymentBatchId)|X|||
+    |[GET /v1/paymentBatchByDate](#operation/paymentBatchDate)|X|||
+    |--------------------------------||||
+    |**[CONTRACTS](#tag/contractSection)**|||||
+    |**[Contract Summary](#tag/contractSummaryOverview)**|||||
+    |[GET /v1/contractSummary](#operation/getContractSummary)|X|||
+    |**[Sign-Up Service](#tag/contractSignupOverview)**|||||
+    |[POST /v1/signup/contractConditions](#operation/postContractConditions)|X|||
+    |[POST /v1/signup/chosenConditions](#operation/postContractChosenConditions)|X|||
+    |[GET /v1/signup/contractStatus](#operation/getContractStatus)|X|||
+    |[PUT /v1/signup/merchantAccount](#operation/putMerchantAccount)|X|||
 
      ## Parametrizations
 
