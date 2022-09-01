@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "'Pre Release Version'"
+  version: "'Beta Version'"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -16,9 +16,10 @@ info:
     # ► ------- OPEN DELIVERY ------- ◄
 
     # └► 'BETA' VERSION WARNING
-    > **THIS DOCUMENTATION CONTAINS INFORMATION THAT HAS NOT YET BEEN OFFICIALLY RELEASED AND IS STILL IN RELEASE CANDIDATE STAGE OR IN A BETA STAGE. THE INFORMATION CONTAINED HERE IS STILL UNDERGOING TESTING AND VALIDATION AND MAY BE SUBJECT TO CHANGE (SEE THE [CHANGELOGS](#section/Table-Of-Contents) SECTION FOR THE LATEST CHANGES).**
 
-    > **TO VIEW THE OFFICIAL RELEASE (CURRENTLY VERSION V1.0.0) FOLLOW THIS [LINK](https://abrasel-nacional.github.io/docs/).** 
+    > **THIS DOCUMENTATION VERSION CONTAINS INFORMATION THAT HAS NOT YET BEEN OFFICIALLY RELEASED AND IS STILL IN BETA STAGE. THE INFORMATION CONTAINED HERE IS STILL UNDERGOING TESTING AND VALIDATION AND MAY BE SUBJECT TO CHANGE (SEE THE [CHANGELOGS](#section/Table-Of-Contents) SECTION FOR THE LATEST CHANGES).**
+
+    > **TO VIEW THE OFFICIAL RELEASE (CURRENTLY VERSION V1.0.1) FOLLOW THIS [LINK](https://abrasel-nacional.github.io/docs/).** 
 
     # └► Introduction
       **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and **Ordering Applications**, establishing a single communication standard for all, through a set of REST APIs.
@@ -35,30 +36,69 @@ info:
       - **[General Guidelines](#section/General-Guidelines)**
       - **[Error Handling](#section/Error-Handling)**
 
-    **Beta Test**: 
-      - **[Changelog](#tag/versionChangelog2)**
+    **API Reference**: 
       - **[Logistics](#tag/logisticsSection)**
       - **[Reconciliation](#tag/financialReportSection)**
       - **[Contracts](#tag/contractSection)**      
 
     > As this information is still in beta test stage, breaking changes can occur at any time until release. After release, it will follow semantic versioning from there on out.
 
+    # └► Changelog
+
+      Latest Changes:  
+
+      ### Version [BETA] - Mar 12, 2022
+
+      - Added new fields in [POST /logistics/delivery](#operation/logisticsNewDelivery) endpoint
+
+        - `notifyPickup`: Used to let the logistic service know that it needs to be notified of the pickup.
+        - `notifyConclusion`: Used to let the logistic service know that it needs to be notified of the finalization of the delivery.
+        - `combinedOrdersIds`: This field was missing in the documentation.
+        
+      See the full changelog here:  
+      https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG_1.1.x.md
+
     # └► Issues and Suggestions
 
     In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
        
-       https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues
+    > https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/issues
 
     # └► Developer Tools
 
     This section has some tools to help you implement the Open Delivery API. 
 
-    > **Disclaimer**: The tools listed below are tools made available by partners of the Open Delivery project and are the sole responsibility of their authors. The Open Delivery does not provide support for these tools.
+    **Disclaimer**: The tools listed below are tools made available by partners of the Open Delivery project and are the sole responsibility of their authors. The Open Delivery does not provide support for these tools.
 
     **Schema Validators**
 
-      [Open Delivery - API Schema Validator (by Programmers IT)](https://programmersit.github.io/opendelivery-api-schema-validator/)     
+    > [Open Delivery - API Schema Validator (by Programmers IT)](https://programmersit.github.io/opendelivery-api-schema-validator/)     
 
+    # └► Versions
+
+    This section has links to all versions of Open Delivery:
+
+    - **RELEASE**   
+    
+      Contains the standards already published:  
+      **MERCHANT** | **ORDERS**
+
+      - [v1.0.1](https://abrasel-nacional.github.io/docs/) - (Latest release)
+      - [v1.0.0](https://abrasel-nacional.github.io/docs/versions/1.0.0/)
+
+
+    - **BETA**  
+
+      Contains the standards still in tests:  
+      **LOGISTICS** | **FINANCIAL RECONCILIATION** | **CONTRACTS**
+
+      - **[BETA VERSION](https://abrasel-nacional.github.io/docs/versions/beta/)**
+
+    - **RELEASE CANDIDATE**
+
+      Contains evolutions and improvements of the standards already published and that will be part of the release version in the future.
+
+      - [RELEASE CANDIDATE VERSION](https://abrasel-nacional.github.io/docs/versions/rc/)
 
     # 
     # ► ------- GENERAL INFO -------- ◄
@@ -89,8 +129,8 @@ info:
 
     Since Open Delivery is not the host of the APIs, it is up to the companies interested in using the standard to develop the Open Delivery standard APIs in their systems and platforms using this documentation as a guideline. 
 
-    Listed below are the different Routes routes offered by the Open Delivery standard and which party is responsible for being the host of it.
-
+    Listed below are the different routes offered by the Open Delivery standard and which party is responsible for being the host of it.
+    
     | |ORDERING APPLICATION|SOFTWARE SERVICE|LOGISTIC SERVICE|
     |-|:------------------:|:--------------:|:--------------:|
     |**[AUTHENTICATION](#tag/authentication)**|||||
@@ -152,7 +192,7 @@ info:
         - **apiKey**: If the GET /merchant endpoint is implemented using authentication, it is necessary that the **Software Service** provides the apiKey referring to the entered merchant.
         
         - **Order Event Webhook**: If both parties are going to work with sending order events via webhook, it is necessary to provide the URL of the webhook.   
-          Default webhook route: 
+          Default webhook route:  
 
           `POST {baseURL}/newEvent`
 
@@ -175,8 +215,8 @@ info:
       (SOFTWARE SERVICE/ORDERING APPLICATION --> LOGISTIC SERVICE)**
 
         - **Tracking Event Webhook**: It is necessary to inform the URL of the webhook to receive the tracking and event updates of the delivery order.   
-      Default webhook route: 
-      `POST {baseURL}/deliveryEvent`
+        Default webhook route:  
+        `POST {baseURL}/deliveryEvent`
 
         - **MerchantId**: It is a unique ID of the MERCHANT. Similar to the **AppId** but for Merchant. It must be generated by **Software Service**S and once generated, it must be informed to all **Logistic Services** it will integrate with. Since the **MerchantId** is a unique key, a **MerchantId** must not be created per **Logistic Service**, but the same key must be informed for all. 
         The **Ordering Application** must send the **MerchantId** received previously through its integration with the **Software Service**.
@@ -250,190 +290,189 @@ info:
      `4xx` codes indicate failure caused by the information sent by the client or the current state of the entities.  
      `5xx` codes codes indicate service problems on the API side.
 
-     ## General
+    **General**
 
-     This section gathers errors that could be returned by any endpoints listed in the API.
+    This section gathers errors that could be returned by any endpoints listed in the API.
 
-     ### `BadRequest`
+    `BadRequest`
 
-       * __Meaning__: Invalid request.
-       * __HTTP Status Code__: [400 Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1).
+      * __Meaning__: Invalid request.
+      * __HTTP Status Code__: [400 Bad Request](https://tools.ietf.org/html/rfc7231#section-6.5.1).
 
-     ### `Forbidden`
+    `Forbidden`
 
-       * __Meaning__: Authenticated client request that violates some authorization rule.
-       * __HTTP Status Code__: [403 Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3).
+      * __Meaning__: Authenticated client request that violates some authorization rule.
+      * __HTTP Status Code__: [403 Forbidden](https://tools.ietf.org/html/rfc7231#section-6.5.3).
 
-     ### `NotFound`
+    `NotFound`
 
-       * __Meaning__: Entity not found.
-       * __HTTP Status Code__: [404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4).
+      * __Meaning__: Entity not found.
+      * __HTTP Status Code__: [404 Not Found](https://tools.ietf.org/html/rfc7231#section-6.5.4).
 
-     ### `Gone`
 
-       * __Meaning__: Indicates that the entity existed, but has been permanently removed.
-       * __HTTP Status Code__: [410 Gone](https://tools.ietf.org/html/rfc7231#section-6.5.9).
+    `InternalServerError`
 
-     ### `InternalServerError`
+      * __Meaning__: Unexpected condition when processing requisition.
+      * __HTTP Status Code__: [500 Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1).
 
-       * __Meaning__: Unexpected condition when processing requisition.
-       * __HTTP Status Code__: [500 Internal Server Error](https://tools.ietf.org/html/rfc7231#section-6.6.1).
+    `ServiceUnavailable`
 
-     ### `ServiceUnavailable`
+      * __Meaning__: Service is not currently available. Requested service may be under maintenance or outside the operating window.
+      * __HTTP Status Code__: [503 Service Unavailable](https://tools.ietf.org/html/rfc7231#section-6.6.4).
 
-       * __Meaning__: Service is not currently available. Requested service may be under maintenance or outside the operating window.
-       * __HTTP Status Code__: [503 Service Unavailable](https://tools.ietf.org/html/rfc7231#section-6.6.4).
+    `GatewayTimeout`
 
-     ### `GatewayTimeout`
-
-       * __Meaning__: Indicates that the service took longer than expected to return.
-       * __HTTP Status Code__: [504 Gateway Timeout](https://tools.ietf.org/html/rfc7231#section-6.6.5).
-
+      * __Meaning__: Indicates that the service took longer than expected to return.
+      * __HTTP Status Code__: [504 Gateway Timeout](https://tools.ietf.org/html/rfc7231#section-6.6.5).
+    
+    
+    #   
+    # ► ------- API REFERENCE ------- ◄
 #############################################################
 
 tags:
   # Version Tags
 
-  - name: versionSection
-    x-displayName: " ►►►► VERSION 1.0.1-rc.3 ◄◄◄◄"
-    x-traitTag: true
-    description: |-
-      All the information listed in this section is planned to be released in version **1.0.1** of the Open Delivery API.
+  # - name: versionSection
+  #   x-displayName: " ►►►► VERSION 1.0.1-rc.3 ◄◄◄◄"
+  #   x-traitTag: true
+  #   description: |-
+  #     All the information listed in this section is planned to be released in version **1.0.1** of the Open Delivery API.
 
-      > This version is still in **'Release Candidate'**, so minor changes is expected until release.
+  #     > This version is still in **'Release Candidate'**, so minor changes is expected until release.
 
-  - name: versionChangelog
-    x-displayName: "└─► Changelog"
-    x-traitTag: true
-    description: |-
-      Latest Changes:      
+  # - name: versionChangelog
+  #   x-displayName: "└─► Changelog"
+  #   x-traitTag: true
+  #   description: |-
+  #     Latest Changes:      
 
-      ### Version [1.0.1-rc.3]
+  #     ### Version [1.0.1-rc.3]
 
-      - Added a new [Working Versions](#tag/versionsSection) section with endpoints so that both the Software Service and the Ordering Application can check which version of the Open Delivery API the other end is using. The endpoints created were:
+  #     - Added a new [Working Versions](#tag/versionsSection) section with endpoints so that both the Software Service and the Ordering Application can check which version of the Open Delivery API the other end is using. The endpoints created were:
 
-        - [GET /v1/versions/orderingApp](#operation/getOrderingAppVersions)
-        - [GET /v1/versions/merchant](#operation/getMerchantVersions)
+  #       - [GET /v1/versions/orderingApp](#operation/getOrderingAppVersions)
+  #       - [GET /v1/versions/merchant](#operation/getMerchantVersions)
 
-      - [GET /merchant](#operation/getMerchant)
-          - `service` > Changed the `serviceTiming` field by adding fields referring to the scheduling time windows. The structure of the field is now as follows:
+  #     - [GET /merchant](#operation/getMerchant)
+  #         - `service` > Changed the `serviceTiming` field by adding fields referring to the scheduling time windows. The structure of the field is now as follows:
       
-          ```
-          ...
-          "serviceTiming":
-              {
-                  "timing": ["INSTANT", "SCHEDULED"],
-                  "schedule":
-                      {
-                          "scheduleTimeWindow": "15_MINUTES",
-                          "scheduleStartWindow": "15_MINUTES",
-                          "scheduleEndWindow": "15_MINUTES",
-                      },
-          ...
-          ```
+  #         ```
+  #         ...
+  #         "serviceTiming":
+  #             {
+  #                 "timing": ["INSTANT", "SCHEDULED"],
+  #                 "schedule":
+  #                     {
+  #                         "scheduleTimeWindow": "15_MINUTES",
+  #                         "scheduleStartWindow": "15_MINUTES",
+  #                         "scheduleEndWindow": "15_MINUTES",
+  #                     },
+  #         ...
+  #         ```
 
-      - [GET /orders/{orderId}](#operation/ordersDetails)
-          - `indoor` > renamed the field `table` to `place`.     
+  #     - [GET /orders/{orderId}](#operation/ordersDetails)
+  #         - `indoor` > renamed the field `table` to `place`.     
 
-        ```
-          {
-            ...
-            "indoor": {
-              "mode": "PLACE",
-              "indoorDateTime": "2019-08-24T14:15:22Z",
-              "place": "string"
-            },
-            ...
-          }
-        ```
+  #       ```
+  #         {
+  #           ...
+  #           "indoor": {
+  #             "mode": "PLACE",
+  #             "indoorDateTime": "2019-08-24T14:15:22Z",
+  #             "place": "string"
+  #           },
+  #           ...
+  #         }
+  #       ```
 
-      #### Other Changes:
+  #     #### Other Changes:
 
-      - Added a new [Developer Tools](#section/Developer-Tools) section where links to partner tools to help with API development will be listed.
+  #     - Added a new [Developer Tools](#section/Developer-Tools) section where links to partner tools to help with API development will be listed.
 
-      - [Order Overview](#tag/ordersOverview)
+  #     - [Order Overview](#tag/ordersOverview)
 
-        - The lifecycle and order flow diagrams have been updated to better reflect the service types.
+  #       - The lifecycle and order flow diagrams have been updated to better reflect the service types.
 
-      - Overall revisions of grammatical errors, syntax, examples and descriptions.
+  #     - Overall revisions of grammatical errors, syntax, examples and descriptions.
 
-      ### Version [1.0.1-rc.2]
+  #     ### Version [1.0.1-rc.2]
 
-      - Added HTTP Status code 422 on the following endpoints:
-        - [POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)
-        - [POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)
-        - [POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)
-        - [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
-        - [POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)
-        - [POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)
+  #     - Added HTTP Status code 422 on the following endpoints:
+  #       - [POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)
+  #       - [POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)
+  #       - [POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)
+  #       - [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
+  #       - [POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)
+  #       - [POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)
 
-      - Added HTTP Status code 204 on the following endpoints:
-        - [POST /v1/merchantUpdated](#operation/menuUpdated)
-        - [POST /v1/orderUpdate](#operation/newEvent)
-        - [POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)
-        - [POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)
+  #     - Added HTTP Status code 204 on the following endpoints:
+  #       - [POST /v1/merchantUpdated](#operation/menuUpdated)
+  #       - [POST /v1/orderUpdate](#operation/newEvent)
+  #       - [POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)
+  #       - [POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)
 
-      ### Version [1.0.1-rc.1]
+  #     ### Version [1.0.1-rc.1]
 
-      - Added a new endpoint so that **Merchant** can send information related to its [GET /merchant](#operation/getMerchant) endpoint to the **Ordering APPLICATION**:
+  #     - Added a new endpoint so that **Merchant** can send information related to its [GET /merchant](#operation/getMerchant) endpoint to the **Ordering APPLICATION**:
 
-        - [PUT /v1/merchantOnboarding](#operation/putMerchantOnboarding) 
+  #       - [PUT /v1/merchantOnboarding](#operation/putMerchantOnboarding) 
 
-      - Added the possibility to indicate orders with scheduled delivery.  
-      With this the following changes were made:
+  #     - Added the possibility to indicate orders with scheduled delivery.  
+  #     With this the following changes were made:
 
-        - [GET /merchant](#operation/getMerchant)
-          - `service` > Added a new optional field `serviceTiming`, where the merchant can indicate the delivery timing available for that service.
+  #       - [GET /merchant](#operation/getMerchant)
+  #         - `service` > Added a new optional field `serviceTiming`, where the merchant can indicate the delivery timing available for that service.
 
-        - [GET /orders/{orderId}](#operation/ordersDetails)
-          - Added `SCHEDULED` option to the `orderTiming` field.
+  #       - [GET /orders/{orderId}](#operation/ordersDetails)
+  #         - Added `SCHEDULED` option to the `orderTiming` field.
 
-          - Added a new property called `schedule` where the delivery window for scheduled orders will be specified with the following structure:
-            ```
-                {
-                  ...
-                  "schedule": {
-                    "scheduledDateTimeStart": "2019-08-24T14:15:22Z",
-                    "scheduledDateTimeEnd": "2019-08-24T14:15:22Z"
-                    },
-                  ...
-                }
-            ```
+  #         - Added a new property called `schedule` where the delivery window for scheduled orders will be specified with the following structure:
+  #           ```
+  #               {
+  #                 ...
+  #                 "schedule": {
+  #                   "scheduledDateTimeStart": "2019-08-24T14:15:22Z",
+  #                   "scheduledDateTimeEnd": "2019-08-24T14:15:22Z"
+  #                   },
+  #                 ...
+  #               }
+  #           ```
 
-      ### Version [1.0.1-rc.0]
+  #     ### Version [1.0.1-rc.0]
 
-      - Added the `status` property to entities `ItemOffer` and `Option` on the [GET /merchant](#operation/getMerchant) endpoint.
+  #     - Added the `status` property to entities `ItemOffer` and `Option` on the [GET /merchant](#operation/getMerchant) endpoint.
 
-      - Removed the **requirement** of the fields:
-        - [GET /merchant](#operation/getMerchant)
-          - `menu` > `description`
-          - `menu` > `disclaimer`
-          - `category` > `description`
-          - `optionGroup` > `description`
+  #     - Removed the **requirement** of the fields:
+  #       - [GET /merchant](#operation/getMerchant)
+  #         - `menu` > `description`
+  #         - `menu` > `disclaimer`
+  #         - `category` > `description`
+  #         - `optionGroup` > `description`
 
-      - Added a new service type called **INDOOR**.  
-        The following places are affected:
+  #     - Added a new service type called **INDOOR**.  
+  #       The following places are affected:
 
-        - [GET /merchant](#operation/getMerchant)
-          - added option `INDOOR` to `type` field of entity `service`.
+  #       - [GET /merchant](#operation/getMerchant)
+  #         - added option `INDOOR` to `type` field of entity `service`.
 
-        - [GET /orders/{orderId}](#operation/ordersDetails)
-          - added new property: `indoor` with the following structure:     
+  #       - [GET /orders/{orderId}](#operation/ordersDetails)
+  #         - added new property: `indoor` with the following structure:     
 
-        ```
-          {
-            ...
-            "indoor": {
-              "mode": "DEFAULT",
-              "indoorDateTime": "2019-08-24T14:15:22Z",
-              "table": "string"
-            },
-            ...
-          }
-        ```
+  #       ```
+  #         {
+  #           ...
+  #           "indoor": {
+  #             "mode": "DEFAULT",
+  #             "indoorDateTime": "2019-08-24T14:15:22Z",
+  #             "table": "string"
+  #           },
+  #           ...
+  #         }
+  #       ```
 
-      See the full changelog here:  
-      https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md
+  #     See the full changelog here:  
+  #     https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md
 
   - name: versionSection2
     x-displayName: " ►►►►►► BETA TEST ◄◄◄◄◄◄"
@@ -461,40 +500,40 @@ tags:
       See the full changelog here:  
       https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG_1.1.x.md
 
-  - name: versionSection3
-    x-displayName: " ►►►► VERSION 1.2.0-rc.0 ◄◄◄◄"
-    x-traitTag: true
-    description: |-
-      All the information listed in this section is planned to be released in version **1.2.0** of the Open Delivery API.
+  # - name: versionSection3
+  #   x-displayName: " ►►►► VERSION 1.2.0-rc.0 ◄◄◄◄"
+  #   x-traitTag: true
+  #   description: |-
+  #     All the information listed in this section is planned to be released in version **1.2.0** of the Open Delivery API.
 
-      > This version is still in **'Beta'**, so minor changes may still occur until release.
+  #     > This version is still in **'Beta'**, so minor changes may still occur until release.
 
-  - name: versionChangelog3
-    x-displayName: "└─► Changelog"
-    x-traitTag: true
-    description: |-
+  # - name: versionChangelog3
+  #   x-displayName: "└─► Changelog"
+  #   x-traitTag: true
+  #   description: |-
 
-      Latest Changes:  
+  #     Latest Changes:  
 
-      ### Version [1.2.0-rc.0] - Apr 19, 2022
+  #     ### Version [1.2.0-rc.0] - Apr 19, 2022
 
-      * Initial Release
+  #     * Initial Release
 
-      See the full changelog here:  
-      https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md
+  #     See the full changelog here:  
+  #     https://github.com/Abrasel-Nacional/Open-Delivery-Beta-Test/blob/main/CHANGELOG.md
 
   # Versions
-  - name: versionsSection
-    x-displayName: "└─■ WORKING VERSIONS"
-    x-traitTag: true
+  # - name: versionsSection
+  #   x-displayName: "└─■ WORKING VERSIONS"
+  #   x-traitTag: true
 
-  - name: versionsEndpoint
-    x-displayName: "└───● Versions Listing"
-    description: |-
+  # - name: versionsEndpoint
+  #   x-displayName: "└───● Versions Listing"
+  #   description: |-
 
-      Because Open Delivery does not have its own servers and relies on the implementation of the endpoints by the platforms of the companies using the standard, it can happen that two platforms are using different versions of the Open Delivery API.
+  #     Because Open Delivery does not have its own servers and relies on the implementation of the endpoints by the platforms of the companies using the standard, it can happen that two platforms are using different versions of the Open Delivery API.
 
-      This section includes endpoints to get the current version that each platform is using.
+  #     This section includes endpoints to get the current version that each platform is using.
 
   # Authentication
   - name: securitySection
@@ -511,424 +550,429 @@ tags:
 
   # Merchant Tags
 
-  - name: merchantSection
-    x-displayName: "└─■ MERCHANT"
-    x-traitTag: true
+  # - name: merchantSection
+  #   x-displayName: "└─■ MERCHANT"
+  #   x-traitTag: true
 
-  - name: merchantOverview
-    x-displayName: "└───● Merchant Overview"
-    description: |-
+  # - name: merchantOverview
+  #   x-displayName: "└───● Merchant Overview"
+  #   description: |-
 
-      The Merchant entity will be the entity used by the **Ordering Application** to fetch all the data from a merchant and display it to the user.
-      It is the responsibility of the merchant **Software Service** to provide the endpoint and the responsibility of the **Ordering Application** to fetch the information.
+  #     The Merchant entity will be the entity used by the **Ordering Application** to fetch all the data from a merchant and display it to the user.
+  #     It is the responsibility of the merchant **Software Service** to provide the endpoint and the responsibility of the **Ordering Application** to fetch the information.
 
-      ## Merchant API Usage
+  #     ## Merchant API Usage
 
-      The merchant must 'choose' a **Software Service**, which will be responsible for exposing its data on the **[/merchant](#operation/getMerchant)** endpoint. This endpoint will be used by the ordering system to get the updated merchant infos (BasicInfos, Services and Menus).
+  #     The merchant must 'choose' a **Software Service**, which will be responsible for exposing its data on the **[GET /v1/merchant](#operation/getMerchant)** endpoint. This endpoint will be used by the ordering system to get the updated merchant infos (BasicInfos, Services and Menus).
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/menu_flow.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/menu_flow.png" />
+  #     </div>
 
-      The **Ordering Application** can check for merchant updates in the following ways:  
-      1.	Make a new request on the **[/merchant](#operation/getMerchant)** endpoint whenever the TTL expires;
-      2.	The **Ordering Application** can optionally provide a **[webhook](#operation/menuUpdated)** , where the merchant **Software Service** can send a merchant update notification;
-      3.	If the **Software Service** **[refuses](#operation/cancelDenied)** an order for any reason, upon receiving the refusal, it is recommended that the **Ordering Application** make a new request on the **[/merchant](#operation/getMerchant)** endpoint.
+  #     The **Ordering Application** can check for merchant updates in the following ways:    
+  #     1.	Make a new request on the **[GET /v1/merchant](#operation/getMerchant)** endpoint whenever the TTL expires;  
+  #     2.	The **Ordering Application** can optionally provide a **[webhook](#operation/menuUpdated)** , where the merchant **Software Service** can send a merchant update notification;  
+  #     3.	If the **Software Service** **[refuses](#operation/cancelDenied)** an order for any reason, upon receiving the refusal, it is recommended that the **Ordering Application** make a new request on the **[GET /v1/merchant](#operation/getMerchant)** endpoint.
 
-  - name: merchantStructure
-    x-displayName: └───● Merchant Structure
-    description: |-
+  # - name: merchantStructure
+  #   x-displayName: └───● Merchant Structure
+  #   description: |-
 
-      The structure of the Merchant model consists of the following top-level properties:
+  #     The structure of the Merchant model consists of the following top-level properties:
 
-      - **BasicInfo**: Information about the merchant.
-      - **Services entities**: Timing, location, and conditions of the merchant service.
-      - **Menu entities**: Details of the merchnat menus.
+  #     - **BasicInfo**: Information about the merchant.
+  #     - **Services entities**: Timing, location, and conditions of the merchant service.
+  #     - **Menu entities**: Details of the merchnat menus.
 
-      The following diagram shows how Basic Info, Service, and Menu properties represent a single merchant:
+  #     The following diagram shows how Basic Info, Service, and Menu properties represent a single merchant:
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/merchant_structure.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/merchant_structure.png" />
+  #     </div>
 
-      The following schema lists the properties for the `Merchant` model:
+  #     The following schema lists the properties for the `Merchant` model:
 
-      <SchemaDefinition schemaRef="#/components/schemas/MerchantDescription" />     
+  #     <SchemaDefinition schemaRef="#/components/schemas/MerchantDescription" />     
 
-      # BasicInfo
+  #     # BasicInfo
 
-      A merchant `BasicInfo` defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the merchant **Software Service** serves. 
-      Typically, this data is static.
+  #     A merchant `BasicInfo` defines properties such as the merchant name, location address, website, description, telephone number, for a merchant that the merchant **Software Service** serves. 
+  #     Typically, this data is static.
 
-      The following schema lists the properties for the `BasicInfo` type: 
+  #     The following schema lists the properties for the `BasicInfo` type: 
 
-      <SchemaDefinition schemaRef="#/components/schemas/BasicInfo" />
+  #     <SchemaDefinition schemaRef="#/components/schemas/BasicInfo" />
 
-      # Service
+  #     # Service
 
-      The `Service` defines the capabilities of a delivery organization in a geographic region.
-      A `Service` defines properties such as the service type (`DELIVERY` or `TAKEOUT`), hours available, and area served.  
-      Each Service must be linked to a `Menu`, through the `menuId` property.   
-      `Service` is expected to change.
+  #     The `Service` defines the capabilities of a delivery organization in a geographic region.
+  #     A `Service` defines properties such as the service type (`DELIVERY` or `TAKEOUT`), hours available, and area served.  
+  #     Each Service must be linked to a `Menu`, through the `menuId` property.   
+  #     `Service` is expected to change.
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/merchant_services.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/merchant_services.png" />
+  #     </div>
 
-      The following schema lists the properties for the `Service` type: 
+  #     The following schema lists the properties for the `Service` type: 
 
-      <SchemaDefinition schemaRef="#/components/schemas/Service" />
+  #     <SchemaDefinition schemaRef="#/components/schemas/Service" />
 
-      # Menu
+  #     # Menu
 
-      A `Menu` is a set of linked properties such as categories, items, offers and availability.  
-      In order to be displayed by the **Ordering Application**, a `Menu` needs to be linked to a `Service` through the `menuId` property.
+  #     A `Menu` is a set of linked properties such as categories, items, offers and availability.  
+  #     In order to be displayed by the **Ordering Application**, a `Menu` needs to be linked to a `Service` through the `menuId` property.
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/merchant_menus.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/merchant_menus.png" />
+  #     </div>
 
-      Data in a `Menu` entity is expected to change.
+  #     Data in a `Menu` entity is expected to change.
 
-      The following schema lists the properties for the `Menu` type: 
+  #     The following schema lists the properties for the `Menu` type: 
 
-      <SchemaDefinition schemaRef="#/components/schemas/Menu" />
+  #     <SchemaDefinition schemaRef="#/components/schemas/Menu" />
 
-      ## Category
+  #     ## Category
 
-      A `Category` is the propertie in which the merchant has to organize its `ItemsOffers` in order 
-      to make it easier for the user to find what he wants to buy. Categories have statuses and accepts `Availability` entities.
+  #     A `Category` is the propertie in which the merchant has to organize its `ItemsOffers` in order 
+  #     to make it easier for the user to find what he wants to buy. Categories have statuses and accepts `Availability` entities.
 
-      The following schema lists the properties for the `Category` type: 
+  #     The following schema lists the properties for the `Category` type: 
 
-      <SchemaDefinition schemaRef="#/components/schemas/Category" />
+  #     <SchemaDefinition schemaRef="#/components/schemas/Category" />
 
-      ## Item
+  #     ## Item
 
-      A `Item` propertie is the menu entity that carries all the general item information, like:
-      name, description, external code, image, nutricional information, and EAN (European Article Number).
-      The `Item` can be offered in a `Menu` as a main item or an option. And, for the same store, it can even be reused in different `Menus`.
+  #     A `Item` propertie is the menu entity that carries all the general item information, like:
+  #     name, description, external code, image, nutricional information, and EAN (European Article Number).
+  #     The `Item` can be offered in a `Menu` as a main item or an option. And, for the same store, it can even be reused in different `Menus`.
 
-      The following schema lists the properties for the `Item` type: 
+  #     The following schema lists the properties for the `Item` type: 
 
-      <SchemaDefinition schemaRef="#/components/schemas/Item" />
+  #     <SchemaDefinition schemaRef="#/components/schemas/Item" />
 
-      ## ItemOffer
+  #     ## ItemOffer
 
-      The `ItemOffer` can be considered the offering of a item, and it is used to set the item price and `Availability`.
-      The `ItemOffer` is a `Item` related to the `Category`.
+  #     The `ItemOffer` can be considered the offering of a item, and it is used to set the item price and `Availability`.
+  #     The `ItemOffer` is a `Item` related to the `Category`.
 
-      The following schema lists the properties for the `ItemOffer` type: 
+  #     The following schema lists the properties for the `ItemOffer` type: 
 
-      <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" />
+  #     <SchemaDefinition schemaRef="#/components/schemas/ItemOffer" />
 
-      ## OptionGroup and Option
+  #     ## OptionGroup and Option
 
-      The `OptionGroup` is the entity used to group customizations of a product, for example: "Choose your beverage:"
-      An `OptionGroup` can be shared by several items.
-      The `OptionGroup` has its own statuses, and can be activated or desactivated when needed. 
+  #     The `OptionGroup` is the entity used to group customizations of a product, for example: "Choose your beverage:"
+  #     An `OptionGroup` can be shared by several items.
+  #     The `OptionGroup` has its own statuses, and can be activated or desactivated when needed. 
 
-      `Options` are the complements of a OptionGroup. It can be defined as: "A `Item` related to a `OptionGroup`". 
-      It is possible to set the `Option` price to 0.00 regardless of whether it is mandatory or optional.
+  #     `Options` are the complements of a OptionGroup. It can be defined as: "A `Item` related to a `OptionGroup`". 
+  #     It is possible to set the `Option` price to 0.00 regardless of whether it is mandatory or optional.
 
-      The following schema lists the properties for the `OptionGroup` type: 
+  #     The following schema lists the properties for the `OptionGroup` type: 
 
-      <SchemaDefinition schemaRef="#/components/schemas/OptionGroup" />
+  #     <SchemaDefinition schemaRef="#/components/schemas/OptionGroup" />
 
 
-      ## Availability
+  #     ## Availability
 
-      The `Availability` entity defines specific times and days to control the availability of `Categories` and `Item offerings` within the `Menu`.
-      It is also possible to set special times for holidays.
+  #     The `Availability` entity defines specific times and days to control the availability of `Categories` and `Item offerings` within the `Menu`.
+  #     It is also possible to set special times for holidays.
 
-      The following schema lists the properties for the `Availability` type: 
+  #     The following schema lists the properties for the `Availability` type: 
 
-      <SchemaDefinition schemaRef="#/components/schemas/Availability" />
+  #     <SchemaDefinition schemaRef="#/components/schemas/Availability" />
 
-  - name: merchantEndpoints
-    x-displayName: "└───● Merchant Endpoint"
-    description: |-
+  # - name: merchantEndpoints
+  #   x-displayName: "└───● Merchant Endpoint"
+  #   description: |-
 
-  - name: merchantStatus
-    x-displayName: "└───● Onboarding and Status"
-    description: |-
+  # - name: merchantStatus
+  #   x-displayName: "└───● Onboarding and Status"
+  #   description: |-
 
-      This section contains routes for registering and updating the Merchant endpoint information, as well as the read status of this endpoint.
+  #     This section contains routes for registering and updating the Merchant endpoint information, as well as the read status of this endpoint.
 
-  - name: merchantUpdate
-    x-displayName: "└───● Merchant Update"
-    description: |-
-      ### Merchant Update Notification
+  # - name: merchantUpdate
+  #   x-displayName: "└───● Merchant Update"
+  #   description: |-
+  #     ### Merchant Update Notification
 
-      **[Webhook](#operation/menuUpdated)** is sent to notify the **Ordering Application** that an new update has happened on the merchant information.
+  #     **[Webhook](#operation/menuUpdated)** is sent to notify the **Ordering Application** that an new update has happened on the merchant information.
 
-      The **Ordering Application** that implements this webhook, should return an HTTP 200 response code with an empty response body to acknowledge receipt of the webhook event. 
-      If the merchant **Software Service** does not receive a 200 acknowledgement response, than the webhook event will be resent based on the **Software Service** policies.
+  #     The **Ordering Application** that implements this webhook, should return an HTTP 200 response code with an empty response body to acknowledge receipt of the webhook event. 
+  #     If the merchant **Software Service** does not receive a 200 acknowledgement response, than the webhook event will be resent based on the **Software Service** policies.
 
-  # Orders Tags
+  # # Orders Tags
 
-  - name: ordersSection
-    x-displayName: "└─■ ORDERS"
-    x-traitTag: true
+  # - name: ordersSection
+  #   x-displayName: "└─■ ORDERS"
+  #   x-traitTag: true
 
-  - name: ordersOverview
-    x-displayName: └───● Order Overview
-    description: |-
+  # - name: ordersOverview
+  #   x-displayName: └───● Order Overview
+  #   description: |-
 
-      This overview summarizes the **Open Delivery** Ordering flow and how it interacts with merchant **Software Service** and **Ordering Application**.
+  #     This overview summarizes the **Open Delivery** Ordering flow and how it interacts with merchant **Software Service** and **Ordering Application**.
 
-      ### Order Events
+  #     ### Order Events
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/order_life_cicle.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/order_life_cicle.png" />
+  #       <br />
+  #       <br />
+  #       <br />
+  #       <br />
+  #       <br />
+  #     </div>
 
-      ### Understanding the Order Flow
+  #     ### Understanding the Order Flow
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/order_integrations2.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/order_integrations2.png" />
+  #     </div>
 
-      The order flow has the following Macro steps:
+  #     The order flow has the following Macro steps:
 
-      ### Order Event Reception
+  #     ### Order Event Reception
 
-      Through Order Events, the '**Ordering Application**' communicates to the '**Software Service**' the existence of a new order, as well as the other events of the order lifecycle.
+  #     Through Order Events, the '**Ordering Application**' communicates to the '**Software Service**' the existence of a new order, as well as the other events of the order lifecycle.
 
-      **Open Delivery** provides two ways for merchant **Software Service** to be aware of new events:
+  #     **Open Delivery** provides two ways for merchant **Software Service** to be aware of new events:
 
-      - **[Polling](#tag/ordersPolling)**: 
-      Receiving events through polling provided by the '**Ordering Application**' is the standard way **Open Delivery** works, and its implementation is mandatory.
+  #     - **[Polling](#tag/ordersPolling)**: 
+  #     Receiving events through polling provided by the '**Ordering Application**' is the standard way **Open Delivery** works, and its implementation is mandatory.
 
-      - **[Webhook](#tag/ordersWebhook)**:
-        Optionally it is recommended the implementation of a **webhook** by the merchant **Software Service** for the **Ordering Applications** to send new events directly, ensuring a much faster communication.
+  #     - **[Webhook](#tag/ordersWebhook)**:
+  #       Optionally it is recommended the implementation of a **webhook** by the merchant **Software Service** for the **Ordering Applications** to send new events directly, ensuring a much faster communication.
 
-        > As this implementation is not mandatory, it is recommended that the merchant **Software Service** contacts the **Ordering Application** to find out if it is possible to work with this possibility.
+  #       > As this implementation is not mandatory, it is recommended that the merchant **Software Service** contacts the **Ordering Application** to find out if it is possible to work with this possibility.
 
-      ### Order Details
+  #     ### Order Details
 
-      Once the new order event is received, it is necessary to get the **[order details](#tag/ordersDetails)**, such as items purchased, delivery addresses, and payment methods.
+  #     Once the new order event is received, it is necessary to get the **[order details](#tag/ordersDetails)**, such as items purchased, delivery addresses, and payment methods.
 
-      ### Events Updates
+  #     ### Events Updates
 
-      After getting the order details, the merchant needs to notify the '**Ordering Application**' of the order progress.
+  #     After getting the order details, the merchant needs to notify the '**Ordering Application**' of the order progress.
 
-      Through the **Open Delivery** API it is possible to:
+  #     Through the **Open Delivery** API it is possible to:
 
-      - **[Confirm](#operation/confirmOrder)** receipt of order;
-      - Notify that an order is **[ready for pickup](#operation/orderReady)**;
-      - Notify that an order has been **[dispatched](#operation/dispatchOrder)**.
+  #     - **[Confirm](#operation/confirmOrder)** receipt of order;
+  #     - Notify that an order is **[ready for pickup](#operation/orderReady)**;
+  #     - Notify that an order has been **[dispatched](#operation/dispatchOrder)**.
 
-      Whenever a merchant triggers one of these actions, the '**Ordering Application**' will send a new event to the mechart **Software Service**, acknowledging the new order status within the '**Ordering Application**'.
+  #     Whenever a merchant triggers one of these actions, the '**Ordering Application**' will send a new event to the mechart **Software Service**, acknowledging the new order status within the '**Ordering Application**'.
 
-      > For `TAKEOUT` orders, it is possible to optionally assign a **pickup area** that will be informed through an event to the merchant.
-      > This must be provided by the **Ordering Application** interface.
+  #     > For `TAKEOUT` orders, it is possible to optionally assign a **pickup area** that will be informed through an event to the merchant.
+  #     > This must be provided by the **Ordering Application** interface.
 
-      ### Order Cancellation
+  #     ### Order Cancellation
 
-      **Open Delivery** provides API's to send **[cancellation](#tag/ordersCancellation)** requests from either system.
-      These requests can be accepted or denied depending on the rules that the company has.
-    x-traitTag: true
+  #     **Open Delivery** provides API's to send **[cancellation](#tag/ordersCancellation)** requests from either system.
+  #     These requests can be accepted or denied depending on the rules that the company has.
+  #   x-traitTag: true
 
-  - name: ordersPolling
-    x-displayName: └───● Polling (Required)
-    description: |-
+  # - name: ordersPolling
+  #   x-displayName: └───● Polling (Required)
+  #   description: |-
 
-      Receiving events via Polling works as follows:
+  #     Receiving events via Polling works as follows:
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/polling.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/polling.png" />
+  #     </div>
 
-      ### Query new order events
+  #     ### Query new order events
 
-      In order to receive new order events, the merchant **Software Service** must make requests on the polling endpoint regularly at a certain time interval, determined by the '**Ordering Application**'. 
-      Whenever there is a new event the response will send the response code 200 with the list of events. If there are no new events, the response will send the response code 204.
+  #     In order to receive new order events, the merchant **Software Service** must make requests on the polling endpoint regularly at a certain time interval, determined by the '**Ordering Application**'. 
+  #     Whenever there is a new event the response will send the response code 200 with the list of events. If there are no new events, the response will send the response code 204.
 
-      > It is important that the **Software Service** performs the requests within the timeframe determined by the **Ordering Application**, as blocking and penalties may occur depending on the application's rules.
+  #     > It is important that the **Software Service** performs the requests within the timeframe determined by the **Ordering Application**, as blocking and penalties may occur depending on the application's rules.
 
-      **Availability of new events in polling:** 
+  #     **Availability of new events in polling:** 
 
-      The **Ordering Application** may have specific rules about the maximum time new events are available in polling before they are removed.
+  #     The **Ordering Application** may have specific rules about the maximum time new events are available in polling before they are removed.
           
-      > Always check with the **Ordering Application** what the rules are for using the polling service. 
+  #     > Always check with the **Ordering Application** what the rules are for using the polling service. 
 
-      **Duplicate Events and Order Date:**
+  #     **Duplicate Events and Order Date:**
 
-      Eventually the API may return the same event more than once, for example the PLACED event including old orders. For this reason it is important that your application handles the uniqueness of requests and events through id and the date through "createdAt".
+  #     Eventually the API may return the same event more than once, for example the PLACED event including old orders. For this reason it is important that your application handles the uniqueness of requests and events through id and the date through "createdAt".
 
-      Therefore, when receiving an event, you must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
+  #     Therefore, when receiving an event, you must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
 
-      > **Please note**: merchant **Software Services** should only accept a new order or update the status of an order after validating that the event has not been processed before.
+  #     > **Please note**: merchant **Software Services** should only accept a new order or update the status of an order after validating that the event has not been processed before.
 
-      ### Acknowledgment Events
+  #     ### Acknowledgment Events
 
-      When receiving new events, the **Software Service** should always send acknowledgement so that the **Ordering Application** does not send that same event again;
+  #     When receiving new events, the **Software Service** should always send acknowledgement so that the **Ordering Application** does not send that same event again;
 
-      >**Important recommendations**:
-      >
-      > Merchants **Software Service** should make an acknowledgment request for each polling request with results.  
-      > If it receives events that are not used by the itself, it needs to send the acknowledgment of these events anyway so that it is not receiving them every polling again.   
-      > **Open Delivery** recommends that this be the default treatment for all events not yet mapped in the **Software Service** application.  
-      > **Software Services** only needs to send acknowledgment of the event once."
+  #     >**Important recommendations**:
+  #     >
+  #     > Merchants **Software Service** should make an acknowledgment request for each polling request with results.  
+  #     > If it receives events that are not used by the itself, it needs to send the acknowledgment of these events anyway so that it is not receiving them every polling again.   
+  #     > **Open Delivery** recommends that this be the default treatment for all events not yet mapped in the **Software Service** application.  
+  #     > **Software Services** only needs to send acknowledgment of the event once."
 
-  - name: ordersWebhook
-    x-displayName: └───● Webhook (Optional)
-    description: |-
+  # - name: ordersWebhook
+  #   x-displayName: └───● Webhook (Optional)
+  #   description: |-
 
-      Receiving events via Webhook works as follows:
+  #     Receiving events via Webhook works as follows:
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/webhook.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/webhook.png" />
+  #     </div>
 
-      ### Order Event Notification
-      Webhook is sent to notify the merchant **Software Service** that an new order event has happened on the **Ordering Application**.
+  #     ### Order Event Notification
+  #     Webhook is sent to notify the merchant **Software Service** that an new order event has happened on the **Ordering Application**.
 
-      The merchant **Software Service** that implements this webhook, should return an HTTP `200` response code with an empty response body to acknowledge receipt of the webhook event. 
-      If the **Ordering Application** does not receive a `200` acknowledgement response, than the webhook event will be resent based on the **Ordering Application** policies.
+  #     The merchant **Software Service** that implements this webhook, should return an HTTP `200` response code with an empty response body to acknowledge receipt of the webhook event. 
+  #     If the **Ordering Application** does not receive a `200` acknowledgement response, than the webhook event will be resent based on the **Ordering Application** policies.
 
-      ### Webhook Headers
-      **Open Delivery** will include security headers for all requests made to the merchant **Software Service** webhook URL.
+  #     ### Webhook Headers
+  #     **Open Delivery** will include security headers for all requests made to the merchant **Software Service** webhook URL.
 
-      **Header Description**
+  #     **Header Description**
 
-      | Header            | Description |
-      | ----------------- | ----------- |
-      | X-App-Id          | An Unique Identificator of the **Ordering Application** |
-      | X-App-MerchantId   | An Unique Identificator of the **Merchant** receiving the order |      
-      | X-App-Signature   | SHA256 hash of the request body, using the client secret as the key |
+  #     | Header            | Description |
+  #     | ----------------- | ----------- |
+  #     | X-App-Id          | An Unique Identificator of the **Ordering Application** |
+  #     | X-App-MerchantId   | An Unique Identificator of the **Merchant** receiving the order |      
+  #     | X-App-Signature   | SHA256 hash of the request body, using the client secret as the key |
 
         
-      **Webhook Security** 
+  #     **Webhook Security** 
 
-      Webhook messages are signed so that the merchant **Software Service** can verify that the sender is a valid **Ordering Application**. 
-      Webhooks requests contain an X-App-Signature header. 
-      The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.
+  #     Webhook messages are signed so that the merchant **Software Service** can verify that the sender is a valid **Ordering Application**. 
+  #     Webhooks requests contain an X-App-Signature header. 
+  #     The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.
 
-  - name: ordersDetails
-    x-displayName: └───● Order Details
-    description: |-
+  # - name: ordersDetails
+  #   x-displayName: └───● Order Details
+  #   description: |-
 
-      Before confirming or canceling an order, it is necessary to get the order details so that the merchant **Software Service** user can check if he will be able to prepare and deliver this order, such as checking if he has all the necessary items and if he is available to make the delivery to the informed address.
+  #     Before confirming or canceling an order, it is necessary to get the order details so that the merchant **Software Service** user can check if he will be able to prepare and deliver this order, such as checking if he has all the necessary items and if he is available to make the delivery to the informed address.
 
-      Through the GET /orders/{id} endpoint the merchant **Software Service** can get all the details of an order.
+  #     Through the GET /orders/{id} endpoint the merchant **Software Service** can get all the details of an order.
 
-      This endpoint returns the code 200 and the content of the request. If an invalid request id or the id of an expired order is entered (depending on the **Ordering Application** policy) the endpoint returns 404.
+  #     This endpoint returns the code 200 and the content of the request. If an invalid request id or the id of an expired order is entered (depending on the **Ordering Application** policy) the endpoint returns 404.
 
-      In this section you will find all the details of the payload of an order:
+  #     In this section you will find all the details of the payload of an order:
 
-      <SchemaDefinition schemaRef="#/components/schemas/Order" />
+  #     <SchemaDefinition schemaRef="#/components/schemas/Order" />
 
-  - name: ordersStatus
-    x-displayName: └───● Order Event Update
-    description: |-
+  # - name: ordersStatus
+  #   x-displayName: └───● Order Event Update
+  #   description: |-
 
-      Following the order lifecycle, the merchant **Software Service** needs to notify the **Ordering Application** of the upcoming order status.
+  #     Following the order lifecycle, the merchant **Software Service** needs to notify the **Ordering Application** of the upcoming order status.
        
-      After acknowledging receipt of a new order event (either via polling or webhook) is expected that the **Software Service** explicitly 
-      **POST [/orders/{orderId}/confirm](#operation/confirmOrder)** or **POST [/orders/{orderId}/requestCancellation](#operation/requestCancellation)** within a time window set by the **Ordering Application**.
-      Otherwise the order can time out and auto-cancel and the merchant can suffer a penalty based on the **Ordering Application** policy.   
-      Order acceptances should be posted as quickly as possible to minimize consumer cancellations.
+  #     After acknowledging receipt of a new order event (either via polling or webhook) is expected that the **Software Service** explicitly 
+  #     **POST [/orders/{orderId}/confirm](#operation/confirmOrder)** or **POST [/orders/{orderId}/requestCancellation](#operation/requestCancellation)** within a time window set by the **Ordering Application**.
+  #     Otherwise the order can time out and auto-cancel and the merchant can suffer a penalty based on the **Ordering Application** policy.   
+  #     Order acceptances should be posted as quickly as possible to minimize consumer cancellations.
 
-      When the order is ready, it is expected that a request will be sent to **[/orders/{orderId}/readyForPickup](#operation/orderReady)**
+  #     When the order is ready, it is expected that a request will be sent to **[/orders/{orderId}/readyForPickup](#operation/orderReady)**
 
-      When the order goes out for Delivery, it is expected that a request will be sent to **[/orders/{orderId}/dispatch](#operation/dispatchOrder)**.
+  #     When the order goes out for Delivery, it is expected that a request will be sent to **[/orders/{orderId}/dispatch](#operation/dispatchOrder)**.
 
-      > When sending requests to these endpoints, is expected that the **Ordering Application** notifies the consumer of the progress of the order.
+  #     > When sending requests to these endpoints, is expected that the **Ordering Application** notifies the consumer of the progress of the order.
 
-  - name: ordersCancellation
-    x-displayName: └───● Order Cancellation
-    description: |-
+  # - name: ordersCancellation
+  #   x-displayName: └───● Order Cancellation
+  #   description: |-
 
-      An order can be canceled for several reasons and the initiative to cancel an order can come from the merchant, the customer, or the **Ordering Application**.   
-      It may also happen that the delivery person requests the cancellation in some scenarios, such as when the customer is not found at the delivery address.
+  #     An order can be canceled for several reasons and the initiative to cancel an order can come from the merchant, the customer, or the **Ordering Application**.   
+  #     It may also happen that the delivery person requests the cancellation in some scenarios, such as when the customer is not found at the delivery address.
 
-      > **Cancellation Rules**
-      >  
-      > It is expected that both the **Ordering Application** and merchant **Software Service** have their own order cancellation policies and inform their users.
+  #     > **Cancellation Rules**
+  #     >  
+  #     > It is expected that both the **Ordering Application** and merchant **Software Service** have their own order cancellation policies and inform their users.
 
-      A cancellation request will always be an asynchronous processing, where one party makes a cancellation request and the other accepts or refuses it."
+  #     A cancellation request will always be an asynchronous processing, where one party makes a cancellation request and the other accepts or refuses it."
 
-      A cancellation request must always contain:
+  #     A cancellation request must always contain:
 
-      - **reason**: Open text field indicating the reason for the cancellation.
-      - **code**: An enumerator containing a cancellation reason.  
-      - **mode**: Field indicating whether the cancellation occurred Automatically or Manually.
+  #     - **reason**: Open text field indicating the reason for the cancellation.
+  #     - **code**: An enumerator containing a cancellation reason.  
+  #     - **mode**: Field indicating whether the cancellation occurred Automatically or Manually.
 
-      The cancellation can be requested by:
+  #     The cancellation can be requested by:
 
-      ### **Software Service** (Merchant):
+  #     ### **Software Service** (Merchant):
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/software_cancel_request.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/software_cancel_request.png" />
+  #     </div>
 
-      If the merchant wants to cancel an order, it must make a **POST [/orders/{orderId}/requestCancellation](#operation/requestCancellation)** request.
+  #     If the merchant wants to cancel an order, it must make a **POST [/orders/{orderId}/requestCancellation](#operation/requestCancellation)** request.
 
-      > **Penalties**
-      >
-      > Avoid order cancellations! Excessive cancellations can result in some penalties (depending on the **Ordering Application**'s** policy) such as having the merchant temporarily closed on the platform.
+  #     > **Penalties**
+  #     >
+  #     > Avoid order cancellations! Excessive cancellations can result in some penalties (depending on the **Ordering Application**'s** policy) such as having the merchant temporarily closed on the platform.
 
-      **Cancellation Validation**
+  #     **Cancellation Validation**
 
-      The Cancellation request does not guarantee that the order is cancelled. When sending a request [/orders/{orderId}/requestCancellation](#operation/requestCancellation), the **Ordering Application** will send the code 202 (accepted) in response.
-      This does not yet mean that the request has been cancelled. It means that the request has been accepted and will be processed by the **Ordering Application** cancellation service. As a result of this request, the merchant **Software Service** may receive at the next polling (or via webhook) one of the following events:
+  #     The Cancellation request does not guarantee that the order is cancelled. When sending a request [/orders/{orderId}/requestCancellation](#operation/requestCancellation), the **Ordering Application** will send the code 202 (accepted) in response.
+  #     This does not yet mean that the request has been cancelled. It means that the request has been accepted and will be processed by the **Ordering Application** cancellation service. As a result of this request, the merchant **Software Service** may receive at the next polling (or via webhook) one of the following events:
 
-      - CANCELLATION_REQUEST_DENIED
-      - CANCELLED
+  #     - CANCELLATION_REQUEST_DENIED
+  #     - CANCELLED
 
-      The order should only be Canceled when the CANCELLED event is generated.
+  #     The order should only be Canceled when the CANCELLED event is generated.
 
-      > Cancellation rules may vary depending on the timing of the order (before or after confirmation). In some situations it is possible that the **Ordering Application** cancellation service will consult with the consumer on whether or not the consumer accepts the cancellation of the order.
+  #     > Cancellation rules may vary depending on the timing of the order (before or after confirmation). In some situations it is possible that the **Ordering Application** cancellation service will consult with the consumer on whether or not the consumer accepts the cancellation of the order.
 
-      ``` 
-      Cancellation codes:
+  #     ``` 
+  #     Cancellation codes:
 
-      - SYSTEMIC_ISSUES
-      - DUPLICATE_APPLICATION
-      - UNAVAILABLE_ITEM
-      - RESTAURANT_WITHOUT_DELIVERY_MAN
-      - OUTDATED_MENU
-      - ORDER_OUTSIDE_THE_DELIVERY_AREA
-      - BLOCKED_CUSTOMER
-      - OUTSIDE_DELIVERY_HOURS
-      - INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT
-      - RISK_AREA
-      ``` 
+  #     - SYSTEMIC_ISSUES
+  #     - DUPLICATE_APPLICATION
+  #     - UNAVAILABLE_ITEM
+  #     - RESTAURANT_WITHOUT_DELIVERY_MAN
+  #     - OUTDATED_MENU
+  #     - ORDER_OUTSIDE_THE_DELIVERY_AREA
+  #     - BLOCKED_CUSTOMER
+  #     - OUTSIDE_DELIVERY_HOURS
+  #     - INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT
+  #     - RISK_AREA
+  #     ``` 
 
-      > **Important**: It is recommended that the **Ordering Application** makes a new request on the [/merchant](#operation/getMerchant) endpoint whenever a merchant makes a Cancellation request.
+  #     > **Important**: It is recommended that the **Ordering Application** makes a new request on the [GET /v1/merchant](#operation/getMerchant) endpoint whenever a merchant makes a Cancellation request.
 
-      ### **Ordering Application**
+  #     ### **Ordering Application**
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/orderingApp_cancel_request.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/orderingApp_cancel_request.png" />
+  #     </div>
 
-      Cancellation by **Ordering Application** can happen by:
-      ```
-      code: CONSUMER_CANCELLATION_REQUESTED
-      ```  
+  #     Cancellation by **Ordering Application** can happen by:
+  #     ```
+  #     code: CONSUMER_CANCELLATION_REQUESTED
+  #     ```  
 
-      The consumer can request the cancellation of an order. 
-      Depending on the cancellation rules applied, this option may not be enabled for all merchants. 
-      It may also only be allowed at certain times, such as before the order is confirmed.
-      ```
-      code: OTHER_CANCELLATION_REASON
-      ```
+  #     The consumer can request the cancellation of an order. 
+  #     Depending on the cancellation rules applied, this option may not be enabled for all merchants. 
+  #     It may also only be allowed at certain times, such as before the order is confirmed.
+  #     ```
+  #     code: OTHER_CANCELLATION_REASON
+  #     ```
 
-      Ordering Aplications may cancel the order for reasons other than via customer.
+  #     Ordering Aplications may cancel the order for reasons other than via customer.
 
-      **Cancellation Handshake**
+  #     **Cancellation Handshake**
 
-      When the request occurs the merchant **Software Service** will receive an ORDER_CANCELLATION_REQUESTED event in polling (or via webhook) and must manifest itself through the following endpoints:
+  #     When the request occurs the merchant **Software Service** will receive an ORDER_CANCELLATION_REQUESTED event in polling (or via webhook) and must manifest itself through the following endpoints:
 
-      **[/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)**  
-      **[/orders/{orderId}/denyCancellation](#operation/cancellationDenied)**
+  #     **[/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)**  
+  #     **[/orders/{orderId}/denyCancellation](#operation/cancellationDenied)**
 
-      This request will be processed by the **Ordering Application**'s** cancellation service (asynchronously) and the merchant **Software Service** will receive in the next polling (or webhook) the following event(s):
+  #     This request will be processed by the **Ordering Application**'s** cancellation service (asynchronously) and the merchant **Software Service** will receive in the next polling (or webhook) the following event(s):
 
-      CANCELLATION_DENIED or CANCELLED
+  #     CANCELLATION_DENIED or CANCELLED
 
   # Logistics Tags
 
@@ -1154,54 +1198,54 @@ tags:
       Actions to provide a way to consult Ordering Applications contract plans and conditions, as well as signal the intention to contract a specific Ordering Application and finally perform onboarding on its plataform.
 
 x-tagGroups:
-  - name: ".................................................................................................................."
-    tags:
-      - versionSection
-      - versionChangelog
-  - name: ""
-    tags:
-      - versionsSection
-      - versionsEndpoint
+  # - name: ".................................................................................................................."
+  #   tags:
+  #     - versionSection
+  #     - versionChangelog
+  # - name: ""
+  #   tags:
+  #     - versionsSection
+  #     - versionsEndpoint
   - name: ""
     tags:
       - securitySection
       - authentication
-  - name: ""
-    tags:
-      - merchantSection
-  - name: "└──◌ Overview and Structure"
-    tags:
-      - merchantOverview
-      - merchantStructure
-  - name: "└──◌ api"
-    tags:
-      - merchantEndpoints
-  - name: "└──◌ Updates and Status"
-    tags:
-      - merchantUpdate
-      - merchantStatus
-  - name: ""
-    tags:
-      - ordersSection
-  - name: "└──◌ Overview"
-    tags:
-      - ordersOverview
-  - name: └──◌ Events
-    tags:
-      - ordersPolling
-      - ordersWebhook
-  - name: └──◌ Details
-    tags:
-      - ordersDetails
-  - name: └──◌ Actions
-    tags:
-      - ordersStatus
-      - ordersCancellation
-  - name: ".................................................................................................................."
-    tags:
-      - versionSection2
-      - versionChangelog2
-  - name: ""
+  # - name: ""
+  #   tags:
+  #     - merchantSection
+  # - name: "└──◌ Overview and Structure"
+  #   tags:
+  #     - merchantOverview
+  #     - merchantStructure
+  # - name: "└──◌ api"
+  #   tags:
+  #     - merchantEndpoints
+  # - name: "└──◌ Updates and Status"
+  #   tags:
+  #     - merchantUpdate
+  #     - merchantStatus
+  # - name: ""
+  #   tags:
+  #     - ordersSection
+  # - name: "└──◌ Overview"
+  #   tags:
+  #     - ordersOverview
+  # - name: └──◌ Events
+  #   tags:
+  #     - ordersPolling
+  #     - ordersWebhook
+  # - name: └──◌ Details
+  #   tags:
+  #     - ordersDetails
+  # - name: └──◌ Actions
+  #  tags:
+      # - ordersStatus
+      # - ordersCancellation
+  # - name: ".................................................................................................................."
+  #   tags:
+  #     - versionSection2
+  #     - versionChangelog2
+  - name: "_______________________________________"
     tags:
       - logisticsSection
   - name: └──◌ Logistics API
@@ -1211,13 +1255,13 @@ x-tagGroups:
       - logisticTracking
       - logisticDetails
       - logisticPrice
-  - name: ""
+  - name: "_______________________________________"
     tags:
       - financialReportSection
   - name: "└──◌ FINANCIAL REPORTS"
     tags:
       - - financialReport
-  - name: ""
+  - name: "_______________________________________"
     tags:
       - contractSection
   - name: "└──◌ CONTRACT SUMMARY"

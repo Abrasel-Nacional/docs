@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "1.0.1"
+  version: "1.1.0-rc.1"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -14,6 +14,14 @@ info:
 
   description: |-
     # ► ------- OPEN DELIVERY ------- ◄
+
+    # └► 'RELEASE CANDIDATE' VERSION WARNING
+    > **This version includes the EVOLUTIONS and IMPROVMENTES that are currently being discussed and will integrate the release version in the future. With this version the companies already using OPEN DELIVERY standards can keep up to date with the changes and already be prepared for future releases.**
+
+    > **THIS DOCUMENTATION VERSION CONTAINS INFORMATION THAT HAS NOT YET BEEN OFFICIALLY RELEASED AND IS STILL IN RELEASE CANDIDATE STAGE. THE INFORMATION CONTAINED HERE IS STILL UNDERGOING TESTING AND VALIDATION AND MAY BE SUBJECT TO CHANGE (SEE THE [CHANGELOGS](#section/Table-Of-Contents) SECTION FOR THE LATEST CHANGES).**
+
+    > **TO VIEW THE OFFICIAL RELEASE (CURRENTLY VERSION V1.0.1) FOLLOW THIS [LINK](https://abrasel-nacional.github.io/docs/).** 
+
 
     # └► Introduction
       **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and **Ordering Applications**, establishing a single communication standard for all, through a set of REST APIs.
@@ -41,108 +49,25 @@ info:
       
       Latest Changes:
       
-      ### Version [1.0.1] - Aug 01, 2022
+      ### Version [v1.1.0-rc.1] - Aug 26, 2022
 
-      - Added the possibility to indicate orders with scheduled delivery.  
-      With this the following changes were made:
+      #### ORDERS 
 
-        - [GET /merchant](#operation/getMerchant)
-          - `service` > Added a new optional field `serviceTiming`, where the merchant can indicate the delivery timing available for that service.
-          
-          ```
-          ...
-          "serviceTiming":
-              {
-                  "timing": ["INSTANT", "SCHEDULED"],
-                  "schedule":
-                      {
-                          "scheduleTimeWindow": "15_MINUTES",
-                          "scheduleStartWindow": "15_MINUTES",
-                          "scheduleEndWindow": "15_MINUTES",
-                      },
-          ...
-          ```
-        - [GET /orders/{orderId}](#operation/ordersDetails)
-          - Added `SCHEDULED` option to the `orderTiming` field.
-
-          - Added a new property called `schedule` where the delivery window for scheduled orders will be specified with the following structure:
-            ```
-                {
-                  ...
-                  "schedule": {
-                    "scheduledDateTimeStart": "2019-08-24T14:15:22Z",
-                    "scheduledDateTimeEnd": "2019-08-24T14:15:22Z"
-                    },
-                  ...
-                }
-            ```
-
-      - Added a new service type called **INDOOR**.  
-        The following places are affected:
-
-        - [GET /merchant](#operation/getMerchant)
-          - added option `INDOOR` to `type` field of entity `service`.
-
-        - [GET /orders/{orderId}](#operation/ordersDetails)
-          - added new property: `indoor` with the following structure:     
-
-          ```
-          {
-            ...
-            "indoor": {
-              "mode": "PLACE",
-              "indoorDateTime": "2019-08-24T14:15:22Z",
-              "place": "string"
-            },
-            ...
-          }
-          ```
-      - Added a new endpoint so that **Merchant** can send information related to its [GET /merchant](#operation/getMerchant) endpoint to the **Ordering APPLICATION**:
-
-        - [PUT /v1/merchantOnboarding](#operation/putMerchantOnboarding) 
-
-      - Added a new [Working Versions](#tag/versionsSection) section with endpoints so that both the Software Service and the Ordering Application can check which version of the Open Delivery API the other end is using. The endpoints created were:
-
-        - [GET /v1/versions/orderingApp](#operation/getOrderingAppVersions)
-        - [GET /v1/versions/merchant](#operation/getMerchantVersions)
-
-      - Added the `status` property to entities `Item`, `ItemOffer` and `Option` on the [GET /merchant](#operation/getMerchant) endpoint.
+      - Included a new optional order event, called `DELIVERED`.  
       
-      - Added HTTP Status code 422 on the following endpoints:
-        - [POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)
-        - [POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)
-        - [POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)
-        - [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
-        - [POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)
-        - [POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)
+        With this, the following changes have been made:
 
-      - Added HTTP Status code 204 on the following endpoints:
-        - [POST /v1/merchantUpdated](#operation/menuUpdated)
-        - [POST /v1/orderUpdate](#operation/newEvent)
-        - [POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)
-        - [POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)
-      
-      - Removed the **requirement** of the fields:
-        - [GET /merchant](#operation/getMerchant)
-          - `menu` > `description`
-          - `menu` > `disclaimer`
-          - `category` > `description`
-          - `optionGroup` > `description`
+        - Get order
+        Added to the events
 
-      #### Other Changes:
-
-      - Added a new [Developer Tools](#section/Developer-Tools) section where links to partner tools to help with API development will be listed.
-
-      - [Order Overview](#tag/ordersOverview)
-
-        - The lifecycle and order flow diagrams have been updated to better reflect the service types.
-
-      - Overall revisions of grammatical errors, syntax, examples and descriptions.
+        - New POST /delivered endpoint
+        This endpoint is intended to indicate to the **Ordering Application** that an order has been delivered.
 
 
-    ### Version [v1.0.0] - Apr 18, 2022
 
-    - Initial release.
+      ### Version [v1.1.0-rc.0] - Aug 25, 2022
+
+      - Initial release.
 
 
     # └► Issues and Suggestions
@@ -214,8 +139,8 @@ info:
 
     Since Open Delivery is not the host of the APIs, it is up to the companies interested in using the standard to develop the Open Delivery standard APIs in their systems and platforms using this documentation as a guideline. 
 
-    Listed below are the different routes offered by the Open Delivery standard and which party is responsible for being the host of it.
-    
+    Listed below are the different Routes that each party needs to implement and make available in their systems:
+
     | |ORDERING APPLICATION|SOFTWARE SERVICE|LOGISTIC SERVICE|
     |-|:------------------:|:--------------:|:--------------:|
     |**[AUTHENTICATION](#tag/authentication)**|||||
@@ -1133,6 +1058,7 @@ paths:
               > `DISPATCHED` : Order went out for delivery.\
               > `READY_FOR_PICKUP`: Order ready for pickup.\
               > `PICKUP_AREA_ASSIGNED` : Designated area to pick up the order.\
+              > [NEW] `DELIVERED` : Order has been delivered.
               > `CONCLUDED` : Order completed.\
               > `CANCELLATION_REQUESTED` : Sent by the **Software Service** to the **Ordering Application**.\
               > `CANCELLATION_REQUEST_DENIED` : It must be sent from the **Ordering Application** to the **Software Service**.\
@@ -1213,8 +1139,7 @@ paths:
           required: true
           in: "path"
           schema:
-            type: "string"
-            format: "UUID"
+            $ref: "#/components/schemas/Order/properties/id"
       tags:
         - "ordersDetails"
       operationId: ordersDetails
@@ -1252,7 +1177,7 @@ paths:
   /v1/orders/{orderId}/confirm:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1294,7 +1219,7 @@ paths:
   /v1/orders/{orderId}/requestCancellation:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1333,7 +1258,7 @@ paths:
   /v1/orders/{orderId}/acceptCancellation:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1372,7 +1297,7 @@ paths:
   /v1/orders/{orderId}/denyCancellation:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1413,7 +1338,7 @@ paths:
   /v1/orders/{orderId}/readyForPickup:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1450,7 +1375,7 @@ paths:
   /v1/orders/{orderId}/dispatch:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1463,6 +1388,48 @@ paths:
         - OAuth2: [od.all]
       description: |-
         Dispatch an Order.
+        <br /><br />
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
+
+        <span style="text-decoration:underline; color:#26323880; font-size:13.006px">DIRECTION:</span>
+        <div align="center">
+          <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png" />
+        </div>
+      responses:
+        "202":
+          $ref: "#/components/responses/Accepted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/AccessDenied"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /v1/orders/{orderId}/delivered:
+    post:
+      parameters:
+        - name: orderId
+          in: "path"
+          required: true
+          schema:
+            $ref: "#/components/schemas/Order/properties/id"
+      tags:
+        - "ordersStatus"
+      operationId: "orderDelivered"
+      summary: "[NEW] Delivered"
+      security:
+        - OAuth2: [od.all]
+      description: |-
+        Inform the **Ordering Application** that the order has been delivered.
+
+        Important: This endpoint is not mandatory and should be sent only if the **Ordering Application** is able to receive this request and only in cases where the order logistics service is provided by the Merchant and not the Marketplace.
+
+        > To check whether or not it is required to call this endpoint, check the `sendDelivered` field in the endpoint: 
+
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
 
@@ -3674,6 +3641,7 @@ components:
           READY_FOR_PICKUP: "#/components/schemas/EventMetadata"
           DISPATCHED: "#/components/schemas/EventMetadata"
           PICKUP_AREA_ASSIGNED: "#/components/schemas/EventMetadataPickup"
+          DELIVERED: "#/components/schemas/EventMetadata"
           CONCLUDED: "#/components/schemas/EventMetadata"
           ORDER_CANCELLATION_REQUESTED: "#/components/schemas/EventMetadataCancel"
           CANCELLATION_REQUESTED: "#/components/schemas/EventMetadataCancel"
@@ -3693,6 +3661,7 @@ components:
             - "DISPATCHED"
             - "READY_FOR_PICKUP"
             - "PICKUP_AREA_ASSIGNED"
+            - "DELIVERED"
             - "CONCLUDED"
             - "CANCELLATION_REQUESTED"
             - "CANCELLATION_REQUEST_DENIED"
