@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "1.1.0-rc.1"
+  version: "v1.1.0-rc.3"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -49,6 +49,36 @@ info:
       
       Latest Changes:
       
+      ### Version [v1.1.0-rc.3] - Sep 12, 2022
+
+      #### MERCHANT
+
+      - Included new optional field `targetAppId` in the `service` entity of endpoint [GET /v1/merchant](#operation/getMerchant).
+
+        This field is intended to indicate a specific Ordering Application to receive the service information.
+
+      #### ORDERS 
+
+      - Added new optional field `brand` to the `payments>methods` entity of endpoint [GET /v1/orders/{orderId}](#operation/ordersDetails).
+
+        This field is intended to indicate the brand of the card (for cases where the chosen payment method has a brand).
+
+      - Added new optional field `preparationTime` to endpoint [POST /v1/orders/{orderId}/confirm](#operation/confirmOrder).
+
+        This field is used to indicate the estimated time to prepare the order.
+
+      ### Version [v1.1.0-rc.2] - Sep 5, 2022
+
+      #### MERCHANT
+
+      - Added `MERCHANT` and `BASIC_INFO` options to the enumerator of the `entityType` field of the [POST /v1/merchantUpdated](#operation/menuUpdated) webhook.
+
+        This allows the webhook to now receive the full merchant entity information and can be used instead of the [GET /v1/merchant](#operation/getMerchant) endpoint.  
+        This can be used by **Software Services** that do not have the infrastructure to expose this endpoint.
+
+        It is also possible to update any entity that is part of the Merchant object. (this was already possible previously with the exception of BASIC_INFO entity).
+
+
       ### Version [v1.1.0-rc.1] - Aug 26, 2022
 
       #### ORDERS 
@@ -82,9 +112,14 @@ info:
 
     **Disclaimer**: The tools listed below are tools made available by partners of the Open Delivery project and are the sole responsibility of their authors. The Open Delivery does not provide support for these tools.
 
-    **Schema Validators**
+    **SCHEMA VALIDATORS**
 
     > [Open Delivery - API Schema Validator (by Programmers IT)](https://programmersit.github.io/opendelivery-api-schema-validator/)     
+    > Tool for comparing a JSON file with Open Delivery schemas.
+
+    **MERCHANT RELATED TOOLS**
+    > [Open Delivery - Menu Generator (by Programmers IT)](https://programmersit.github.io/opendelivery-menu-generator/)  
+    > Tool for graphical visualization of the different fields and entities that compose the Merchant object.
 
     # └► Versions
 
@@ -141,30 +176,30 @@ info:
 
     Listed below are the different Routes that each party needs to implement and make available in their systems:
 
-    | |ORDERING APPLICATION|SOFTWARE SERVICE|LOGISTIC SERVICE|
-    |-|:------------------:|:--------------:|:--------------:|
-    |**[AUTHENTICATION](#tag/authentication)**|||||
-    |[POST /oauth/token](#operation/getToken)|X||X|
-    |--------------------------------||||
-    |**[MERCHANT](#tag/merchantSection)**|||||
-    |[GET /v1/merchant](#operation/getMerchant)||X||
-    |[POST /v1/merchantUpdated](#operation/menuUpdated)|X||
-    |[GET /v1/merchantStatus](#tag/merchantStatus)|X|||
-    |--------------------------------||||
-    |**[ORDER](#tag/ordersSection)**|||||
-    |[GET /v1/events:polling ](#operation/pollingEvents)|X|||
-    |[POST /v1/events/acknowledgment](#operation/pollingAcknowledgment)|X|||
-    |[POST /v1/orderUpdate](#operation/newEvent)||X||
-    |||||
-    |[GET /v1/orders/{orderId}](#operation/ordersDetails)|X|||
-    |[POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)|X|||
-    |[POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
-    |[POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)|X||
-    |||||
-    |[POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
-    |[POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted) |X|||
-    |[POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
-    |--------------------------------||||
+    | |ORDERING APPLICATION|SOFTWARE SERVICE|
+    |-|:------------------:|:--------------:|
+    |**[AUTHENTICATION](#tag/authentication)**||||
+    |[POST /oauth/token](#operation/getToken)|X||
+    |--------------------------------|||
+    |**[MERCHANT](#tag/merchantSection)**||||
+    |[GET /v1/merchant](#operation/getMerchant)||X|
+    |[POST /v1/merchantUpdated](#operation/menuUpdated)|X|
+    |[GET /v1/merchantStatus](#tag/merchantStatus)|X||
+    |--------------------------------|||
+    |**[ORDER](#tag/ordersSection)**||||
+    |[GET /v1/events:polling ](#operation/pollingEvents)|X||
+    |[POST /v1/events/acknowledgment](#operation/pollingAcknowledgment)|X||
+    |[POST /v1/orderUpdate](#operation/newEvent)||X|
+    ||||
+    |[GET /v1/orders/{orderId}](#operation/ordersDetails)|X||
+    |[POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)|X||
+    |[POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)|X||
+    |[POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)|X|
+    ||||
+    |[POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)|X||
+    |[POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted) |X||
+    |[POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X||
+    
 
       ## Parametrizations
 
@@ -592,14 +627,22 @@ tags:
           
       > Always check with the **Ordering Application** what the rules are for using the polling service. 
 
-      **Duplicate Events and Order Date:**
+      **Duplicate Events**
 
-      Eventually the API may return the same event more than once, for example the PLACED event including old orders. For this reason it is important that your application handles the uniqueness of requests and events through id and the date through "createdAt".
+      Eventually the **Ordering Application** may return the same event more than once, for example the `CREATED` event, including old orders. For this reason it is important that the **Software Application** handles the uniqueness of requests and events through id and the date.
 
-      Therefore, when receiving an event, you must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
+      Therefore, when receiving an event, the **Software Service** must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
 
       > **Please note**: merchant **Software Services** should only accept a new order or update the status of an order after validating that the event has not been processed before.
 
+      It is also possible for the **Software Service** to make a request for the same event more than once (for example, requesting the `POST /v1/orders/{orderId}/confirm` endpoint repeatedly).
+
+      In these cases the **Ordering Application** can handle this situation in two different ways:
+
+        - If the processing of the requests is done synchronously, then the **Ordering Application** should return **`HTTP 422`**, indicating that that event has been received before.
+
+        - If the processing is done asynchronously, then it is recommended that the **Ordering Application** polls the corresponding event again, because for some reason the **Software Service** could not read that event before.
+            
       ### Acknowledgment Events
 
       When receiving new events, the **Software Service** should always send acknowledgement so that the **Ordering Application** does not send that same event again;
@@ -675,6 +718,7 @@ tags:
       When the order goes out for Delivery, it is expected that a request will be sent to **[/orders/{orderId}/dispatch](#operation/dispatchOrder)**.
 
       > When sending requests to these endpoints, is expected that the **Ordering Application** notifies the consumer of the progress of the order.
+
 
   - name: ordersCancellation
     x-displayName: └───● Order Cancellation
@@ -1924,6 +1968,87 @@ components:
             allOf:
               - $ref: "#/components/schemas/Availability"
 
+    UpdateMerchant:
+      type: "object"
+      required:
+        [
+          "lastUpdate",
+          "TTL",
+          id,
+          "status",
+          "basicInfo",
+          "services",
+          "items",
+          "menus",
+          "categories",
+          "itemOffers",
+        ]
+      properties:
+        id:
+          type: "string"
+          description: |-
+            Unique Identifier. Identifies the merchant in the different systems that the merchant will communicate.  
+            This id must be generated by the merchant's **`Software Service`**.
+
+            > To avoid duplicates between different merchants it is recommended that the software creates the merchantId using:  
+            > `Merchant Document + UUID`
+
+            > If this is not possible, it is recommended to at least use a UUID.
+
+          minLength: 36
+          maxLength: 100
+        status:
+          type: "string"
+          description: "Indicates if the Merchant is Avaliable or Unavaliable. Only use this type when you must close (disable) the merchant due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays)."
+          enum:
+            - AVAILABLE
+            - UNAVAILABLE
+          example: "AVAILABLE"
+        basicInfo:
+          type: "object"
+          description: "A required entity to implement. Describes basic info of a merchant."
+          allOf:
+            - $ref: "#/components/schemas/BasicInfo"
+        services:
+          type: "array"
+          description: "A required entity to implement. Describes food ordering services details for a merchant."
+          items:
+            $ref: "#/components/schemas/Service"
+        menus:
+          type: "array"
+          description: "A required entity to implement. Describes an array of menus."
+          items:
+            $ref: "#/components/schemas/Menu"
+        categories:
+          type: "array"
+          description: "A required entity to implement. Describes an array of sections in the menu where `ItemOffers` will be showed."
+          items:
+            type: "object"
+            $ref: "#/components/schemas/Category"
+        itemOffers:
+          type: "array"
+          description: "A required entity to implement. Describes an array of offers for the `Items`."
+          items:
+            type: "object"
+            $ref: "#/components/schemas/ItemOffer"
+        items:
+          type: "array"
+          description: "A required entity to implement. Describes an array of items. To be used with an `ItemOffer` or an `Option`."
+          items:
+            $ref: "#/components/schemas/Item"
+        optionGroups:
+          type: "array"
+          description: "An optional entity to implement. Describes additional options of an `ItemOffer`."
+          items:
+            $ref: "#/components/schemas/OptionGroup"
+        availabilities:
+          type: "array"
+          description: "An optional entity to implement. Describes the time period during which a `Category` or an `ItemOffer` entity is served."
+          items:
+            type: "object"
+            allOf:
+              - $ref: "#/components/schemas/Availability"
+
     MerchantDescription:
       type: "object"
       title: "MenuEntity"
@@ -2260,6 +2385,10 @@ components:
           type: string
           format: UUID
           example: "f627ccdc-6789-456f-a782-148538d5035b"
+        targetAppId:
+          type: "string"
+          format: UUID
+          description: "This field is for situations in which the merchant needs to send different menus for the same `serviceType` to different **Ordering Applications** (this can occur when there is an integration software between the merchant software and the **Ordering Application**). In this case this field must be filled in with the `AppId` of the **OrderingApplication** which will receive this `service` info."
         serviceArea:
           type: "object"
           description: "A conditional entity to implement (required if the Service entity associated has serviceType set to `DELIVERY`). Describes the geographical region in which food can be delivered."
@@ -2927,6 +3056,8 @@ components:
       discriminator:
         propertyName: entityType
         mapping:
+          MERCHANT: "#/components/schemas/FullMerchantUpdate"
+          BASIC_INFO: "#/components/schemas/BasicInfoUpdate"
           SERVICE: "#/components/schemas/ServiceUpdate"
           MENU: "#/components/schemas/MenuUpdate"
           CATEGORY: "#/components/schemas/CategoryUpdate"
@@ -2942,6 +3073,32 @@ components:
         entityType:
           type: "string"
           description: "The entity type of the updated object."
+
+    FullMerchantUpdate:
+      description: Updated Merchant Object
+      allOf:
+        - $ref: "#/components/schemas/MerchantUpdate"
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `Merchant` entity objects"
+              type: array
+              items:
+                allOf:
+                  - $ref: "#/components/schemas/UpdateMerchant"
+
+    BasicInfoUpdate:
+      description: Updated Service Object
+      allOf:
+        - $ref: "#/components/schemas/MerchantUpdate"
+        - type: object
+          properties:
+            updatedObjects:
+              description: "Updated `Service` entity objects"
+              type: array
+              items:
+                allOf:
+                  - $ref: "#/components/schemas/BasicInfo"
 
     ServiceUpdate:
       description: Updated Service Object
@@ -3378,15 +3535,54 @@ components:
                       - "REDEEM"
                       - "PREPAID_REDEEM"
                       - "OTHER"
+                  brand:
+                    type: string
+                    description: |-
+                      Indicates the brand of the card selected in the `method` field.
+
+                      This field must only be filled in if `type` is `PREPAID` and `method` is `CREDIT`, `DEBIT`, `CREDIT_DEBIT`, `MEAL_VOUCHER` or `FOOD_VOUCHER`.
+
+                      If `OTHER` is chosen, it is recommended that you describe the brand name in the `methodInfo` field.
+                    enum:
+                      - "VISA"
+                      - "MASTERCARD"
+                      - "DINERS"
+                      - "AMEX"
+                      - "HIPERCARD"
+                      - "ELO"
+                      - "AURA"
+                      - "DISCOVER"
+                      - "VR_BENEFICIOS"
+                      - "SODEXO"
+                      - "TICKET"
+                      - "GOOD_CARD"
+                      - "BANESCARD"
+                      - "SOROCARD"
+                      - "POLICARD"
+                      - "VALECARD"
+                      - "AGICARD"
+                      - "JCB"
+                      - "CREDSYSTEM"
+                      - "CABAL"
+                      - "GREEN_CARD"
+                      - "VEROCHEQUE"
+                      - "AVISTA"
+                      - "OTHER"                      
                   methodInfo:
                     type: "string"
-                    description:
-                      "Additional information regarding the payment method.
-                      \nRecommended if `method` is `OTHER`."
+                    description: |-
+                      Additional information regarding the payment method.  
+                      It can be used to indicate some useful information of the chosen payment method, such as the name of the wallet, or an authorization number.  
+
+                      This field can be used for any `method` entered, but it is highly recommended to fill it in when the chosen `method` is `OTHER`.
                   changeFor:
                     type: "number"
                     format: "decimal"
-                    description: "Only mandatory for `CASH` method."
+                    description: |- 
+                      Indicates the total that will be paid in cash by the customer and that should be considered for the calculation of the change   
+                      (ex. customer will pay a $43 order with a $50 bill. Then 50.00 must be entered.). 
+                      
+                      Only mandatory when `method` is `CASH`.
         customer:
           type: "object"
           required:
@@ -3575,6 +3771,9 @@ components:
         orderExternalCode:
           type: "string"
           description: "External order code, which can be used by merchant or marketplace."
+        preparationTime:
+          type: "integer"
+          description: "Indicates an estimate of the preparation time (in minutes) for the order being confirmed."
 
     RequestCancelled:
       type: "object"
