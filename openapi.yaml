@@ -214,32 +214,32 @@ info:
 
     Since Open Delivery is not the host of the APIs, it is up to the companies interested in using the standard to develop the Open Delivery standard APIs in their systems and platforms using this documentation as a guideline. 
 
-    Listed below are the different routes offered by the Open Delivery standard and which party is responsible for being the host of it.
+    Listed below are the different Routes that each party needs to implement and make available in their systems:
+
+    | |ORDERING APPLICATION|SOFTWARE SERVICE|
+    |-|:------------------:|:--------------:|
+    |**[AUTHENTICATION](#tag/authentication)**||||
+    |[POST /oauth/token](#operation/getToken)|X||
+    |--------------------------------|||
+    |**[MERCHANT](#tag/merchantSection)**||||
+    |[GET /v1/merchant](#operation/getMerchant)||X|
+    |[POST /v1/merchantUpdated](#operation/menuUpdated)|X|
+    |[GET /v1/merchantStatus](#tag/merchantStatus)|X||
+    |--------------------------------|||
+    |**[ORDER](#tag/ordersSection)**||||
+    |[GET /v1/events:polling ](#operation/pollingEvents)|X||
+    |[POST /v1/events/acknowledgment](#operation/pollingAcknowledgment)|X||
+    |[POST /v1/orderUpdate](#operation/newEvent)||X|
+    ||||
+    |[GET /v1/orders/{orderId}](#operation/ordersDetails)|X||
+    |[POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)|X||
+    |[POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)|X||
+    |[POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)|X|
+    ||||
+    |[POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)|X||
+    |[POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted) |X||
+    |[POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X||
     
-    | |ORDERING APPLICATION|SOFTWARE SERVICE|LOGISTIC SERVICE|
-    |-|:------------------:|:--------------:|:--------------:|
-    |**[AUTHENTICATION](#tag/authentication)**|||||
-    |[POST /oauth/token](#operation/getToken)|X||X|
-    |--------------------------------||||
-    |**[MERCHANT](#tag/merchantSection)**|||||
-    |[GET /v1/merchant](#operation/getMerchant)||X||
-    |[POST /v1/merchantUpdated](#operation/menuUpdated)|X||
-    |[GET /v1/merchantStatus](#tag/merchantStatus)|X|||
-    |--------------------------------||||
-    |**[ORDER](#tag/ordersSection)**|||||
-    |[GET /v1/events:polling ](#operation/pollingEvents)|X|||
-    |[POST /v1/events/acknowledgment](#operation/pollingAcknowledgment)|X|||
-    |[POST /v1/orderUpdate](#operation/newEvent)||X||
-    |||||
-    |[GET /v1/orders/{orderId}](#operation/ordersDetails)|X|||
-    |[POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)|X|||
-    |[POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
-    |[POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)|X||
-    |||||
-    |[POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
-    |[POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted) |X|||
-    |[POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
-    |--------------------------------||||
 
       ## Parametrizations
 
@@ -667,14 +667,22 @@ tags:
           
       > Always check with the **Ordering Application** what the rules are for using the polling service. 
 
-      **Duplicate Events and Order Date:**
+      **Duplicate Events**
 
-      Eventually the API may return the same event more than once, for example the PLACED event including old orders. For this reason it is important that your application handles the uniqueness of requests and events through id and the date through "createdAt".
+      Eventually the **Ordering Application** may return the same event more than once, for example the `CREATED` event, including old orders. For this reason it is important that the **Software Application** handles the uniqueness of requests and events through id and the date.
 
-      Therefore, when receiving an event, you must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
+      Therefore, when receiving an event, the **Software Service** must check the event id and validate that this event (id) has not been processed before. If this event has already been received previously, it must be discarded.
 
       > **Please note**: merchant **Software Services** should only accept a new order or update the status of an order after validating that the event has not been processed before.
 
+      It is also possible for the **Software Service** to make a request for the same event more than once (for example, requesting the `POST /v1/orders/{orderId}/confirm` endpoint repeatedly).
+
+      In these cases the **Ordering Application** can handle this situation in two different ways:
+
+        - If the processing of the requests is done synchronously, then the **Ordering Application** should return **`HTTP 422`**, indicating that that event has been received before.
+
+        - If the processing is done asynchronously, then it is recommended that the **Ordering Application** polls the corresponding event again, because for some reason the **Software Service** could not read that event before.
+            
       ### Acknowledgment Events
 
       When receiving new events, the **Software Service** should always send acknowledgement so that the **Ordering Application** does not send that same event again;
@@ -1213,8 +1221,7 @@ paths:
           required: true
           in: "path"
           schema:
-            type: "string"
-            format: "UUID"
+            $ref: "#/components/schemas/Order/properties/id"
       tags:
         - "ordersDetails"
       operationId: ordersDetails
@@ -3413,13 +3420,19 @@ components:
                       - "OTHER"
                   methodInfo:
                     type: "string"
-                    description:
-                      "Additional information regarding the payment method.
-                      \nRecommended if `method` is `OTHER`."
+                    description: |-
+                      Additional information regarding the payment method.  
+                      It can be used to indicate some useful information of the chosen payment method, such as the name of the wallet, the card brand or an authorization number.  
+
+                      This field can be used for any `method` entered, but it is highly recommended to fill it in when the chosen `method` is `OTHER`.
                   changeFor:
                     type: "number"
                     format: "decimal"
-                    description: "Only mandatory for `CASH` method."
+                    description: |- 
+                      Indicates the total that will be paid in cash by the customer and that should be considered for the calculation of the change   
+                      (ex. customer will pay a $43 order with a $50 bill. Then 50.00 must be entered.). 
+                      
+                      Only mandatory when `method` is `CASH`.
         customer:
           type: "object"
           required:
