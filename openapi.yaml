@@ -1912,6 +1912,7 @@ components:
 
           minLength: 36
           maxLength: 100
+          example: "22815773000169-dbc7e35a-c936-4665-9e13-eb55eb8b6824"
         status:
           type: "string"
           description: "Indicates if the Merchant is Avaliable or Unavaliable. Only use this type when you must close (disable) the merchant due to an unexpected event and you don't know when the service will be re-established (e.g. do not use for holidays)."
@@ -4070,7 +4071,7 @@ components:
         orderTiming: "INSTANT"
         preparationStartDateTime: "2021-05-27T19:45:10.332Z"
         merchant:
-          id: 7fb59cb8-5808-40c8-b967-1b3f20ee39cd"
+          id: "7fb59cb8-5808-40c8-b967-1b3f20ee39cd"
           name: "Plaza Pizza"
         items:
           [
