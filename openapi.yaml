@@ -1271,7 +1271,7 @@ paths:
   /v1/orders/{orderId}/confirm:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1313,7 +1313,7 @@ paths:
   /v1/orders/{orderId}/requestCancellation:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1352,7 +1352,7 @@ paths:
   /v1/orders/{orderId}/acceptCancellation:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1391,7 +1391,7 @@ paths:
   /v1/orders/{orderId}/denyCancellation:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1432,7 +1432,7 @@ paths:
   /v1/orders/{orderId}/readyForPickup:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
@@ -1469,7 +1469,7 @@ paths:
   /v1/orders/{orderId}/dispatch:
     post:
       parameters:
-        - name: id
+        - name: orderId
           in: "path"
           required: true
           schema:
