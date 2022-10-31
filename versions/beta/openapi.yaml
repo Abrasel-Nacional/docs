@@ -47,6 +47,34 @@ info:
 
       Latest Changes:  
 
+      ### Version [BETA] - Oct 31, 2022
+
+      - **FINANCIAL RECONCILIATION endpoints changes:**
+
+        - [GET /v1/paymentBatchByIds](#operation/paymentBatchId)
+                
+          - fixed the type of propertie `ordersChargebacks.amount` to object `Price` instead of `string`. 
+
+        - [GET /v1/paymentBatchByDate](#operation/paymentBatchDate)
+                
+          - changed the structure of the HTPP 200 response body:
+          
+            from:
+            ```
+            [{ "summary": {}, "batches": {} }]
+            ```
+            to:
+            ```
+            { "summary": {}, "batches": [{}] }
+            ```
+
+      - **CONTRACTS endpoints changes:**
+
+        - [GET /v1/contractSummary](#operation/getContractSummary)
+        - [POST /v1/signup/contractConditions](#operations/postContractConditions)
+        
+          - changed the `period` propertie into an array, and renamed to `periods`. 
+
       ### Version [BETA] - Mar 12, 2022
 
       - Added new fields in [POST /logistics/delivery](#operation/logisticsNewDelivery) endpoint
@@ -6229,37 +6257,38 @@ components:
               - $ref: "#/components/schemas/PaymentBatchDetails"
 
     PaymentsByBatchDate:
-      type: "array"
-      items:
-        type: "object"
-        required: [summary]
-        properties:
-          summary:
-            type: object
-            description: "Summary of the response results."
-            properties:
-              searchedPeriod:
-                type: object
-                description: "Filtered period."
-                properties:
-                  startDate:
-                    type: "string"
-                    format: "date-time"
-                    description: "Initial date of the period. You must consider the most distant date informed in the requisition filters.  \n\n(UTC date-time in ISO timestamp format)."
-                  endDate:
-                    type: "string"
-                    format: "date-time"
-                    description: "Final date of the period. The most current date entered in the requisition filters should be considered. \n\n(UTC date-time in ISO timestamp format)."
-              totalRecordsFound:
-                type: integer
-                description: "Total amount of records found considering the filters informed."
-              totalRecordsReturned:
-                type: integer
-                description: "Total records that actually returned in the response. Depending on the filtering applied, it is possible that this number is smaller than `totalRecordsFound`. In this case a new request should be made, informing more restrictive filters."
-              warningMessage:
-                type: string
-                description: "This message must return, when the `totalRecordsFound` and `totalRecordsReturned` fields are not equal, informing the systems that there are more records found than those returned, and if possible perform a new search with stricter filters. "
-          batches:
+      type: "object"
+      required: [summary]
+      properties:
+        summary:
+          type: object
+          description: "Summary of the response results."
+          properties:
+            searchedPeriod:
+              type: object
+              description: "Filtered period."
+              properties:
+                startDate:
+                  type: "string"
+                  format: "date-time"
+                  description: "Initial date of the period. You must consider the most distant date informed in the requisition filters.  \n\n(UTC date-time in ISO timestamp format)."
+                endDate:
+                  type: "string"
+                  format: "date-time"
+                  description: "Final date of the period. The most current date entered in the requisition filters should be considered. \n\n(UTC date-time in ISO timestamp format)."
+            totalRecordsFound:
+              type: integer
+              description: "Total amount of records found considering the filters informed."
+            totalRecordsReturned:
+              type: integer
+              description: "Total records that actually returned in the response. Depending on the filtering applied, it is possible that this number is smaller than `totalRecordsFound`. In this case a new request should be made, informing more restrictive filters."
+            warningMessage:
+              type: string
+              description: "This message must return, when the `totalRecordsFound` and `totalRecordsReturned` fields are not equal, informing the systems that there are more records found than those returned, and if possible perform a new search with stricter filters. "
+        batches:
+          type: array
+          description: "Details of all returned payments batches."
+          items:
             type: object
             required:
               [
@@ -6621,8 +6650,9 @@ components:
               type: string
               description: "A unique identifier of the order."
             amount:
-              type: string
               description: "Amount reversed. It does not necessarily have to be the full amount of the order."
+              allOf:
+                - $ref: "#/components/schemas/Price"
             chargebackDate:
               type: string
               format: "date-time"
@@ -7047,33 +7077,36 @@ components:
           enum:
             - "DAILY"
             - "PER_PERIOD"
-        period:
-          type: "object"
-          required: ["days", "cutoffDate"]
-          description: "Information about the batch period. \n\nOnly required when `batchDuration` is `PER_PERIOD`"
-          properties:
-            days:
-              type: integer
-              description: "Number of days considered for the payment batch. The orders placed within these days are included into the same payment batch."
-            cutoffDate:
-              type: "object"
-              required: ["type", "day"]
-              description: "Cut-off date of the batch. Informs the day when the batch will be closed and no more orders will be included."
-              properties:
-                type:
-                  type: "string"
-                  description: "Informs whether the cutoff day is a week day or a month day"
-                  enum:
-                    - "DAY_OF_MONTH"
-                    - "DAY_OF_WEEK"
-                day:
-                  type: "string"
-                  description: |-
-                    Inform the cutting day.
+        periods:
+          type: array
+          description: "Information about the batch periods. \n\nOnly required when `batchDuration` is `PER_PERIOD`"
+          items:
+            type: "object"
+            required: ["days", "cutoffDate"]
+            description: "Information about the batch period. \n\nOnly required when `batchDuration` is `PER_PERIOD`"
+            properties:
+              days:
+                type: integer
+                description: "Number of days considered for the payment batch. The orders placed within these days are included into the same payment batch."
+              cutoffDate:
+                type: "object"
+                required: ["type", "day"]
+                description: "Cut-off date of the batch. Informs the day when the batch will be closed and no more orders will be included."
+                properties:
+                  type:
+                    type: "string"
+                    description: "Informs whether the cutoff day is a week day or a month day"
+                    enum:
+                      - "DAY_OF_MONTH"
+                      - "DAY_OF_WEEK"
+                  day:
+                    type: "string"
+                    description: |-
+                      Inform the cutting day.
 
-                    If type is `DAY_OF_MONTH` then fill in a number from 1 to 31.
+                      If type is `DAY_OF_MONTH` then fill in a number from 1 to 31.
 
-                    If type is `DAY_OF_WEEK` then fill in one of the options: `SUNDAY`, `MONDAY`, `TUESDAY`, `WEDNESDEY`, `THURSDAY`, `FRIDAY`, `SATURDAY`.
+                      If type is `DAY_OF_WEEK` then fill in one of the options: `SUNDAY`, `MONDAY`, `TUESDAY`, `WEDNESDEY`, `THURSDAY`, `FRIDAY`, `SATURDAY`.
         daysToTransfer:
           type: integer
           description: "Period of days from the order execution date when the batch payment will be made (D + daysToTransfer)."
@@ -7485,33 +7518,36 @@ components:
               enum:
                 - "DAILY"
                 - "PER_PERIOD"
-            period:
-              type: "object"
-              required: ["days", "cutoffDate"]
-              description: "Information about the batch period. \n\nOnly required when `batchDuration` is `PER_PERIOD`"
-              properties:
-                days:
-                  type: integer
-                  description: "Number of days considered for the payment batch. The orders placed within these days are included into the same payment batch."
-                cutoffDate:
-                  type: "object"
-                  required: ["type", "day"]
-                  description: "Cut-off date of the batch. Informs the day when the batch will be closed and no more orders will be included."
-                  properties:
-                    type:
-                      type: "string"
-                      description: "Informs whether the cutoff day is a week day or a month day"
-                      enum:
-                        - "DAY_OF_MONTH"
-                        - "DAY_OF_WEEK"
-                    day:
-                      type: "string"
-                      description: |-
-                        Inform the cutting day.
+            periods:
+              type: array
+              description: "Information about the batch periods. \n\nOnly required when `batchDuration` is `PER_PERIOD`"
+              items:
+                type: "object"
+                required: ["days", "cutoffDate"]
+                description: "Information about the batch period. \n\nOnly required when `batchDuration` is `PER_PERIOD`"
+                properties:
+                  days:
+                    type: integer
+                    description: "Number of days considered for the payment batch. The orders placed within these days are included into the same payment batch."
+                  cutoffDate:
+                    type: "object"
+                    required: ["type", "day"]
+                    description: "Cut-off date of the batch. Informs the day when the batch will be closed and no more orders will be included."
+                    properties:
+                      type:
+                        type: "string"
+                        description: "Informs whether the cutoff day is a week day or a month day"
+                        enum:
+                          - "DAY_OF_MONTH"
+                          - "DAY_OF_WEEK"
+                      day:
+                        type: "string"
+                        description: |-
+                          Inform the cutting day.
 
-                        If type is `DAY_OF_MONTH` then fill in a number from 1 to 31.
+                          If type is `DAY_OF_MONTH` then fill in a number from 1 to 31.
 
-                        If type is `DAY_OF_WEEK` then fill in one of the options: `SUNDAY`, `MONDAY`, `TUESDAY`, `WEDNESDEY`, `THURSDAY`, `FRIDAY`, `SATURDAY`.
+                          If type is `DAY_OF_WEEK` then fill in one of the options: `SUNDAY`, `MONDAY`, `TUESDAY`, `WEDNESDEY`, `THURSDAY`, `FRIDAY`, `SATURDAY`.
             transferMethod:
               type: "object"
               required: ["method", "transferFee"]
