@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "v1.1.0-rc.3"
+  version: "v1.1.0-rc.5"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -49,15 +49,30 @@ info:
       
       Latest Changes:
       
+      ### Version [v1.1.0-rc.5] - Oct 31, 2022
+
+      #### ORDERS changes
+
+      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
+        - added new field `lastEvent` to be filled with the last valid event sent/polled (whether acknowledged or not).
+
+      ### Version [v1.1.0-rc.4] - Oct 17, 2022
+
+      #### ORDERS changes
+
+      - [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
+        - added propertie `cancellationStatus` to the 422 response body to indicate the result of the cancellation request in case of a duplicate event.
+
+
       ### Version [v1.1.0-rc.3] - Sep 12, 2022
 
-      #### MERCHANT
+      #### MERCHANT changes
 
       - Included new optional field `targetAppId` in the `service` entity of endpoint [GET /v1/merchant](#operation/getMerchant).
 
         This field is intended to indicate a specific Ordering Application to receive the service information.
 
-      #### ORDERS 
+      #### ORDERS changes
 
       - Added new optional field `brand` to the `payments>methods` entity of endpoint [GET /v1/orders/{orderId}](#operation/ordersDetails).
 
@@ -69,7 +84,7 @@ info:
 
       ### Version [v1.1.0-rc.2] - Sep 5, 2022
 
-      #### MERCHANT
+      #### MERCHANT changes
 
       - Added `MERCHANT` and `BASIC_INFO` options to the enumerator of the `entityType` field of the [POST /v1/merchantUpdated](#operation/menuUpdated) webhook.
 
@@ -81,7 +96,7 @@ info:
 
       ### Version [v1.1.0-rc.1] - Aug 26, 2022
 
-      #### ORDERS 
+      #### ORDERS changes
 
       - Included a new optional order event, called `DELIVERED`.  
       
@@ -3275,6 +3290,21 @@ components:
           type: "string"
           format: date-time
           description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format)."
+        lastEvent:
+          type: "string"
+          description: "The last valid event polled (whether acknowledged or not) or sent via webhook. **[Click here](#operation/pollingEvents)** for definitions of each type."
+          enum:
+            - "CREATED"
+            - "CONFIRMED"
+            - "DISPATCHED"
+            - "READY_FOR_PICKUP"
+            - "PICKUP_AREA_ASSIGNED"
+            - "DELIVERED"
+            - "CONCLUDED"
+            - "CANCELLATION_REQUESTED"
+            - "CANCELLATION_REQUEST_DENIED"
+            - "CANCELLED"
+            - "ORDER_CANCELLATION_REQUEST"
         orderTiming:
           type: "string"
           description: "Order Timing. Indicates whether the ORDER will have immediate or scheduled delivery."
