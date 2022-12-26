@@ -85,9 +85,9 @@ info:
 
           - added propeties `returnToMerchantEtaInMinutes` and `returnToMerchantEtaDatetime` to the `eta` object.
 
-          - renamed propertie `deliveryMan` to `deliveryPerson`
-
           - changed propertie `eta.updateMethod` to required.
+
+          - renamed propertie `deliveryMan` to `deliveryPerson`
 
           - `rejectionInfo>reason`:  
             - renamed `NO_DELIVERYMAN_AVAILABLE` to `NO_DELIVERYPERSON_AVAILABLE`
@@ -98,11 +98,11 @@ info:
 
         - **[POST /v1/logistics/availability](#tag/logisticPrice) - Response Body**
 
-          - added propeties `returnToMerchantEtaInMinutes` and `returnToMerchantEtaDatetime` to the `times` object.
+          - added propeties `returnToMerchantEtaInMinutes` and `returnToMerchantEtaDatetime` to the `ETAs` object.
+          
+          - changed propertie `ETAs.updateMethod` to required.
 
         - **[POST /v1/logistics/handleProblem/{orderId}](#operation/logisticsProblem) - Response Body**
-
-          - changed propertie `ETAs.updateMethod` to required.
 
           - `problem>reason`
             - renamed `DELIVERY_MAN_OCCURRENCE` to `DELIVERYPERSON_OCCURRENCE`
