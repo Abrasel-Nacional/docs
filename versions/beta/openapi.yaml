@@ -47,6 +47,67 @@ info:
 
       Latest Changes:  
 
+      ### Version [BETA] - Dec 26, 2022
+
+      - **LOGISTICS endpoints changes**
+
+      - changed the term **deliveryMan** to **deliveryPerson** across the whole document. Changed properties and enumerators are described in their respective endpoint below.
+
+        - **[POST /v1/logistics/delivery](#operation/logisticsNewDelivery) - Request Body**
+
+          - added `sourceAppId` and `sourceOrderId` properties
+
+        - **[POST /v1/logistics/delivery](#operation/logisticsNewDelivery) - Response Body**
+
+          - added HTTP 422 response code
+
+        - **[GET /v1/logistics/delivery/{orderId}](#operation/logisticDetails) - Response Body**
+
+          - renamed propertie `deliveryMan` to `deliveryPerson`
+
+          - `rejectionInfo.reason`:  
+            - renamed `NO_DELIVERYMAN_AVAILABLE` to `NO_DELIVERYPERSON_AVAILABLE`
+
+          - `problem.reason`
+            - renamed `DELIVERY_MAN_OCCURRENCE` to `DELIVERYPERSON_OCCURRENCE`
+            - renamed `DELIVERY_MAN_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER` to `DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER`
+
+          - Changed the requirement for the following properties:
+            - vehicle
+            - deliveryPrice
+            - times
+
+            These properties now are only **REQUIRED** when CURRENT `event>type` is different from `PENDING`, `REJECTED` and `CANCELLED` 
+    
+          - added a explanation text about returning orders with more than 1 result (orders that were rejected on the first attempt).
+
+        - **[POST /v1/deliveryUpdate](#operation/newLogisticEvent) - Webhook Request Body**
+
+          - added propeties `returnToMerchantEtaInMinutes` and `returnToMerchantEtaDatetime` to the `eta` object.
+
+          - renamed propertie `deliveryMan` to `deliveryPerson`
+
+          - changed propertie `eta.updateMethod` to required.
+
+          - `rejectionInfo>reason`:  
+            - renamed `NO_DELIVERYMAN_AVAILABLE` to `NO_DELIVERYPERSON_AVAILABLE`
+
+          - `problem>reason`
+            - renamed `DELIVERY_MAN_OCCURRENCE` to `DELIVERYPERSON_OCCURRENCE`
+            - renamed `DELIVERY_MAN_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER` to `DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER`
+
+        - **[POST /v1/logistics/availability](#tag/logisticPrice) - Response Body**
+
+          - added propeties `returnToMerchantEtaInMinutes` and `returnToMerchantEtaDatetime` to the `times` object.
+
+        - **[POST /v1/logistics/handleProblem/{orderId}](#operation/logisticsProblem) - Response Body**
+
+          - changed propertie `ETAs.updateMethod` to required.
+
+          - `problem>reason`
+            - renamed `DELIVERY_MAN_OCCURRENCE` to `DELIVERYPERSON_OCCURRENCE`
+            - renamed `DELIVERY_MAN_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER` to `DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER`
+
       ### Version [BETA] - Nov 21, 2022
 
       - **LOGISTICS endpoints changes**
@@ -1122,7 +1183,7 @@ tags:
         <img src="https://abrasel-nacional.github.io/docs/images/logisticsOrderFlow.png" />
       </div>
 
-      > The `PICKUP_ONGOING`, `DELIVERY_ONGOING` and `RETURNING_TO_MERCHANT` events are events that occur while the delivery man is on the move, so these events can be sent repeatedly in order to update the delivery man's location. The interval at which these events are sent is defined by each **Logistic Service**. 
+      > The `PICKUP_ONGOING`, `DELIVERY_ONGOING` and `RETURNING_TO_MERCHANT` events are events that occur while the delivery person is on the move, so these events can be sent repeatedly in order to update the delivery person's location. The interval at which these events are sent is defined by each **Logistic Service**. 
 
       > It is important to emphasize that the entire event flow is per Order and even though a delivery may have combined orders (see section below), for all operations in the flow, the id to be used is the `orderId` (initially informed by the requester at the /logistics/delivery endpoint). 
 
@@ -2028,6 +2089,8 @@ paths:
           $ref: "#/components/responses/AccessDenied"
         "404":
           $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
         "503":
           $ref: "#/components/responses/ServiceUnavailable"
 
@@ -2046,6 +2109,8 @@ paths:
       security: []
       description: |-
         Gets detailed information about the delivery order.
+
+        > Since the same `orderId` may have more than one return (considering that it may have been rejected a few times before being accepted), then the response should return only the last attempt processed by the **Logistics Service**, be it an acceptance or a rejection.
       responses:
         "200":
           description: "Successfully returns the delivery order details."
@@ -2079,7 +2144,7 @@ paths:
       summary: "Inform order pickup"
       security:
         - OAuth2: [od.all]
-      description: "Inform the **Logistic Service** that the order was picked by delivery man at Merchant"
+      description: "Inform the **Logistic Service** that the order was picked by delivery person at Merchant"
       responses:
         "200":
           description: "Order pickup has been confirmed."
@@ -4769,7 +4834,7 @@ components:
             - SYSTEMIC_ISSUES
             - DUPLICATE_APPLICATION
             - UNAVAILABLE_ITEM
-            - RESTAURANT_WITHOUT_DELIVERY_MAN
+            - RESTAURANT_WITHOUT_DELIVERYPERSON
             - OUTDATED_MENU
             - ORDER_OUTSIDE_THE_DELIVERY_AREA
             - BLOCKED_CUSTOMER
@@ -5282,7 +5347,7 @@ components:
           description: "Inform whether the **`Logistic Service`** to wait for a delivery finish notification from the requester, before actually finalizing the delivery in its system. This notification is made via the endpoint: [POST /logistics/finishDelivery/{orderId}](#operation/logisticsFinish)"
         returnToMerchant:
           type: boolean
-          description: "Inform whether the delivery man should return to the pickup address after the delivery has been made."
+          description: "Inform whether the delivery person should return to the pickup address after the delivery has been made."
         canCombine:
           type: boolean
           description: "Inform whether the **`Logistic Service`** can combine this order with other orders in the same delivery."
@@ -5351,7 +5416,7 @@ components:
             In this case, any value informed below 50, would result in the order being rejected.
         payments:
           type: object
-          description: "Payments Info. It informs the payment methods chosen by the consumer in the **`Ordering Application`**. This section should be used by the `Logistics Service` to check how much the delivery man should receive from the consumer when delivering the order."
+          description: "Payments Info. It informs the payment methods chosen by the consumer in the **`Ordering Application`**. This section should be used by the `Logistics Service` to check how much the delivery person should receive from the consumer when delivering the order."
           properties:
             method:
               type: string
@@ -5363,7 +5428,7 @@ components:
                 - ONLINE
             wirelessPos:
               type: boolean
-              description: "Indicates whether the delivery man should take the wireless payment device with him."
+              description: "Indicates whether the delivery person should take the wireless payment device with him."
             offlineMethod:
               type: array
               description: "If the method is `OFFLINE`, the payment information should be provided."
@@ -5395,7 +5460,16 @@ components:
           items:
             type: string
             format: UUID
-
+        sourceAppId:
+          type: "string"
+          format: UUID
+          description: "This field must be filled in with the AppId of the **Ordering Application** that originated the order. This field is to help the applications that will work as a Hub, intermediating the requests from the **Ordering Application** with the **Software Service** and the **Logistics Services**."
+        sourceOrderId:
+          type: "string"
+          format: UUID
+          description: "This field must be filled in with the original OrderId generated by the **Ordering Application**. In most cases this property will have the same value as the `orderId` property, since it is already recommended that the order id created by the **Ordering Application** be sent in the `orderId` property. But if the order id created by the **Ordering Application** is not sent in the `orderId` property then it must be entered in this field."
+        
+        
     Vehicle:
       description: Vehicle Object.
       type: object
@@ -5534,9 +5608,9 @@ components:
             > This propertie is **REQUIRED** when `event > type` is different from `PENDING`, `REJECTED` and `CANCELLED` 
           allOf:
             - $ref: "#/components/schemas/ETA"
-        deliveryMan:
+        deliveryPerson:
           description: |- 
-            Delivery Man Info.
+            Delivery Person Info.
             > This propertie is **REQUIRED** when `event > type` is different from `PENDING`, `REJECTED` and `CANCELLED` 
           allOf:
             - $ref: "#/components/schemas/DeliveryMan"
@@ -5550,7 +5624,7 @@ components:
           description: "External URL, provided by the logistics service to track the delivery on a specific page. Example: Real-time map view, or delivery timeline."
         combinedOrdersIds:
           type: "array"
-          description: "Combined Orders Ids. Informs which other orders from the same merchant are being carried by the same delivery man, with the same `deliveryId`."
+          description: "Combined Orders Ids. Informs which other orders from the same merchant are being carried by the same delivery person, with the same `deliveryId`."
           items:
             type: string
             format: UUID
@@ -5598,7 +5672,7 @@ components:
         mapping:
           PRICE_EXCEEDED: "#/components/schemas/DeliveryEventDeniedPrice"
           VEHICLE_NOT_AVAILABLE: "#/components/schemas/DeliveryEventDeniedVehicle"
-          NO_DELIVERYMAN_AVAILABLE: "#/components/schemas/DeliveryEventDeniedNoDeliveryMan"
+          NO_DELIVERYPERSON_AVAILABLE: "#/components/schemas/DeliveryEventDeniedNoDeliveryMan"
           DOES_NOT_MEET_REQUESTED_TIMES: "#/components/schemas/DeliveryEventDeniedEta"
           REGION_NOT_SERVED: "#/components/schemas/DeliveryEventDenied"
           INVALID_ADDRESS: "#/components/schemas/DeliveryEventDenied"
@@ -5610,7 +5684,7 @@ components:
           enum:
             - "PRICE_EXCEEDED"
             - "VEHICLE_NOT_AVAILABLE"
-            - "NO_DELIVERYMAN_AVAILABLE"
+            - "NO_DELIVERYPERSON_AVAILABLE"
             - "DOES_NOT_MEET_REQUESTED_TIMES"
             - "REGION_NOT_SERVED"
             - "OTHER"
@@ -5656,11 +5730,11 @@ components:
         - properties:
             metadata:
               type: object
-              description: "Information about delivery man availability."
+              description: "Information about delivery person availability."
               properties:
                 nextAvailableVehicle:
                   type: integer
-                  description: "Informs how soon the next delivery man will be available in **minutes**."
+                  description: "Informs how soon the next delivery person will be available in **minutes**."
 
     DeliveryEventDeniedEta:
       description: Metadata
@@ -5683,7 +5757,7 @@ components:
           type: string
           description: "Problem reason."
           enum:
-            - DELIVERY_MAN_OCCURRENCE
+            - DELIVERYPERSON_OCCURRENCE
             - PAYMENT_PROBLEMS
             - WRONG_PRODUCT_OR_ITEM
             - ORDER_DELAYED
@@ -5692,7 +5766,7 @@ components:
             - CUSTOMER_ADDRESS_UNKNOWN
             - ORDER_MISSING_ITEMS
             - NOBODY_TO_RECEIVE
-            - DELIVERY_MAN_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
+            - DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
             - ORDER_DELIVERED_WITHOUT_PAYMENT
             - FRAUD_OR_THEFT
             - OTHER
@@ -5719,7 +5793,7 @@ components:
           type: string
           description: "Problem reason."
           enum:
-            - DELIVERY_MAN_OCCURRENCE
+            - DELIVERYPERSON_OCCURRENCE
             - PAYMENT_PROBLEMS
             - WRONG_PRODUCT_OR_ITEM
             - ORDER_DELAYED
@@ -5728,7 +5802,7 @@ components:
             - CUSTOMER_ADDRESS_UNKNOWN
             - ORDER_MISSING_ITEMS
             - NOBODY_TO_RECEIVE
-            - DELIVERY_MAN_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
+            - DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
             - ORDER_DELIVERED_WITHOUT_PAYMENT
             - FRAUD_OR_THEFT
             - OTHER
@@ -5854,7 +5928,7 @@ components:
                   description: "Instructions"
         returnToMerchant:
           type: boolean
-          description: "Inform whether the delivery man should return to the pickup address after the delivery has been made."
+          description: "Inform whether the delivery person should return to the pickup address after the delivery has been made."
         canCombine:
           type: boolean
           description: "Inform whether the **`Logistic Service`** can combine this order with other orders in the same delivery."
@@ -5953,11 +6027,12 @@ components:
       type: object
       required:
         [
+          updateMethod,
           pickupEtaInMinutes,
           pickupEtaDatetime,
           deliveryEtaInMinutes,
           deliveryEtaDatetime,
-          maxDeliveryTime,
+          maxDeliveryTime
         ]
       properties:
         updateMethod:
@@ -5973,41 +6048,48 @@ components:
             - ONLINE
         pickupEtaInMinutes:
           type: integer
-          description: "Pickup Eta in **minutes**. Informs how many minutes it will take the delivery man to arrive at the merchant for order pickup."
+          description: "Pickup Eta in **minutes**. Informs how many minutes it will take the delivery person to arrive at the merchant for order pickup."
         pickupEtaDatetime:
           type: string
           format: date-time
-          description: "Pickup Eta Datetime. Informs the date and time the delivery man is expected to arrive at the merchant for order pickup. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Pickup Eta Datetime. Informs the date and time the delivery person is expected to arrive at the merchant for order pickup. \n\n(UTC date-time in ISO timestamp format)."
         deliveryEtaInMinutes:
           type: integer
-          description: "Delivery Eta in **minutes**. Informs how many minutes it will take the delivery man to arrive at the consumer's address for order delivery."
+          description: "Delivery Eta in **minutes**. Informs how many minutes it will take the delivery person to arrive at the consumer's address for order delivery."
         deliveryEtaDatetime:
           type: string
           format: date-time
-          description: "Delivery Eta Datetime. Informs the date and time the delivery man is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
+        returnToMerchantEtaInMinutes:
+          type: integer
+          description: "Delivery Person return to merchant Eta in **minutes**. Informs how many minutes it will take the delivery person to return to the merchant. Only valid when `returnToMerchant` is `true`."        
+        returnToMerchantEtaDatetime:
+          type: string
+          format: date-time
+          description: "Delivery Person return to merchant Eta Datetime. Informs the date and time the delivery person will arrive at the returning merchant. Only valid when `returnToMerchant` is `true`. \n\n(UTC date-time in ISO timestamp format)."
         maxDeliveryTime:
           type: string
           format: date-time
           description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
 
     DeliveryMan:
-      description: Delivery Man
+      description: Delivery Person
       type: object
       required: [id, name]
       properties:
         id:
           type: string
-          description: "Delivery Man Id generated at the `Logistics Service`."
+          description: "Delivery Person Id generated at the `Logistics Service`."
         name:
           type: string
-          description: "Delivery Man Name."
+          description: "Delivery Person Name."
         pictureURL:
           type: string
           format: "URI"
-          description: "URL to access the photo of the delivery man. Before entering this field, check that the parties allow data to be shared according to data disclosure laws and rules."
+          description: "URL to access the photo of the delivery person. Before entering this field, check that the parties allow data to be shared according to data disclosure laws and rules."
         phone:
           type: string
-          description: "Delivery Man Phone. Before entering this field, check that the parties allow data to be shared according to data disclosure laws and rules."
+          description: "Delivery Person Phone. Before entering this field, check that the parties allow data to be shared according to data disclosure laws and rules."
 
     GeoLocalization:
       description: Delivery Event
@@ -6018,15 +6100,15 @@ components:
         latitude:
           type: "number"
           format: "float"
-          description: "Indicates the latitude coordinate of the actual position of the delivery man.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Indicates the latitude coordinate of the actual position of the delivery person.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
           example: -23.54809
         longitude:
           type: "number"
           format: "float"
-          description: "Indicates the longitude coordinate of the actual position of the delivery man.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Indicates the longitude coordinate of the actual position of the delivery person.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
           example: -46.63638
         lastAddress:
-          description: The last known address that the delivery man was when the event was sent.
+          description: The last known address that the delivery person was when the event was sent.
           type: object
           required: [id, orderId, orderDisplayId]
           properties:
@@ -6085,7 +6167,7 @@ components:
             - OTHER
         action:
           type: string
-          description: "Action to be taken by the delivery man, after the cancellation."
+          description: "Action to be taken by the delivery person, after the cancellation."
           enum:
             - RETURN_TO_STORE
             - CANCEL_DELIVERY
@@ -6110,7 +6192,7 @@ components:
           type: string
           description: "Problem Reason."
           enum:
-            - DELIVERY_MAN_OCCURRENCE
+            - DELIVERYPERSON_OCCURRENCE
             - PAYMENT_PROBLEMS
             - WRONG_PRODUCT_OR_ITEM
             - ORDER_DELAYED
@@ -6119,13 +6201,13 @@ components:
             - CUSTOMER_ADDRESS_UNKNOWN
             - ORDER_MISSING_ITEMS
             - NOBODY_TO_RECEIVE
-            - DELIVERY_MAN_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
+            - DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
             - ORDER_DELIVERED_WITHOUT_PAYMENT
             - FRAUD_OR_THEFT
             - OTHER
         action:
           type: string
-          description: "The action that the delivery man should take to solve this problem."
+          description: "The action that the delivery person should take to solve this problem."
           enum:
             - RETURN_TO_STORE
             - DELIVER_PRODUCT
@@ -6172,10 +6254,7 @@ components:
           orderDisplayId,
           merchant,
           customerName,
-          events,
-          vehicle,
-          deliveryPrice,
-          times,
+          events
         ]
       properties:
         deliveryId:
@@ -6217,24 +6296,30 @@ components:
             allOf:
               - $ref: "#/components/schemas/DeliveryProblemHistory"
         vehicle:
-          description: "Chosen Vehicle Info."
+          description: |- 
+            Chosen Vehicle Info. 
+            > This propertie is **REQUIRED** when current `event > type` is different from `PENDING`, `REJECTED` and `CANCELLED`
           allOf:
             - $ref: "#/components/schemas/ChosenVehicle"
         deliveryPrice:
-          description: "Delivery Pricing Info."
+          description: |- 
+            Delivery Pricing Info.
+            > This propertie is **REQUIRED** when current `event > type` is different from `PENDING`, `REJECTED` and `CANCELLED`
           allOf:
             - $ref: "#/components/schemas/DeliveryPrice"
         times:
-          description: "ETA Times."
+          description: |- 
+            Estimate Times of Pickup and Delivery. 
+            > This propertie is **REQUIRED** when current `event > type` is different from `PENDING`, `REJECTED` and `CANCELLED` 
           allOf:
             - $ref: "#/components/schemas/DeliveryTimes"
-        deliveryMan:
-          description: "Delivery Man Info."
+        deliveryPerson:
+          description: "Delivery person Info."
           allOf:
             - $ref: "#/components/schemas/DeliveryMan"
         combinedOrdersIds:
           type: "array"
-          description: "Combined Orders Ids. Informs which other orders from the same merchant are being carried by the same delivery man, with the same `deliveryId`."
+          description: "Combined Orders Ids. Informs which other orders from the same merchant are being carried by the same delivery person, with the same `deliveryId`."
           items:
             type: string
             format: UUID
@@ -6251,7 +6336,7 @@ components:
         deliveryEtaDate:
           type: string
           format: date-time
-          description: "Delivery Eta Datetime. Informs the date and time the delivery man is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
         maxDeliveryTime:
           type: string
           format: date-time
