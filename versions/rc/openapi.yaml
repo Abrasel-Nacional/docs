@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: "v1.1.0-rc.5"
+  version: "v1.1.0-rc.6"
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -48,7 +48,21 @@ info:
     # └► Changelog
       
       Latest Changes:
-      
+
+      ### Version [v1.1.0-rc.6] - Dec 26, 2022
+
+      #### MERCHANT changes
+
+      - added new optional propertie `acceptedCards` in the `basicInfo` entity of endpoint [GET /v1/merchant](#operation/getMerchant).
+
+        This field is intended to indicate which card brands are accepted by the merchant.
+
+      - added an enumerator to propertie `unit` in the `items` entity of endpoint [GET /v1/merchant](#operation/getMerchant).
+
+      #### ORDERS changes
+
+      - added more options to the enumerator of propertie `unit` in the `items` entity of endpoint [GET /v1/orders/{orderId}](#operation/ordersDetails), reflecting the created enum described above.
+
       ### Version [v1.1.0-rc.5] - Oct 31, 2022
 
       #### ORDERS changes
@@ -2300,7 +2314,36 @@ components:
           type: "string"
           format: date-time
           description: "Merchant creation date and time. \n\n(UTC date-time in ISO timestamp format)."
-
+        acceptedCards:
+          type: array
+          description: "Indicates which card brands are accepted by the merchant."
+          items:
+            type: string
+            enum:
+              - "VISA"
+              - "MASTERCARD"
+              - "DINERS"
+              - "AMEX"
+              - "HIPERCARD"
+              - "ELO"
+              - "AURA"
+              - "DISCOVER"
+              - "VR_BENEFICIOS"
+              - "SODEXO"
+              - "TICKET"
+              - "GOOD_CARD"
+              - "BANESCARD"
+              - "SOROCARD"
+              - "POLICARD"
+              - "VALECARD"
+              - "AGICARD"
+              - "JCB"
+              - "CREDSYSTEM"
+              - "CABAL"
+              - "GREEN_CARD"
+              - "VEROCHEQUE"
+              - "AVISTA"
+              - "OTHER"   
     ListMerchant:
       type: "array"
       title: "MerchantList"
@@ -2675,8 +2718,25 @@ components:
           example: 2
         unit:
           type: "string"
-          description: "Measure Unit of the Item"
-          example: "kg"
+          description: | 
+            Item's Unit of Measurement.
+
+            Possible values:  
+            - `UN` - Unit  
+            - `KG` - Kilogram  
+            - `L` - Liter
+            - `OZ` - Ounce  
+            - `LB` - Pound  
+            - `GAL` - Gallon
+          enum:
+                  - "UN"
+                  - "KG"
+                  - "L"
+                  - "OZ"
+                  - "LB"
+                  - "GAL"    
+          example: "KG"
+
         ean:
           type: "string"
           description: "EAN (European Article Number)"
@@ -3359,16 +3419,38 @@ components:
                 description: "External product code."
               unit:
                 type: "string"
-                description: "Measure unit of the item."
+                description: | 
+                  Item's Unit of Measurement.
+
+                  Possible values:  
+                  - `UN` - Unit  
+                  - `KG` - Kilogram  
+                  - `L` - Liter  
+                  - `OZ` - Ounce  
+                  - `LB` - Pound  
+                  - `GAL` - Gallon  
+
+                  > Use fractional values for quantities smaller than the unit of measure:
+                  > Example: 500 grams = 0.5 KG
                 enum:
-                  - "UNIT"
+                  - "UN"
+                  - "KG"
+                  - "L"
+                  - "OZ"
+                  - "LB"
+                  - "GAL"
+                example: "KG"
               ean:
                 type: "string"
                 description: "EAN is the barcode standard used on items."
               quantity:
                 type: "number"
                 format: "decimal"
-                description: "Amount of items."
+                description: |-
+                 Amount of items.
+
+                  > Use fractional values for quantities smaller than the unit of measure:
+                  > Example: 500 grams = 0.5 KG
               specialInstructions:
                 type: "string"
                 description: "Special instructions about the items."
