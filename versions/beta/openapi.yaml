@@ -31,13 +31,11 @@ info:
 
     **[General and Common Information](#section/-GENERAL-INFO-)**    
     This is information that is valid for all versions that exist so far.
-      - **[How to Start](#section/How-to-Start-(Setup-Guide))**
       - **[Open Delivery API Evolution](#section/Open-Delivery-API-Evolution)**
       - **[General Guidelines](#section/General-Guidelines)**
       - **[Error Handling](#section/Error-Handling)**
 
     **API Reference**: 
-      - **[Logistics](#tag/logisticsSection)**
       - **[Reconciliation](#tag/financialReportSection)**
       - **[Contracts](#tag/contractSection)**      
 
@@ -46,6 +44,12 @@ info:
     # └► Changelog
 
       Latest Changes:  
+
+      ### Version [BETA] - Jan 23, 2023
+
+      - **LOGISTICS endpoints changes**
+      
+      - The LOGISTICS standard is no longer BETA, and is now versioned together with the RELEASE version. As a result, information regarding the LOGISTICS standard will be removed from this documentation.
 
       ### Version [BETA] - Dec 26, 2022
 
@@ -259,144 +263,6 @@ info:
 
     # 
     # ► ------- GENERAL INFO -------- ◄
-
-    # └► How to Start (Setup Guide)
-
-    The Open Delivery API proposes the implementation of a single communication standard between the various parts that make up the delivery environment. This documentation contains all the definitions needed for interested systems and platforms to implement it.
-
-    Open Delivery does not have a server or baseURL. It is up to each company that implements the standard to use its infrastructure to host the endpoints.
-
-    This section seeks to summarize the Open Delivery documentation as a whole, helping the different parts of the integrations to understand what needs to be developed and parameterized. 
-
-    First, it is recommended to read all the documentation to understand the different processes and flows of the integrations. 
-
-    After reading and understanding the documentation as a whole, companies interested in implementing the standard in their platforms and systems can use this guide to assist in the implementation.
-
-    ## Parties Involved
-
-    - **ORDERING APPLICATION**: It is the platform where the final consumer will choose his items and place the order. It is responsible for reading the merchant data exposed by the SOFTWARE SERVICE and sending the orders to the SOFTWARE SERVICE as well.
-              
-    - **SOFTWARE SERVICE**: It is the merchant management platform. It is responsible for exposing the merchant data (registration data, service data, and menus) and receiving the orders from the ORDERING APPLICATION.
-
-      > There may also be applications that will perform a hub function, connecting the ORDERING APPLICATION to the SOFTWARE SERVICE. In this context, these intermediate applications, can play the role of both the ORDERING APPLICATION (when communicating with a SOFTWARE SERVICE) as well as the SOFTWARE SERVICE (when communicating with the ORDERING APPLICATION).
-
-    - **LOGISTIC SERVICE**: It is the platform responsible for receiving calls for new deliveries from SOFTWARE SERVICE or ORDERING APPLICATION, and sending the tracking of the deliveries.
-
-    ## Development
-
-    Since Open Delivery is not the host of the APIs, it is up to the companies interested in using the standard to develop the Open Delivery standard APIs in their systems and platforms using this documentation as a guideline. 
-
-    Listed below are the different routes offered by the Open Delivery standard and which party is responsible for being the host of it.
-    
-    | |ORDERING APPLICATION|SOFTWARE SERVICE|LOGISTIC SERVICE|
-    |-|:------------------:|:--------------:|:--------------:|
-    |**[AUTHENTICATION](#tag/authentication)**|||||
-    |[POST /oauth/token](#operation/getToken)|X||X|
-    |--------------------------------||||
-    |**[LOGISTICS](#tag/logisticsSection)**|||||
-    |[POST /v1/logistics/delivery](#operation/logisticsNewDelivery)|||X|
-    |[POST /v1/logistics/orderPicked/{orderId}](#operation/logisticsPicked)|||X|
-    |[POST /v1/logistics/finishDelivery/{orderId}](#operation/logisticsFinish)|||X|
-    |[POST /v1/logistics/handleProblem/{orderId}](#operation/logisticsProblem)|||X|
-    |[POST /v1/logistics/cancel/{orderId}](#operation/logisticsCancel)|||X|
-    |[GET /v1/logistics/delivery/{orderId}](#operation/logisticDetails)|||X|
-    |[POST /v1/logistics/availability](#tag/logisticPrice)|||X|
-    |[POST /v1/deliveryUpdate](#operation/newLogisticEvent) |X|X||
-    |--------------------------------||||
-    |**[FINANCIAL RECONCILIATION](#tag/financialReportSection)**|||||
-    |[GET /v1/paymentBatchByIds](#operation/paymentBatchId)|X|||
-    |[GET /v1/paymentBatchByDate](#operation/paymentBatchDate)|X|||
-    |--------------------------------||||
-    |**[CONTRACTS](#tag/contractSection)**|||||
-    |**[Contract Summary](#tag/contractSummaryOverview)**|||||
-    |[GET /v1/contractSummary](#operation/getContractSummary)|X|||
-    |**[Sign-Up Service](#tag/contractSignupOverview)**|||||
-    |[POST /v1/signup/contractConditions](#operation/postContractConditions)|X|||
-    |[POST /v1/signup/chosenConditions](#operation/postContractChosenConditions)|X|||
-    |[GET /v1/signup/contractStatus](#operation/getContractStatus)|X|||
-    |[PUT /v1/signup/merchantAccount](#operation/putMerchantAccount)|X|||
-
-     ## Parametrizations
-
-      > **IMPORTANT: Before reading this section, it is recommended the reading of the complete documentation, for a better understanding of the different required parameterizations.**
-
-      Once the endpoints are implemented, the parties interested in integrating via the Open Delivery stantard should provide some parameters for the other party to correctly connect to its routes. 
-
-      Below is a list of information that each party must provide to the other party for the integrations to occur, i.e., you should consider that the information below will be created as parameters on the endpoint that will call the endpoints.
-
-      - **PARAMETERS IN THE SOFTWARE SERVICE   
-      (ORDERING APPLICATION --> SOFTWARE SERVICE)**
-
-        - **{baseURL}** : The {baseURL} is the parameter that indicates the base address, i.e. the constant part of the address, where the routes will be called. The **Ordering Application** can provide up to 2 different base URLs:
-          - {baseURL} for authentication: where the token route will be hosted.
-          - {baseURL} for the other routes.
-
-          The **Ordering Application** can use only one {baseURL} if it wishes.
-        
-        - **clientId** and **clientSecret**: The **Ordering Application** is responsible for providing the credentials for authentication to be performed through the authentication endpoint. 
-        
-            > IMPORTANT: As described in the authentication section of the documentation, credentials must be generated BY MERCHANT and not by **Software Service**, that is, even if several MERCHANTS use the same **Software Service**, each of the MERCHANT will have a unique clientId and clientSecret.
-
-        - **AppId**: It is the unique ID of the **Ordering Application**. It must be generated by the **Ordering Application** itself, and once generated, it must be informed to all the **Software Service**S that it will integrate. Since the **AppId** is a unique key of the **Ordering Application**, you must not create oneAppId** per **Software Service**S, but the same key for all of them.
-      > The companies that play the role of hub, intermediating the integrations between the **Ordering Application** and the **Software Service**, must also generate their own **AppId**, different from the **Ordering Application**'s AppId.
-
-      - **PARAMETERS IN ORDERING APPLICATION  
-      (SOFTWARE SERVICE --> ORDERING APPLICATION)**
-
-        - **{baseURL} from the `GET /merchant` endpoint:** The **Ordering Application** must be provided with the {baseURL} to access the GET /merchant route to obtain the merchant's information. 
-
-          > IMPORTANT: Each merchant that the **Software Service** works with must have a unique {baseURL}.
-        - **apiKey**: If the GET /merchant endpoint is implemented using authentication, it is necessary that the **Software Service** provides the apiKey referring to the entered merchant.
-        
-        - **Order Event Webhook**: If both parties are going to work with sending order events via webhook, it is necessary to provide the URL of the webhook.   
-          Default webhook route:  
-
-          `POST {baseURL}/newEvent`
-
-      - **PARAMETERS IN THE SOFTWARE SERVICE/ORDERING APPLICATION  
-      (LOGISTIC SERVICE --> SOFTWARE SERVICE/ORDERING APPLICATION)**
-
-      - **{baseURL}** : The {baseURL} is the parameter that indicates which is the base address, i.e. the constant part of the address, where the routes will be called. The **Logistic Service** can provide up to 2 different base URLs:
-          - {baseURL} for authentication: where the token route will be hosted.
-          - {baseURL} for the other routes.
-
-          The **Logistic Service** will be able to use only one {baseURL} if it wishes.
-        
-        - **clientId** and **clientSecret**: The **Logistic Service** is responsible for providing the credentials for authentication to be performed through the authentication endpoint. 
-        
-            > IMPORTANT: As described in the authentication section of the documentation, the credentials must be generated BY MERCHANT and not by **Software Service**/**Ordering Application**, that is, even if several MERCHANTS use the same **Software Service**/**Ordering Application**, each of the MERCHANT will have a unique clientId and clientSecret.
-
-        - **AppId**: It is a unique identification of the **Logistic Service**. It must be generated by the **Logistic Service** itself and once generated, it must be informed to all the **Software Service**S/**Ordering Application** to which it will integrate. As the **AppId** is a unique key of the **Logistic Service**, it must not be created an **AppId** per **Software Service**S/**Ordering Application**, but the same key must be informed for all.
-
-      - **PARAMETERS IN THE LOGISTIC SERVICE  
-      (SOFTWARE SERVICE/ORDERING APPLICATION --> LOGISTIC SERVICE)**
-
-        - **Tracking Event Webhook**: It is necessary to inform the URL of the webhook to receive the tracking and event updates of the delivery order.   
-        Default webhook route:  
-        `POST {baseURL}/deliveryEvent`
-
-        - **MerchantId**: It is a unique ID of the MERCHANT. Similar to the **AppId** but for Merchant. It must be generated by **Software Service**S and once generated, it must be informed to all **Logistic Services** it will integrate with. Since the **MerchantId** is a unique key, a **MerchantId** must not be created per **Logistic Service**, but the same key must be informed for all. 
-        The **Ordering Application** must send the **MerchantId** received previously through its integration with the **Software Service**.
-        
-    # └► Open Delivery API Evolution
-
-     The **Open Delivery** API seeks to respect [SemVer](https://semver.org/). In this sense, compatible changes should not generate a new major version.
-
-     The API version is composed of 4 elements: major, minor, patch and release candidate. The version v[x] in the URL path is the major element of the API version. The evolution of the version is as follows:
-
-     - **Major**: incompatible, contract-breaking changes (v1.0.0 → v2.0.0)
-     - **Minor**: compatible, non-breaking changes (v1.1.0 → v1.2.0)
-     - **Patch**: bugfixes, clarifications to specifications, no functional changes (v1.1.1 → v1.1.2)
-     - **Release candidate**: pre-release versions of any future patch, minor or major (v1.0.0-rc.1 → v1.0.0-rc.22)
-     Non-breaking changes and clarifications to specifications may occur at any time. Customers should be prepared to handle these changes without breaking.
-
-     The following changes are expected and considered backward compatible:
-
-     - Addition of new features to the **Open Delivery** API;
-     - Addition of new optional parameters;
-     - Addition of new fields in **Open Delivery** API responses;
-     - Change of fields sorting;
-     - Addition of new elements in enumerations.
 
     # └► General Guidelines
 
@@ -1133,140 +999,140 @@ tags:
 
   # Logistics Tags
 
-  - name: logisticsSection
-    x-displayName: └─■ LOGISTICS
-    x-traitTag: true
-    description: |-
-      This section covers the API referring to the operations with `**Logistic Services**`. 
+  # - name: logisticsSection
+  #   x-displayName: └─■ LOGISTICS
+  #   x-traitTag: true
+  #   description: |-
+  #     This section covers the API referring to the operations with `**Logistic Services**`. 
 
-      > The information below are still in release candidate (BETA) and will be tested in the coming months.
+  #     > The information below are still in release candidate (BETA) and will be tested in the coming months.
 
-  - name: logisticOverview
-    x-displayName: └───● Logistic Overview
-    description: |-
-      Open Delivery provides a set of standards so that both merchants through their **Software Services** and **Ordering Applications** can request a new delivery to a logistics operator and track this delivery.
+  # - name: logisticOverview
+  #   x-displayName: └───● Logistic Overview
+  #   description: |-
+  #     Open Delivery provides a set of standards so that both merchants through their **Software Services** and **Ordering Applications** can request a new delivery to a logistics operator and track this delivery.
 
-      ## Logistics API Usage
+  #     ## Logistics API Usage
 
-      Open Delivery's Logistic API aims to standardize the communication between a **requester** - which can be either a **Software Service** or an **Ordering Application** - and a company's software that provides **Logistic Services** (called here **Logistic Service**).  
+  #     Open Delivery's Logistic API aims to standardize the communication between a **requester** - which can be either a **Software Service** or an **Ordering Application** - and a company's software that provides **Logistic Services** (called here **Logistic Service**).  
 
-      > A **Logistic Service** can be either a company that specializes in delivery services or an **Ordering Application** that also provides delivery services. 
+  #     > A **Logistic Service** can be either a company that specializes in delivery services or an **Ordering Application** that also provides delivery services. 
 
-      > The Open Delivery logistics API only handles communications between the merchant software (or **Ordering Application**) and the software of the logistics operator. Communications and interfaces with the deliverers at the end are not covered in this documentation, leaving it up to the logistics companies to perform this interaction.
+  #     > The Open Delivery logistics API only handles communications between the merchant software (or **Ordering Application**) and the software of the logistics operator. Communications and interfaces with the deliverers at the end are not covered in this documentation, leaving it up to the logistics companies to perform this interaction.
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/logisticsFlow.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/logisticsFlow.png" />
+  #     </div>
 
-      The endpoints provided here, cover the following functionalities:
+  #     The endpoints provided here, cover the following functionalities:
 
-      ### Delivery Order
+  #     ### Delivery Order
 
-      It covers the calling of a new delivery, as well as auxiliary endpoints for reporting the pickup of an order, the completion of the delivery, as well as problem handling and cancellations.
+  #     It covers the calling of a new delivery, as well as auxiliary endpoints for reporting the pickup of an order, the completion of the delivery, as well as problem handling and cancellations.
 
-      ### Delivery Tracking
-      Webhook to be available at the **requester's** side of the call, in order to receive all order event updates, as well as delivery information updates.
+  #     ### Delivery Tracking
+  #     Webhook to be available at the **requester's** side of the call, in order to receive all order event updates, as well as delivery information updates.
 
-      ### Delivery Availability and Price
+  #     ### Delivery Availability and Price
 
-      Endpoint with the function of simulating a new delivery, with the purpose of checking if it is possible to make the delivery as well as its prices and times. "
+  #     Endpoint with the function of simulating a new delivery, with the purpose of checking if it is possible to make the delivery as well as its prices and times. "
 
-  - name: logisticOrder
-    x-displayName: └───● Delivery Order
-    description: |-
+  # - name: logisticOrder
+  #   x-displayName: └───● Delivery Order
+  #   description: |-
 
-      ### Events
+  #     ### Events
 
-      This overview summarizes the **Open Delivery** delivery ordering flow and how it interacts with the requester (merchant **Software Services** or **Ordering Applications**) and the **Logistic Services**.
+  #     This overview summarizes the **Open Delivery** delivery ordering flow and how it interacts with the requester (merchant **Software Services** or **Ordering Applications**) and the **Logistic Services**.
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/logisticsOrderFlow.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/logisticsOrderFlow.png" />
+  #     </div>
 
-      > The `PICKUP_ONGOING`, `DELIVERY_ONGOING` and `RETURNING_TO_MERCHANT` events are events that occur while the delivery person is on the move, so these events can be sent repeatedly in order to update the delivery person's location. The interval at which these events are sent is defined by each **Logistic Service**. 
+  #     > The `PICKUP_ONGOING`, `DELIVERY_ONGOING` and `RETURNING_TO_MERCHANT` events are events that occur while the delivery person is on the move, so these events can be sent repeatedly in order to update the delivery person's location. The interval at which these events are sent is defined by each **Logistic Service**. 
 
-      > It is important to emphasize that the entire event flow is per Order and even though a delivery may have combined orders (see section below), for all operations in the flow, the id to be used is the `orderId` (initially informed by the requester at the /logistics/delivery endpoint). 
+  #     > It is important to emphasize that the entire event flow is per Order and even though a delivery may have combined orders (see section below), for all operations in the flow, the id to be used is the `orderId` (initially informed by the requester at the /logistics/delivery endpoint). 
 
-       ### Combining Orders
+  #      ### Combining Orders
 
-      The Open Delivery logistics API offers the option of combining more than one order into a single delivery.  
-      This can be done on both the **Software Service** (or **Ordering Application**) and the **Logistic Service** sides.
+  #     The Open Delivery logistics API offers the option of combining more than one order into a single delivery.  
+  #     This can be done on both the **Software Service** (or **Ordering Application**) and the **Logistic Service** sides.
 
-      To combine orders its necessary that at least one delivery is currently in progress.
-      When requesting for a new delivery, you need to inform the `deliveryId` field of the ongoing delivery in the `combinedDeliveryId` field of the new request.
+  #     To combine orders its necessary that at least one delivery is currently in progress.
+  #     When requesting for a new delivery, you need to inform the `deliveryId` field of the ongoing delivery in the `combinedDeliveryId` field of the new request.
 
-      <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/logisticsCombined.png" />
-      </div>
+  #     <div align="center">
+  #       <img src="https://abrasel-nacional.github.io/docs/images/logisticsCombined.png" />
+  #     </div>
 
-      > This combination will be subject to acceptance by the **Logistic Service**. 
+  #     > This combination will be subject to acceptance by the **Logistic Service**. 
 
-      The **Logistic Service** may also perform order combination in its software, using its algorithms and processes (provided that the `canCombine` field is entered as `TRUE` in the delivery request). 
-      > For this combination no action is required from the **requester**.
+  #     The **Logistic Service** may also perform order combination in its software, using its algorithms and processes (provided that the `canCombine` field is entered as `TRUE` in the delivery request). 
+  #     > For this combination no action is required from the **requester**.
 
-      Regardless of the case, the **Logistic Service** must inform in the event webhook the combined orders of the same merchant, through the `combinedOrdersIds` field.
+  #     Regardless of the case, the **Logistic Service** must inform in the event webhook the combined orders of the same merchant, through the `combinedOrdersIds` field.
 
 
-      > Since all event flow is per Order, then in the case of deliveries that have combined orders, an event message must be sent to each of the orders separately. 
+  #     > Since all event flow is per Order, then in the case of deliveries that have combined orders, an event message must be sent to each of the orders separately. 
 
-      ### Order Rejection and retries for the same order
+  #     ### Order Rejection and retries for the same order
 
-      If a new delivery order is rejected by the **Logistic Service**, regardless of the reason, the **Software Service** / **Ordering Application** can make a new attempt for the same order (same `orderId` and same `orderDisplayId`). The **Logistic Service** must receive this retry only if the last sent event for this order was the `REJECTED` event. If any other event has already been sent, then the **Logistic Service** will return a duplicate orderId error.
+  #     If a new delivery order is rejected by the **Logistic Service**, regardless of the reason, the **Software Service** / **Ordering Application** can make a new attempt for the same order (same `orderId` and same `orderDisplayId`). The **Logistic Service** must receive this retry only if the last sent event for this order was the `REJECTED` event. If any other event has already been sent, then the **Logistic Service** will return a duplicate orderId error.
 
-      > The number of retries possible for the same order is defined by each **Logistic Service**.
+  #     > The number of retries possible for the same order is defined by each **Logistic Service**.
 
-  - name: logisticTracking
-    x-displayName: └───● Delivery Tracking
-    description: |-
-      Receiving delivery events via Webhook works as follows:
+  # - name: logisticTracking
+  #   x-displayName: └───● Delivery Tracking
+  #   description: |-
+  #     Receiving delivery events via Webhook works as follows:
 
-       <div align="center">
-         <img src="https://abrasel-nacional.github.io/docs/images/delivery_webhook.png" />
-       </div>
+  #      <div align="center">
+  #        <img src="https://abrasel-nacional.github.io/docs/images/delivery_webhook.png" />
+  #      </div>
 
-       ### Delivery Order Event Notification
-       Webhook is sent to notify the merchant **Software Service** (or the **Ordering Application**) that an new order event has happened on the **Logistic Service**.
+  #      ### Delivery Order Event Notification
+  #      Webhook is sent to notify the merchant **Software Service** (or the **Ordering Application**) that an new order event has happened on the **Logistic Service**.
 
-       The host that implements this webhook, should return an HTTP `200` response code with an empty response body to acknowledge receipt of the webhook event. 
-       If the **Logistic Service** does not receive a `200` acknowledgement response, than the webhook event will be resent based on the **Logistic Service** policies.
+  #      The host that implements this webhook, should return an HTTP `200` response code with an empty response body to acknowledge receipt of the webhook event. 
+  #      If the **Logistic Service** does not receive a `200` acknowledgement response, than the webhook event will be resent based on the **Logistic Service** policies.
 
-       ### Webhook Headers
-       **Open Delivery** will include security headers for all requests made to the merchant **Software Service** webhook URL.
+  #      ### Webhook Headers
+  #      **Open Delivery** will include security headers for all requests made to the merchant **Software Service** webhook URL.
 
-       **Header Description**
+  #      **Header Description**
 
-       | Header            | Description |
-       | ----------------- | ----------- |
-       | X-App-Id          | An Unique Identificator of the **Logistic Service** |
-       | X-App-MerchantId  | An Unique Identificator of the **Merchant** receiving the order event |      
-       | X-App-Signature   | SHA256 hash of the request body, using the client secret as the key |
+  #      | Header            | Description |
+  #      | ----------------- | ----------- |
+  #      | X-App-Id          | An Unique Identificator of the **Logistic Service** |
+  #      | X-App-MerchantId  | An Unique Identificator of the **Merchant** receiving the order event |      
+  #      | X-App-Signature   | SHA256 hash of the request body, using the client secret as the key |
 
          
-       **Webhook Security** 
+  #      **Webhook Security** 
 
-       Webhook messages are signed so that the merchant **Software Service** (or the **Ordering Application**) can verify that the sender is a valid **Logistic Service**. 
-       Webhooks requests contain an X-App-Signature header. 
-       The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.
+  #      Webhook messages are signed so that the merchant **Software Service** (or the **Ordering Application**) can verify that the sender is a valid **Logistic Service**. 
+  #      Webhooks requests contain an X-App-Signature header. 
+  #      The value of this field is a lowercased hexadecimal HMAC signature of the webhook HTTP request body, using the client secret as a key and SHA256 as the hash function.
 
-  - name: logisticPrice
-    x-displayName: └───● Delivery Availability and Pricing
-    description: |-
+  # - name: logisticPrice
+  #   x-displayName: └───● Delivery Availability and Pricing
+  #   description: |-
 
-      Endpoint used to check the availability of a **`Logistic Service`** to make a delivery with addresses and times already defined, as well as to obtain the price for this delivery.
+  #     Endpoint used to check the availability of a **`Logistic Service`** to make a delivery with addresses and times already defined, as well as to obtain the price for this delivery.
 
-      This endpoint only simulates the acceptance of a new delivery request, using the information available at the time of the call. 
+  #     This endpoint only simulates the acceptance of a new delivery request, using the information available at the time of the call. 
 
-      > The call to this endpoint does not generate any commitment to **Logistic Service** and should only be used as an estimate of the delivery values.  
-        To make a real delivery request, call this endpoint.
+  #     > The call to this endpoint does not generate any commitment to **Logistic Service** and should only be used as an estimate of the delivery values.  
+  #       To make a real delivery request, call this endpoint.
 
-  - name: logisticDetails
-    x-displayName: └───● Delivery Details and History
-    description: |-
+  # - name: logisticDetails
+  #   x-displayName: └───● Delivery Details and History
+  #   description: |-
 
-      Endpoint used to get detailed and history information for a specific delivery order. 
+  #     Endpoint used to get detailed and history information for a specific delivery order. 
 
-      > This endpoint should not be used as a way to get delivery tracking. This is already covered in the events webhook. The purpose of this route is to receive sporadic calls to get missing information or the complete history of events and problems.
-        Misuse of this endpoint can result in blockages by **Logistic Service**.
+  #     > This endpoint should not be used as a way to get delivery tracking. This is already covered in the events webhook. The purpose of this route is to receive sporadic calls to get missing information or the complete history of events and problems.
+  #       Misuse of this endpoint can result in blockages by **Logistic Service**.
 
   # Financial Report Tags
 
@@ -1402,22 +1268,22 @@ x-tagGroups:
   #   tags:
   #     - versionSection2
   #     - versionChangelog2
-  - name: "_______________________________________"
-    tags:
-      - logisticsSection
-  - name: └──◌ Logistics API
-    tags:
-      - logisticOverview
-      - logisticOrder
-      - logisticTracking
-      - logisticDetails
-      - logisticPrice
+  # - name: "_______________________________________"
+  #   tags:
+  #     - logisticsSection
+  # - name: └──◌ Logistics API
+  #   tags:
+  #     - logisticOverview
+  #     - logisticOrder
+  #     - logisticTracking
+  #     - logisticDetails
+  #     - logisticPrice
   - name: "_______________________________________"
     tags:
       - financialReportSection
   - name: "└──◌ FINANCIAL REPORTS"
     tags:
-      - - financialReport
+      - financialReport
   - name: "_______________________________________"
     tags:
       - contractSection
