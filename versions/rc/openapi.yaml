@@ -4345,6 +4345,11 @@ components:
         preparationTime:
           type: 'integer'
           description: 'Indicates an estimate of the preparation time (in minutes) for the order being confirmed.'
+        deliveryPersonInfo:
+          type: 'object'
+          description: 'Information about the person taht was assigned to deliver the order.'
+          allOf:
+            - $ref: '#/components/schemas/DeliveryPersonOrderConfirm'     
 
     RequestCancelled:
       type: 'object'
@@ -4516,6 +4521,17 @@ components:
                 clientId:
                   type: 'string'
                   description: 'The ID of the client system that generated the action that resulted in this event (to be used with application with multiple stations)'
+
+    DeliveryPersonOrderConfirm:
+      description: Delivery Person
+      type: object
+      properties:
+        id:
+          type: string
+          description: "Delivery Person Id given by the `Ordering Application`."
+        name:
+          type: string
+          description: "Delivery Person Name."
 
     #Common
 
