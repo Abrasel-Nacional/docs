@@ -245,14 +245,15 @@ info:
       Contains the standards already published:  
       **MERCHANT** | **ORDERS**
 
-      - **v1.0.1** - (Latest release)
+      - **v1.1.0** - (Latest release)
+      - [v1.0.1](https://abrasel-nacional.github.io/docs/versions/1.0.1/)
       - [v1.0.0](https://abrasel-nacional.github.io/docs/versions/1.0.0/)
 
 
     - **BETA**  
 
       Contains the standards still in tests:  
-      **LOGISTICS** | **FINANCIAL RECONCILIATION** | **CONTRACTS**
+      **FINANCIAL RECONCILIATION** | **CONTRACTS**
 
       - [BETA VERSION](https://abrasel-nacional.github.io/docs/versions/beta/)
 
