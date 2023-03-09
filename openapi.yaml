@@ -243,25 +243,21 @@ info:
     - **RELEASE**   
 
       Contains the standards already published:  
-      **MERCHANT** | **ORDERS**
+      **MERCHANT** | **ORDERS** | **LOGISTICS**
 
-      - **v1.1.0** - (Latest release)
+      - [1.2.0-rc.X (Release Candidate*)](https://abrasel-nacional.github.io/docs/versions/rc/)
+      - **v1.1.0 - (LATEST RELEASE)**
       - [v1.0.1](https://abrasel-nacional.github.io/docs/versions/1.0.1/)
       - [v1.0.0](https://abrasel-nacional.github.io/docs/versions/1.0.0/)
 
-
+    >  *Release Candidate versions contains the evolutions and improvements being discussed at the moment and that will be part of the release version in the future.
+    
     - **BETA**  
 
       Contains the standards still in tests:  
       **FINANCIAL RECONCILIATION** | **CONTRACTS**
 
       - [BETA VERSION](https://abrasel-nacional.github.io/docs/versions/beta/)
-
-    - **RELEASE CANDIDATE**
-
-      Contains evolutions and improvements of the standards already published and that will be part of the release version in the future.
-
-      - [RELEASE CANDIDATE VERSION](https://abrasel-nacional.github.io/docs/versions/rc/)
 
     # 
     # ► ------- GENERAL INFO -------- ◄
