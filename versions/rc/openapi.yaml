@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API (Release Candidate)
-  version: 'v1.1.1-rc.1'
+  version: 'v1.1.2-rc.2'
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -53,6 +53,9 @@ info:
       ### Version [v1.1.1-rc.1] - Feb 13, 2023
 
 
+      ### Version [v1.1.1-rc.1] - Feb 13, 2023
+
+
 
       ### Version [v1.1.1-rc.0] - Jan 23, 2023
 
@@ -88,25 +91,21 @@ info:
     - **RELEASE**   
 
       Contains the standards already published:  
-      **MERCHANT** | **ORDERS**
-
-      - [v1.1.0 - (Latest release)](https://abrasel-nacional.github.io/docs/)
+      **MERCHANT** | **ORDERS** | **LOGISTICS**
+      - **1.2.0-rc.X - RELEASE CANDIDATE\***
+      - [v1.1.0 - (Latest Release)](https://abrasel-nacional.github.io/docs/)
       - [v1.0.1](https://abrasel-nacional.github.io/docs/versions/1.0.1/)
       - [v1.0.0](https://abrasel-nacional.github.io/docs/versions/1.0.0/)
 
-
+    >  *Release Candidate versions contains the evolutions and improvements being discussed at the moment and that will be part of the release version in the future.
+    
     - **BETA**  
 
       Contains the standards still in tests:  
       **FINANCIAL RECONCILIATION** | **CONTRACTS**
 
       - [BETA VERSION](https://abrasel-nacional.github.io/docs/versions/beta/)
-
-    - **RELEASE CANDIDATE**
-
-      Contains evolutions and improvements of the standards already published and that will be part of the release version in the future.
-
-      - **[RELEASE CANDIDATE VERSION](https://abrasel-nacional.github.io/docs/versions/rc/)**
+ 
 
     # 
     # ► ------- GENERAL INFO -------- ◄
@@ -1564,6 +1563,11 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/Order/properties/id'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/OrderDispatched'            
       tags:
         - 'ordersStatus'
       operationId: 'dispatchOrder'
@@ -3762,8 +3766,7 @@ components:
           'merchant',
           'items',
           'total',
-          'payments',
-          'customer',
+          'payments'
         ]
       properties:
         id:
@@ -4157,7 +4160,7 @@ components:
         customer:
           type: 'object'
           required:
-            [id, 'phone', 'documentNumber', 'name', 'ordersCountOnMerchant']
+            [id, 'phone', 'name', 'ordersCountOnMerchant']
           description: 'Customer related information.'
           properties:
             id:
@@ -4313,16 +4316,22 @@ components:
                 - `DEFAULT`: Used for orders placed in the **Ordering Application** to be consumed inside the merchant without a specific location.
 
                 - `PLACE`: Used for orders placed in the **Ordering Application** to be consumed inside the merchant at a specific location already specified, such as a **table** or a **counter**.
+                
+                - `TAB`: Used for establishments that control orders via **tabs** or **control cards** (can be used in conjunction with the place field).
               enum:
                 - 'DEFAULT'
                 - 'PLACE'
+                - 'TAB'
             indoorDateTime:
               type: 'string'
               format: date-time
               description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
             place:
               type: 'string'
-              description: 'Place identifier (Required if mode is `PLACE`)'
+              description: 'The place identifier (Required if mode is `PLACE`)'
+            tab:
+              type: 'string'
+              description: 'The tab or control card identifier (Required if mode is `TAB`)'
         extraInfo:
           type: 'string'
           description: 'Extra information, if necessary.'
@@ -4344,12 +4353,7 @@ components:
           description: 'External order code, which can be used by merchant or marketplace.'
         preparationTime:
           type: 'integer'
-          description: 'Indicates an estimate of the preparation time (in minutes) for the order being confirmed.'
-        deliveryPersonInfo:
-          type: 'object'
-          description: 'Information about the person taht was assigned to deliver the order.'
-          allOf:
-            - $ref: '#/components/schemas/DeliveryPersonOrderConfirm'     
+          description: 'Indicates an estimate of the preparation time (in minutes) for the order being confirmed.'     
 
     RequestCancelled:
       type: 'object'
@@ -4522,16 +4526,103 @@ components:
                   type: 'string'
                   description: 'The ID of the client system that generated the action that resulted in this event (to be used with application with multiple stations)'
 
-    DeliveryPersonOrderConfirm:
+    OrderDispatched:
+      type: 'object'
+      title: 'Order Confirmed'
+      required: ['createdAt', 'orderExternalCode']
+      properties:     
+        deliveryTrackingInfo:
+          type: 'object'
+          description: 'Information about the person that was assigned to deliver the order.'
+          allOf:
+            - $ref: '#/components/schemas/DeliveryTrackingInfoDisptach'
+
+    DeliveryTrackingInfoDisptach:
       description: Delivery Person
       type: object
       properties:
-        id:
+        event:
+          description: "The delivery last known event."
           type: string
-          description: "Delivery Person Id given by the `Ordering Application`."
-        name:
+          enum:
+            - PENDING
+            - ACCEPTED
+            - REJECTED
+            - PICKUP_ONGOING
+            - ARRIVED_AT_MERCHANT
+            - ORDER_PICKED
+            - DELIVERY_ONGOING
+            - ARRIVED_AT_CUSTOMER
+            - ORDER_DELIVERED
+            - RETURNING_TO_MERCHANT
+            - RETURNED_TO_MERCHANT
+            - DELIVERY_FINISHED
+            - CANCELLED
+        problem:
           type: string
-          description: "Delivery Person Name."
+          description: "In the event of a delivery problem, it states the last known reason."
+          enum:
+            - DELIVERYPERSON_OCCURRENCE
+            - PAYMENT_PROBLEMS
+            - WRONG_PRODUCT_OR_ITEM
+            - ORDER_DELAYED
+            - ORDER_DAMAGED_OR_VIOLATED
+            - CUSTOMER_DID_NOT_PLACE_ORDER
+            - CUSTOMER_ADDRESS_UNKNOWN
+            - ORDER_MISSING_ITEMS
+            - NOBODY_TO_RECEIVE
+            - DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
+            - ORDER_DELIVERED_WITHOUT_PAYMENT
+            - FRAUD_OR_THEFT
+            - OTHER
+        vehicle:
+          type: string
+          description: "The vehicle that will be used for this delivery."
+          enum:
+            - "MOTORBIKE_BAG"
+            - "MOTORBIKE_BOX"
+            - "CAR"
+            - "BICYCLE"
+            - "SCOOTER"
+            - "VUC"
+        eta:
+          type: object
+          description: Estimate Times of Pickup and Delivery. 
+          properties:
+            pickupEtaInMinutes:
+              type: integer
+              description: "Pickup Eta in **minutes**. Informs how many minutes it will take the delivery person to arrive at the merchant for order pickup."
+            pickupEtaDatetime:
+              type: string
+              format: date-time
+              description: "Pickup Eta Datetime. Informs the date and time the delivery person is expected to arrive at the merchant for order pickup. \n\n(UTC date-time in ISO timestamp format)."
+            deliveryEtaInMinutes:
+              type: integer
+              description: "Delivery Eta in **minutes**. Informs how many minutes it will take the delivery person to arrive at the consumer's address for order delivery."
+            deliveryEtaDatetime:
+              type: string
+              format: date-time
+              description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
+            maxDeliveryTime:
+              type: string
+              format: date-time
+              description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
+        deliveryPerson:
+          type: 'object'
+          description: 'Information about the person taht was assigned to deliver the order.'
+          properties:
+            id:
+              type: string
+              description: "Delivery Person Id given by the `Ordering Application`."
+            name:
+              type: string
+              description: "Delivery Person Name."
+        externalTrackingURL:
+          type: string
+          format: "URI"
+          description: "External URL, provided by the logistics service to track the delivery on a specific page. Example: Real-time map view, or delivery timeline."
+        
+
 
     #Common
 
