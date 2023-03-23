@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API (Release Candidate)
-  version: 'v1.1.2-rc.2'
+  version: 'v1.2.0-rc.3'
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -157,10 +157,13 @@ info:
     |[POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)|X|||
     |[POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
     |[POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)|X|||
+    |[POST /v1/orders/{orderId}/delivered](#operation/orderDelivered)|X|||
     |||||
     |[POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
     |[POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)|X|||
     |[POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
+    |||||
+    |[POST /v1/orders/{orderId}/tracking](#operation/orderTracking)|X|||
     |--------------------------------||||
     |**[LOGISTICS](#tag/logisticsSection)**||||
     |[POST /v1/logistics/delivery](#operation/logisticsNewDelivery)|||X|
@@ -699,7 +702,7 @@ tags:
       <SchemaDefinition schemaRef="#/components/schemas/Order" />
 
   - name: ordersStatus
-    x-displayName: └───● Order Event Update
+    x-displayName: └───● Order Event Updates
     description: |-
 
       Following the order lifecycle, the merchant **Software Service** needs to notify the **Ordering Application** of the upcoming order status.
@@ -807,6 +810,20 @@ tags:
       This request will be processed by the **Ordering Application**'s** cancellation service (asynchronously) and the merchant **Software Service** will receive in the next polling (or webhook) the following event(s):
 
       CANCELLATION_DENIED or CANCELLED
+
+  - name: ordersTracking
+    x-displayName: └───● Order Tracking 
+    description: |-
+
+      This section deals with event updates related to the delivery of the order.
+
+      The order delivery can be the responsibility of either the `Ordering Application` or the `Software Service`.
+
+      The endpoints in this section are intended for the system responsible for delivery to send updated information to the other party. 
+
+      > **The events handled in these endpoints work in a complementary and parallel way to the order events described in the [Order Updates](#tag/ordersStatus) section.**
+
+  # Logistics Tags
 
   - name: logisticsSection
     x-displayName: └─■ LOGISTICS
@@ -943,6 +960,7 @@ tags:
       > This endpoint should not be used as a way to get delivery tracking. This is already covered in the events webhook. The purpose of this route is to receive sporadic calls to get missing information or the complete history of events and problems.
         Misuse of this endpoint can result in blockages by **Logistic Service**.
 
+
 x-tagGroups:
   - name: ''
     tags:
@@ -983,6 +1001,7 @@ x-tagGroups:
     tags:
       - ordersStatus
       - ordersCancellation
+      - ordersTracking
   - name: "_______________________________________"
     tags:
       - logisticsSection
@@ -993,6 +1012,7 @@ x-tagGroups:
       - logisticTracking
       - logisticDetails
       - logisticPrice
+
 #############################################################
 
 paths:
@@ -1608,7 +1628,7 @@ paths:
       tags:
         - 'ordersStatus'
       operationId: 'orderDelivered'
-      summary: '[NEW] Delivered'
+      summary: 'Delivered'
       security:
         - OAuth2: [od.all]
       description: |-
@@ -1638,8 +1658,53 @@ paths:
           $ref: '#/components/responses/UnprocessableEntity'
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
+
+  /v1/orders/{orderId}/tracking:
+    post:
+      parameters:
+        - name: orderId
+          in: 'path'
+          required: true
+          schema:
+            $ref: '#/components/schemas/Order/properties/id'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/OrderTracking'    
+      tags:
+        - 'ordersTracking'
+      operationId: 'orderTracking'
+      summary: '[NEW] Send Delivery Updates'
+      security:
+        - OAuth2: [od.all]
+      description: |-
+        Sends information about the delivery in progress.
+
+        This endpoint should be used when the delivery is the responsibility of the `Merchant`, so the `Software Service` should send the delivery updates to the `Ordering Application`.
+       
+        <br /><br />
+        <span style='text-decoration:underline; color:#26323880; font-size:13.006px'>HOST:</span> **ORDERING APPLICATION**
+
+        <span style='text-decoration:underline; color:#26323880; font-size:13.006px'>DIRECTION:</span>
+        <div align='center'>
+          <img src='https://abrasel-nacional.github.io/docs/images/directionPOSTSS_OA.png' />
+        </div>
+      responses:
+        '202':
+          $ref: '#/components/responses/Accepted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/AccessDenied'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+        '503':
+          $ref: '#/components/responses/ServiceUnavailable'
   
-  
+    
   # Logistics
 
   /v1/logistics/availability:
@@ -3345,7 +3410,7 @@ components:
       type: 'object'
       title: 'Category'
       required:
-        [id, 'index', 'name', 'externalCode', 'status', 'availabilityId']
+        [id, 'index', 'name', 'externalCode', 'status']
       properties:
         id:
           type: 'string'
@@ -3383,7 +3448,9 @@ components:
           example: 'AVAILABLE'
         availabilityId:
           type: 'array'
-          description: 'The id values of `Availability` entities which provide details on when the category is available. Default assumes a `Category` is available at all times.'
+          description: |- 
+            The id values of `Availability` entities which provide details on when the category is available. 
+            > **If not informed, assumes a `Category` is AVAILABLE at all times.**
           items:
             allOf:
               - $ref: '#/components/schemas/Availability/properties/id'
@@ -3399,7 +3466,7 @@ components:
     ItemOffer:
       type: 'object'
       title: 'ItemOffer'
-      required: [id, 'itemId', 'index', 'price', 'availabilityId']
+      required: [id, 'itemId', 'index', 'price']
       properties:
         id:
           type: 'string'
@@ -3429,7 +3496,9 @@ components:
           example: { value: 43, originalValue: 43, currency: 'BRL' }
         availabilityId:
           type: 'array'
-          description: 'The id values of `Availability` entities which provide details on when the menu item offer is available. Default assumes an `ItemOffer` is available at all times.'
+          description: |-
+            The id values of `Availability` entities which provide details on when the menu item offer is available. 
+            > **If not informed, assumes an `ItemOffer` is AVAILABLE at all times.**
           items:
             allOf:
               - $ref: '#/components/schemas/Availability/properties/id'
@@ -4332,6 +4401,14 @@ components:
             tab:
               type: 'string'
               description: 'The tab or control card identifier (Required if mode is `TAB`)'
+        sendDelivered:
+          type: 'boolean'
+          description: |- 
+            This field indicates whether it is necessary for the `Software Service` to make a request to the [POST /v1/orders/{orderId}/delivered](#operation/orderDelivered) endpoint to indicate to the `Ordering Application` that the order has been delivered to the client.
+
+            `true`: Indicates that the `Ordering Application` is waiting for a request.
+
+            `false` or `not informed`: It is not required to make a request.    
         extraInfo:
           type: 'string'
           description: 'Extra information, if necessary.'
@@ -4369,13 +4446,14 @@ components:
             - SYSTEMIC_ISSUES
             - DUPLICATE_APPLICATION
             - UNAVAILABLE_ITEM
-            - RESTAURANT_WITHOUT_DELIVERY_MAN
+            - RESTAURANT_WITHOUT_DELIVERY_PERSON
             - OUTDATED_MENU
             - ORDER_OUTSIDE_THE_DELIVERY_AREA
             - BLOCKED_CUSTOMER
             - OUTSIDE_DELIVERY_HOURS
-            - INTERNAL_DIFFICULTIES_OF THE RESTAURANT
+            - INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT
             - RISK_AREA
+            - DELIVERY_PROBLEM
         mode:
           type: 'string'
           enum:
@@ -4528,8 +4606,7 @@ components:
 
     OrderDispatched:
       type: 'object'
-      title: 'Order Confirmed'
-      required: ['createdAt', 'orderExternalCode']
+      title: 'Order Dispatched'
       properties:     
         deliveryTrackingInfo:
           type: 'object'
@@ -4537,54 +4614,199 @@ components:
           allOf:
             - $ref: '#/components/schemas/DeliveryTrackingInfoDisptach'
 
+    OrderTracking:
+      type: 'object'
+      title: 'Order Tracking'
+      required:
+        - "deliveryTrackingInfo"
+      properties:     
+        deliveryTrackingInfo:
+          type: 'object'
+          description: 'Information about the person that was assigned to deliver the order.'
+          allOf:
+            - $ref: '#/components/schemas/DeliveryTrackingInfo'            
+
     DeliveryTrackingInfoDisptach:
-      description: Delivery Person
+      description: Delivery Tracking Info
       type: object
       properties:
         event:
           description: "The delivery last known event."
-          type: string
-          enum:
-            - PENDING
-            - ACCEPTED
-            - REJECTED
-            - PICKUP_ONGOING
-            - ARRIVED_AT_MERCHANT
-            - ORDER_PICKED
-            - DELIVERY_ONGOING
-            - ARRIVED_AT_CUSTOMER
-            - ORDER_DELIVERED
-            - RETURNING_TO_MERCHANT
-            - RETURNED_TO_MERCHANT
-            - DELIVERY_FINISHED
-            - CANCELLED
+          type: object
+          required: [type, datetime]
+          properties:
+            type:
+              type: string
+              description: "The current delivery event."
+              enum:
+                - DELIVERY_ONGOING
+                - ARRIVED_AT_CUSTOMER
+                - ORDER_DELIVERED
+                - CANCELLED
+            message:
+              type: string
+              description: "Free message. It should be used to provide more detailed information."
+            datetime:
+              type: string
+              format: date-time
+              description: "Date and time when the event ocurred. \n\n(UTC date-time in ISO timestamp format)."
         problem:
-          type: string
-          description: "In the event of a delivery problem, it states the last known reason."
-          enum:
-            - DELIVERYPERSON_OCCURRENCE
-            - PAYMENT_PROBLEMS
-            - WRONG_PRODUCT_OR_ITEM
-            - ORDER_DELAYED
-            - ORDER_DAMAGED_OR_VIOLATED
-            - CUSTOMER_DID_NOT_PLACE_ORDER
-            - CUSTOMER_ADDRESS_UNKNOWN
-            - ORDER_MISSING_ITEMS
-            - NOBODY_TO_RECEIVE
-            - DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
-            - ORDER_DELIVERED_WITHOUT_PAYMENT
-            - FRAUD_OR_THEFT
-            - OTHER
+          description: 'In the event of a delivery problem, it states the last known reason.'
+          type: object
+          required: [reason, datetime]
+          properties:
+            reason:
+              type: string
+              description: "Problem reason."
+              enum:
+                - DELIVERYPERSON_OCCURRENCE
+                - PAYMENT_PROBLEMS
+                - WRONG_PRODUCT_OR_ITEM
+                - ORDER_DELAYED
+                - ORDER_DAMAGED_OR_VIOLATED
+                - CUSTOMER_DID_NOT_PLACE_ORDER
+                - CUSTOMER_ADDRESS_UNKNOWN
+                - ORDER_MISSING_ITEMS
+                - NOBODY_TO_RECEIVE
+                - DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
+                - ORDER_DELIVERED_WITHOUT_PAYMENT
+                - FRAUD_OR_THEFT
+            message:
+              type: string
+              description: "Free message. It should be used to provide more detailed information."
+            datetime:
+              type: string
+              format: date-time
+              description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format)."
         vehicle:
-          type: string
           description: "The vehicle that will be used for this delivery."
-          enum:
-            - "MOTORBIKE_BAG"
-            - "MOTORBIKE_BOX"
-            - "CAR"
-            - "BICYCLE"
-            - "SCOOTER"
-            - "VUC"
+          type: object
+          required: [type]
+          properties:
+            type:
+              type: "array"
+              description: "Vehicle Type"
+              items:
+                type: string
+                enum:
+                  - "MOTORBIKE_BAG"
+                  - "MOTORBIKE_BOX"
+                  - "CAR"
+                  - "BICYCLE"
+                  - "SCOOTER"
+                  - "VUC"
+            licencePlate:
+              type: "string"
+              description: "Licence plate of the vehicle user for the delivery."
+        eta:
+          type: object
+          description: Estimate Times of Pickup and Delivery. 
+          properties:
+            deliveryEtaInMinutes:
+              type: integer
+              description: "Delivery Eta in **minutes**. Informs how many minutes it will take the delivery person to arrive at the consumer's address for order delivery."
+            deliveryEtaDatetime:
+              type: string
+              format: date-time
+              description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
+            maxDeliveryTime:
+              type: string
+              format: date-time
+              description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
+        deliveryPerson:
+          type: 'object'
+          description: 'Information about the person taht was assigned to deliver the order.'
+          properties:
+            id:
+              type: string
+              description: "Delivery Person Id given by the `Ordering Application`."
+            name:
+              type: string
+              description: "Delivery Person Name."
+            pictureURL:
+              type: string
+              format: "URI"
+              description: "URL to access the photo of the delivery person. Before entering this field, check that the parties allow data to be shared according to data disclosure laws and rules."
+        externalTrackingURL:
+            type: string
+            format: "URI"
+            description: "External URL, provided by the logistics service to track the delivery on a specific page. Example: Real-time map view, or delivery timeline."
+               
+    DeliveryTrackingInfo:
+      description: Delivery Tracking Info Updates
+      type: object
+      properties:
+        event:
+          description: "The delivery last known event."
+          type: object
+          required: [type, datetime]
+          properties:
+            type:
+              type: string
+              description: "The current delivery event."
+              enum:
+                - PICKUP_ONGOING
+                - ARRIVED_AT_MERCHANT
+                - ORDER_PICKED
+                - DELIVERY_ONGOING
+                - ARRIVED_AT_CUSTOMER
+                - ORDER_DELIVERED
+                - CANCELLED
+            message:
+              type: string
+              description: "Free message. It should be used to provide more detailed information."
+            datetime:
+              type: string
+              format: date-time
+              description: "Date and time when the event ocurred. \n\n(UTC date-time in ISO timestamp format)."
+        problem:
+          description: 'In the event of a delivery problem, it states the last known reason.'
+          type: object
+          required: [reason, datetime]
+          properties:
+            reason:
+              type: string
+              description: "Problem reason."
+              enum:
+                - DELIVERYPERSON_OCCURRENCE
+                - PAYMENT_PROBLEMS
+                - WRONG_PRODUCT_OR_ITEM
+                - ORDER_DELAYED
+                - ORDER_DAMAGED_OR_VIOLATED
+                - CUSTOMER_DID_NOT_PLACE_ORDER
+                - CUSTOMER_ADDRESS_UNKNOWN
+                - ORDER_MISSING_ITEMS
+                - NOBODY_TO_RECEIVE
+                - DELIVERYPERSON_WAITING_PAYMENT_FOR_ALREADY_PAID_ORDER
+                - ORDER_DELIVERED_WITHOUT_PAYMENT
+                - FRAUD_OR_THEFT
+            message:
+              type: string
+              description: "Free message. It should be used to provide more detailed information."
+            datetime:
+              type: string
+              format: date-time
+              description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format)."
+        vehicle:
+          description: "The vehicle that will be used for this delivery."
+          type: object
+          required: [type]
+          properties:
+            type:
+              type: "array"
+              description: "Vehicle Type"
+              items:
+                type: string
+                enum:
+                  - "MOTORBIKE_BAG"
+                  - "MOTORBIKE_BOX"
+                  - "CAR"
+                  - "BICYCLE"
+                  - "SCOOTER"
+                  - "VUC"
+            licencePlate:
+              type: "string"
+              description: "Licence plate of the vehicle user for the delivery."
         eta:
           type: object
           description: Estimate Times of Pickup and Delivery. 
@@ -4617,6 +4839,66 @@ components:
             name:
               type: string
               description: "Delivery Person Name."
+            pictureURL:
+              type: string
+              format: "URI"
+              description: "URL to access the photo of the delivery person. Before entering this field, check that the parties allow data to be shared according to data disclosure laws and rules."
+        geoLocalization:
+          description: "Geo Localization Info."
+          type: object
+          required:
+            [distanceToPickup, distanceToDelivery, timestamp]
+          properties:
+            latitude:
+              type: "number"
+              format: "float"
+              description: "Indicates the latitude coordinate of the actual position of the delivery person.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+              example: -23.54809
+            longitude:
+              type: "number"
+              format: "float"
+              description: "Indicates the longitude coordinate of the actual position of the delivery person.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+              example: -46.63638
+            lastAddress:
+              description: The last known address that the delivery person was when the event was sent.
+              type: object
+              required: [id, orderId, orderDisplayId]
+              properties:
+                "country":
+                  type: "string"
+                  pattern: "^[A-Z]{2}$"
+                  description: "Two-letter [ISO 3166-1 alpha-2](https://www.iso.org/standard/72482.html) country code."
+                  example: "BR"
+                state:
+                  type: "string"
+                  description: "State or country subdivision. It is recommended (but not required) that you use the [ISO 3166-2](https://www.iso.org/standard/72483.html) representation. "
+                  example: "BR-SP"
+                "city":
+                  type: "string"
+                  description: "City name."
+                  example: "São Paulo"
+                "district":
+                  type: "string"
+                  description: "District or Neighborhood name."
+                  example: "Moema"
+                "street":
+                  type: "string"
+                  description: "Street Name."
+                  example: "Plaza Avenue"
+                "postalCode":
+                  type: "string"
+                  description: "Postal Code."
+                  example: "20111-000"
+                distanceToPickup:
+                  type: string
+                  description: "Distance To Pickup in **meters**."
+                distanceToDelivery:
+                  type: string
+                  description: "Distance To Delivery in **meters**."
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: "Date and time when this information is valid. \n\n(UTC date-time in ISO timestamp format)."
         externalTrackingURL:
           type: string
           format: "URI"
@@ -5090,8 +5372,7 @@ components:
           type: "string"
           format: UUID
           description: "This field must be filled in with the original OrderId generated by the **Ordering Application**. In most cases this property will have the same value as the `orderId` property, since it is already recommended that the order id created by the **Ordering Application** be sent in the `orderId` property. But if the order id created by the **Ordering Application** is not sent in the `orderId` property then it must be entered in this field."
-        
-        
+               
     Vehicle:
       description: Vehicle Object.
       type: object
