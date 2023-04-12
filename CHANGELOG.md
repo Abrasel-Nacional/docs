@@ -1,6 +1,86 @@
 # Changelog
 
-## Version [1.0.1] - 2022-08-01
+## Version [1.1.1] - Apr 3, 2023
+
+#### ORDERS changes:
+
+- [GET /v1/orders/{orderId}](#operation/ordersDetails)
+
+    - added `sendDelivered` property. This property should have been added together with the [POST /v1/orders/{orderId}/delivered](#operation/orderDelivered) endpoint  
+
+    - added `CANCELLATION_DENIED` to the order events. This event was described in the documentation in the [Orders Cancellation](#tag/ordersCancellation) section but was not present in the enum.
+
+- [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
+
+    - fixed the names of the following reasons:
+      - `RESTAURANT_WITHOUT_DELIVERY_MAN` to `RESTAURANT_WITHOUT_DELIVERY_PERSON`
+      - `INTERNAL_DIFFICULTIES_OF THE RESTAURANT` to `INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT`
+
+## Version [1.1.0] - Jan 23, 2023
+
+#### MERCHANT changes:
+
+- [GET /v1/merchant](#operation/getMerchant)
+
+  - added new optional propertie `acceptedCards` in the `basicInfo` entity of endpoint.
+
+      This field is intended to indicate which card brands are accepted by the merchant.
+
+  - added an enumerator to propertie `unit` in the `items` entity of endpoint [GET /v1/merchant](#operation/getMerchant).
+
+  - added new optional field `targetAppId` in the `service` entity of endpoint [GET /v1/merchant](#operation/getMerchant).
+
+      This field is intended to indicate a specific Ordering Application to receive the service information.
+
+- [POST /v1/merchantUpdated](#operation/menuUpdated)
+
+  - added `MERCHANT` and `BASIC_INFO` options to the enumerator of the `entityType` field of the webhook.
+
+    This allows the webhook to now receive the full merchant entity information and can be used instead of the [GET /v1/merchant](#operation/getMerchant) endpoint.  
+    This can be used by **Software Services** that do not have the infrastructure to expose this endpoint.
+
+    It is also possible to update any entity that is part of the Merchant object. (this was already possible previously with the exception of BASIC_INFO entity).
+
+#### ORDERS changes:
+
+- added a new optional order event, called `DELIVERED`.  
+
+  With this, the following changes have been made:
+
+  - [GET /v1/orders/{orderId}](#operation/ordersDetails)
+    - added `DELIVERED` to the events
+
+  - added new [POST /v1/orders/{orderId}/delivered](#operation/orderDelivered) endpoint
+
+    This endpoint is intended to indicate to the **Ordering Application** that an order has been delivered.
+
+- [GET /v1/orders/{orderId}](#operation/ordersDetails)
+
+  - added more options to the enumerator of propertie `unit` in the `items` entity of the endpoint, reflecting the created enum.
+
+  - added new field `lastEvent` to be filled with the last valid event sent/polled (whether acknowledged or not).
+
+  - added new optional field `brand` to the `payments>methods` entity.
+
+    This field is intended to indicate the brand of the card (for cases where the chosen payment method has a brand).
+
+- [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
+
+  - added propertie `cancellationStatus` to the 422 response body to indicate the result of the cancellation request in case of a duplicate event.
+
+- [POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)
+
+  - added new optional field `preparationTime` to endpoint .
+
+    This field is used to indicate the estimated time to prepare the order.
+
+#### LOGISTICS changes:
+
+- the logistics standard is no longer BETA, and is now versioned together with the RELEASE version.
+
+      
+      
+## Version [1.0.1] - Aug 1, 2022
 
   - Added the possibility to indicate orders with scheduled delivery.  
   With this the following changes were made:
@@ -99,6 +179,6 @@
   - Overall revisions of grammatical errors, syntax, examples and descriptions.
 
 
-## Version [v1.0.0] - 2022-04-18
+## Version [v1.0.0] - Apr 18, 2022
 
 - Initial release.
