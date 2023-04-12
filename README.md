@@ -1,15 +1,82 @@
-[![https://img.shields.io/badge/OpenAPI-valid-brightgreen.svg](https://img.shields.io/badge/OpenAPI-valid-brightgreen.svg)](http://online.swagger.io/validator?url=https://raw.githubusercontent.com/bacen/pix-api/master/openapi.yaml) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Abrasel-Nacional/docs?display_name=release)
+[![https://img.shields.io/badge/OpenAPI-valid-brightgreen.svg](https://img.shields.io/badge/OpenAPI-valid-brightgreen.svg)](http://online.swagger.io/validator?url=https://raw.githubusercontent.com/bacen/pix-api/master/openapi.yaml) 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+![GitHub issues](https://img.shields.io/github/issues-raw/Abrasel-Nacional/docs)
+![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/Abrasel-NAcional/docs?color=green)
+ 
 # [Open Delivery API Specification](https://abrasel-nacional.github.io/docs/)
 
-* The present repository defines the OpenAPI 3.0.3 functional specifications for the Open Delivery API.
+ 
+ The present repository defines the OpenAPI 3.0.3 functional specifications for the Open Delivery API.
 
-# Documentantion Link
+## Introduction
+**Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and **Ordering Applications**, establishing a single communication standard for all, through a set of REST APIs.
+Thus, menus and orders are standardized and customer requests are received in a single place, in an organized and efficient way, allowing the merchant to work with more partners in the delivery environment.
 
-The `official` branch of the API can be viewed __[here](https://abrasel-nacional.github.io/docs/)__.
+## Versions
 
-The `pre-release` branch of the API can be viewed __[here](https://abrasel-nacional.github.io/docs/beta)__.
+### **RELEASE VERSIONS**
 
-# Current Release: 1.0.1
+Contains the specifications of the standards already published:  
+**MERCHANT** | **ORDERS** | **LOGISTICS**
 
-* The current release of the Open Delivery API can be found at this __[link](https://github.com/Abrasel-Nacional/docs/releases/tag/v1.0.0)__.
+**[LATEST RELEASE - v1.1.1](https://abrasel-nacional.github.io/docs/)**
+
+All Versions: 
+
+- [1.2.0-rc.X (Release Candidate)*](https://abrasel-nacional.github.io/docs/versions/rc/)
+- **[v1.1.1 - (LATEST RELEASE)](https://abrasel-nacional.github.io/docs/)**
+- [v1.0.1](https://abrasel-nacional.github.io/docs/versions/1.0.1/)
+- [v1.0.0](https://abrasel-nacional.github.io/docs/versions/1.0.0/)
+
+>  *Release Candidate versions contains the evolutions and improvements being discussed at the moment and that will be part of the release version in the future.
+
+### **BETA**  
+
+Contains the standards still in tests:  
+**FINANCIAL RECONCILIATION** | **CONTRACTS**
+
+- [BETA VERSION](https://abrasel-nacional.github.io/docs/versions/beta/)
+
+## Changelog
+
+Latest Changes:
+
+
+## Issues and Suggestions
+
+In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
+
+> https://github.com/Abrasel-Nacional/docs/issues
+
+## Developer Tools
+
+This section has some tools to help you implement the Open Delivery API. 
+
+**Disclaimer**: The tools listed below are tools made available by partners of the Open Delivery project and are the sole responsibility of their authors. The Open Delivery does not provide support for these tools.
+
+**SCHEMA VALIDATORS**
+
+> [Open Delivery - API Schema Validator (by Programmers IT)](https://programmersit.github.io/opendelivery-api-schema-validator/)     
+> Tool for comparing a JSON file with Open Delivery schemas.
+
+**MERCHANT RELATED TOOLS**
+> [Open Delivery - Menu Generator (by Programmers IT)](https://programmersit.github.io/opendelivery-menu-generator/)  
+> Tool for graphical visualization of the different fields and entities that compose the Merchant object.
+
+## License
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+
+
