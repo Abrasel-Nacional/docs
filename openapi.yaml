@@ -4595,6 +4595,7 @@ components:
           CANCELLATION_REQUESTED: '#/components/schemas/EventMetadataCancel'
           CANCELLATION_REQUEST_DENIED: '#/components/schemas/EventMetadataCancel'
           CANCELLED: '#/components/schemas/EventMetadataCancel'
+          CANCELLED_DENIED: '#/components/schemas/EventMetadata'
       properties:
         eventId:
           type: 'string'
