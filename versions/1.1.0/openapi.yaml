@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: 'v1.1.1'
+  version: 'v1.1.0'
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -41,22 +41,6 @@ info:
     # └► Changelog
       
       Latest Changes:
-
-      ### Version [1.1.1] - Apr 3, 2023
-
-      #### ORDERS changes
-
-      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
-          
-          - added `sendDelivered` property. This property should have been added together with the [POST /v1/orders/{orderId}/delivered](#operation/orderDelivered) endpoint  
-          
-          - added `CANCELLATION_DENIED` to the order events. This event was described in the documentation in the [Orders Cancellation](#tag/ordersCancellation) section but was not present in the enum.
-      
-      - [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
-          
-          - fixed the names of the following reasons:
-            - `RESTAURANT_WITHOUT_DELIVERY_MAN` to `RESTAURANT_WITHOUT_DELIVERY_PERSON`
-            - `INTERNAL_DIFFICULTIES_OF THE RESTAURANT` to `INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT`
 
       ### Version [1.1.0] - Jan 23, 2023
 
@@ -262,8 +246,7 @@ info:
       **MERCHANT** | **ORDERS** | **LOGISTICS**
 
       - [1.2.0-rc.X (Release Candidate*)](https://abrasel-nacional.github.io/docs/versions/rc/)
-      - **v1.1.1 - (LATEST RELEASE)**
-      - [v1.1.0](https://abrasel-nacional.github.io/docs/versions/1.1.0/)
+      - **v1.1.0 - (LATEST RELEASE)**
       - [v1.0.1](https://abrasel-nacional.github.io/docs/versions/1.0.1/)
       - [v1.0.0](https://abrasel-nacional.github.io/docs/versions/1.0.0/)
 
@@ -326,7 +309,6 @@ info:
     |[POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)|X|||
     |[POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
     |[POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)|X|||
-    |[POST /v1/orders/{orderId}/delivered](#operation/orderDelivered)|X|||
     |||||
     |[POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
     |[POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)|X|||
@@ -869,7 +851,7 @@ tags:
       <SchemaDefinition schemaRef="#/components/schemas/Order" />
 
   - name: ordersStatus
-    x-displayName: └───● Order Event Updates
+    x-displayName: └───● Order Event Update
     description: |-
 
       Following the order lifecycle, the merchant **Software Service** needs to notify the **Ordering Application** of the upcoming order status.
@@ -1411,13 +1393,12 @@ paths:
               > `DISPATCHED` : Order went out for delivery.\
               > `READY_FOR_PICKUP`: Order ready for pickup.\
               > `PICKUP_AREA_ASSIGNED` : Designated area to pick up the order.\
-              > `DELIVERED` : Order has been delivered.
+              > [NEW] `DELIVERED` : Order has been delivered.
               > `CONCLUDED` : Order completed.\
               > `CANCELLATION_REQUESTED` : Sent by the **Software Service** to the **Ordering Application**.\
               > `CANCELLATION_REQUEST_DENIED` : It must be sent from the **Ordering Application** to the **Software Service**.\
               > `CANCELLED` : When the order is actually cancelled.\
               > `ORDER_CANCELLATION_REQUEST`: It must be sent from the **Ordering Application** to the **Software Service**.
-              > `CANCELLATION_DENIED`: Occurs when the `Ordering Application` requests cancellation, but the `Software Service` denies it.
             items:
               $ref: '#/components/schemas/Event/properties/eventType'
 
@@ -1774,7 +1755,7 @@ paths:
       tags:
         - 'ordersStatus'
       operationId: 'orderDelivered'
-      summary: 'Delivered'
+      summary: '[NEW] Delivered'
       security:
         - OAuth2: [od.all]
       description: |-
@@ -1782,7 +1763,7 @@ paths:
 
         Important: This endpoint is not mandatory and should be sent only if the **Ordering Application** is able to receive this request and only in cases where the order logistics service is provided by the Merchant and not the Marketplace.
 
-        To check whether or not it is required to call this endpoint, check the `sendDelivered` property in the endpoint: [GET /v1/orders/{orderId}](#operation/ordersDetails)
+        > To check whether or not it is required to call this endpoint, check the `sendDelivered` field in the endpoint: 
 
         <br /><br />
         <span style='text-decoration:underline; color:#26323880; font-size:13.006px'>HOST:</span> **ORDERING APPLICATION**
@@ -4493,14 +4474,6 @@ components:
             place:
               type: 'string'
               description: 'Place identifier (Required if mode is `PLACE`)'
-        sendDelivered:
-          type: 'boolean'
-          description: |- 
-            This field indicates whether it is necessary for the `Software Service` to make a request to the [POST /v1/orders/{orderId}/delivered](#operation/orderDelivered) endpoint to indicate to the `Ordering Application` that the order has been delivered to the client.
-
-            `true`: Indicates that the `Ordering Application` is waiting for a request.
-
-            `false` or `not informed`: It is not required to make a request.    
         extraInfo:
           type: 'string'
           description: 'Extra information, if necessary.'
@@ -4538,12 +4511,12 @@ components:
             - SYSTEMIC_ISSUES
             - DUPLICATE_APPLICATION
             - UNAVAILABLE_ITEM
-            - RESTAURANT_WITHOUT_DELIVERY_PERSON
+            - RESTAURANT_WITHOUT_DELIVERY_MAN
             - OUTDATED_MENU
             - ORDER_OUTSIDE_THE_DELIVERY_AREA
             - BLOCKED_CUSTOMER
             - OUTSIDE_DELIVERY_HOURS
-            - INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT
+            - INTERNAL_DIFFICULTIES_OF THE RESTAURANT
             - RISK_AREA
         mode:
           type: 'string'
@@ -4615,7 +4588,6 @@ components:
             - 'CANCELLATION_REQUEST_DENIED'
             - 'CANCELLED'
             - 'ORDER_CANCELLATION_REQUEST'
-            - 'CANCELLATION_DENIED'
         orderId:
           allOf:
             - $ref: '#/components/schemas/Order/properties/id'
