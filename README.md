@@ -42,12 +42,9 @@ Contains the standards still in tests:
 
 Latest Changes:
 
-
 ## Issues and Suggestions
 
-In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
-
-> https://github.com/Abrasel-Nacional/docs/issues
+In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, feel free to open a new issue.
 
 ## Developer Tools
 
