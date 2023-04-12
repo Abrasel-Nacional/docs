@@ -1,9 +1,16 @@
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/Abrasel-Nacional/docs?display_name=release)
-[![https://img.shields.io/badge/OpenAPI-valid-brightgreen.svg](https://img.shields.io/badge/OpenAPI-valid-brightgreen.svg)](http://online.swagger.io/validator?url=https://raw.githubusercontent.com/bacen/pix-api/master/openapi.yaml) 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-![GitHub issues](https://img.shields.io/github/issues-raw/Abrasel-Nacional/docs)
-![GitHub closed issues](https://img.shields.io/github/issues-closed-raw/Abrasel-NAcional/docs?color=green)
- 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/129890133/231524311-e4b8070d-ba66-42f8-bf1c-5607b9df9850.png" />
+</p>
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/Abrasel-Nacional/docs?display_name=release" />
+  <a href="http://online.swagger.io/validator?url=https://abrasel-nacional.github.io/docs/openapi.yaml">
+   <img src="https://img.shields.io/badge/OpenAPI-valid-brightgreen.svg" />
+  </a>
+  <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" />
+  <img src="https://img.shields.io/github/issues-raw/Abrasel-Nacional/docs" />
+  <img src="https://img.shields.io/github/issues-closed-raw/Abrasel-NAcional/docs?color=green" />
+</p>
+
 # [Open Delivery API Specification](https://abrasel-nacional.github.io/docs/)
 
  
