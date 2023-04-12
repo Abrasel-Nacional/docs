@@ -40,7 +40,7 @@ Contains the standards still in tests:
 
 ## Changelog
 
-Latest Changes:
+[See the Latest Changes here.](https://github.com/Abrasel-Nacional/docs/blob/gh-pages/CHANGELOG.md)
 
 ## Issues and Suggestions
 
