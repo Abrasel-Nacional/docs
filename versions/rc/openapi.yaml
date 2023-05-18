@@ -145,7 +145,7 @@ info:
     |--------------------------------||||
     |**[MERCHANT](#tag/merchantSection)**||||
     |[GET /v1/merchant](#operation/getMerchant)||X||
-    |[POST /v1/merchantUpdated](#operation/menuUpdated)|X|||
+    |[POST /v1/merchantUpdate](#operation/menuUpdated)|X|||
     |[GET /v1/merchantStatus](#tag/merchantStatus)|X|||
     |--------------------------------||||
     |**[ORDER](#tag/ordersSection)**||||
@@ -202,9 +202,9 @@ info:
       - **PARAMETERS IN ORDERING APPLICATION  
       (SOFTWARE SERVICE --> ORDERING APPLICATION)**
 
-        - **{baseURL} from the `GET /merchant` endpoint:** The **Ordering Application** must be provided with the {baseURL} to access the GET /merchant route to obtain the merchant's information. 
+        - **[GET /merchant](#tag/merchantEndpoints) endpoint URL:** The **Ordering Application** must be provided with the URL to access the `GET /merchant` route to obtain the merchant's information. 
 
-          > IMPORTANT: Each merchant that the **Software Service** works with must have a unique {baseURL}.
+          > IMPORTANT: Each merchant that the **Software Service** works with must have a unique URL.
         - **apiKey**: If the GET /merchant endpoint is implemented using authentication, it is necessary that the **Software Service** provides the apiKey referring to the entered merchant.
         
         - **Order Event Webhook**: If both parties are going to work with sending order events via webhook, it is necessary to provide the URL of the webhook.   
@@ -515,6 +515,13 @@ tags:
   - name: merchantEndpoints
     x-displayName: '└───● Merchant Endpoint'
     description: |-
+      This section details the `GET /v1/merchant` endpoint.
+
+      This endpoint should be implemented by the `Software Service` and its URL should be informed to the `Ordering Application`.
+
+      The endpoint is designed so that **each merchant has its own URL**.  
+
+      The specification recommends that the endpoint ends with the `/merchant` route, but this is **not mandatory**. The `Software Service` can implement the URL in any way it sees fit, as long as it contains information from **only one** merchant.
 
   - name: merchantStatus
     x-displayName: '└───● Onboarding and Status'
@@ -1015,12 +1022,17 @@ x-tagGroups:
 
 #############################################################
 
+servers:
+  - url: https://api.server.test
+
 paths:
   # Versions
 
   /v1/versions/orderingApp:
     get:
       operationId: 'getOrderingAppVersions'
+      security: 
+        -  {}
       tags:
         - 'versionsEndpoint'
       summary: 'Get Current Ordering Application API Version'
@@ -1048,6 +1060,8 @@ paths:
   /v1/versions/merchant:
     get:
       operationId: 'getMerchantVersions'
+      security: 
+        -  {}
       tags:
         - 'versionsEndpoint'
       summary: 'Get Current Merchant API Version'
@@ -1077,6 +1091,8 @@ paths:
   /oauth/token:
     post:
       operationId: 'getToken'
+      security: 
+        -  {}
       tags:
         - 'authentication'
       summary: 'Get Access Token'
@@ -1119,6 +1135,8 @@ paths:
 
          >  This endpoint can optionally require an **apiKey** for authentication.
          >  Check with the **Software Service** that hosts the endpoint whether authentication is required or not.
+
+         > If the Ordering Application has the PUT /merchantOnboarding endpoint implemented, the Software Service can pass the endpoint data through this operation.
 
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **SOFTWARE SERVICE**
@@ -1176,6 +1194,8 @@ paths:
                 $ref: '#/components/schemas/MerchantStatus'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'          
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1224,6 +1244,8 @@ paths:
           description: 'Request has been processed. Return has no content.'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1239,7 +1261,7 @@ paths:
       parameters:
         - name: 'x-polling-merchants'
           in: 'header'
-          required: true
+          required: false
           schema:
             type: array
             description: |-
@@ -1299,6 +1321,8 @@ paths:
           description: 'No content.'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '503':
@@ -1330,6 +1354,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '503':
@@ -1370,6 +1396,8 @@ paths:
               #     $ref: "#/components/examples/orderExample"
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1410,6 +1438,8 @@ paths:
           $ref: '#/components/responses/Accepted'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1449,6 +1479,8 @@ paths:
           $ref: '#/components/responses/Accepted'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1488,6 +1520,8 @@ paths:
           description: Order cancellation has been confirmed. No response content.
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1529,6 +1563,8 @@ paths:
           description: Order cancellation has been denied. No response content.
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1566,6 +1602,8 @@ paths:
           $ref: '#/components/responses/Accepted'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1608,6 +1646,8 @@ paths:
           $ref: '#/components/responses/Accepted'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1650,6 +1690,8 @@ paths:
           $ref: '#/components/responses/Accepted'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1695,6 +1737,8 @@ paths:
           $ref: '#/components/responses/Accepted'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -1709,6 +1753,9 @@ paths:
 
   /v1/logistics/availability:
     post:
+      operationId: logisticsAvailability
+      security: 
+        -  {}
       requestBody:
         content:
           "application/json":
@@ -1717,7 +1764,6 @@ paths:
       tags:
         - "logisticPrice"
       summary: "Check delivery availability and prices"
-      security: []
       description: |-
         Simulates a new delivery solicitation to know prices and delivery times.
       responses:
@@ -1736,14 +1782,14 @@ paths:
 
   /v1/logistics/delivery:
     post:
+      operationId: "logisticsNewDelivery"
+      security:
+        - OAuth2: [od.all]      
       requestBody:
         $ref: "#/components/requestBodies/DeliveryOrder"
       tags:
-        - "logisticOrder"
-      operationId: "logisticsNewDelivery"
+        - "logisticOrder" 
       summary: "Request new delivery"
-      security:
-        - OAuth2: [od.all]
       description: "Starts the process of calling a new delivery for an order."
       responses:
         "202":
@@ -1755,6 +1801,8 @@ paths:
 
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: '#/components/responses/Unauthorized'   
         "403":
           $ref: "#/components/responses/AccessDenied"
         "404":
@@ -1766,6 +1814,9 @@ paths:
 
   /v1/logistics/delivery/{orderId}:
     get:
+      operationId: logisticDetails
+      security:
+        - OAuth2: [od.all]
       parameters:
         - name: orderId
           in: "path"
@@ -1774,9 +1825,7 @@ paths:
             $ref: "#/components/schemas/DeliveryOrder/properties/orderId"
       tags:
         - "logisticDetails"
-      operationId: logisticDetails
       summary: "Get delivery details"
-      security: []
       description: |-
         Gets detailed information about the delivery order.
 
@@ -1797,6 +1846,9 @@ paths:
 
   /v1/logistics/orderPicked/{orderId}:
     post:
+      operationId: "logisticsPicked"
+      security:
+        - OAuth2: [od.all]
       parameters:
         - name: orderId
           in: "path"
@@ -1810,16 +1862,15 @@ paths:
               $ref: "#/components/schemas/DeliveryOrderPicked"
       tags:
         - "logisticOrder"
-      operationId: "logisticsPicked"
       summary: "Inform order pickup"
-      security:
-        - OAuth2: [od.all]
       description: "Inform the **Logistic Service** that the order was picked by delivery person at Merchant"
       responses:
         "200":
           description: "Order pickup has been confirmed."
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: '#/components/responses/Unauthorized'   
         "403":
           $ref: "#/components/responses/AccessDenied"
         "404":
@@ -1831,6 +1882,9 @@ paths:
 
   /v1/logistics/finishDelivery/{orderId}:
     post:
+      operationId: "logisticsFinish"
+      security:
+        - OAuth2: [od.all]
       parameters:
         - name: orderId
           in: "path"
@@ -1844,16 +1898,15 @@ paths:
               $ref: "#/components/schemas/DeliveryOrderFinish"
       tags:
         - "logisticOrder"
-      operationId: "logisticsFinish"
       summary: "Finish delivery"
-      security:
-        - OAuth2: [od.all]
       description: "Indicates the completion of a delivery order"
       responses:
         "200":
           description: "Delivery completion has been confirmed. "
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: '#/components/responses/Unauthorized'   
         "403":
           $ref: "#/components/responses/AccessDenied"
         "404":
@@ -1865,6 +1918,9 @@ paths:
 
   /v1/logistics/handleProblem/{orderId}:
     post:
+      operationId: "logisticsProblem"
+      security:
+        - OAuth2: [od.all]
       parameters:
         - name: orderId
           in: "path"
@@ -1875,10 +1931,7 @@ paths:
         $ref: "#/components/requestBodies/DeliveryHandleProblem"
       tags:
         - "logisticOrder"
-      operationId: "logisticsProblem"
       summary: "Handle problem"
-      security:
-        - OAuth2: [od.all]
       description: |-
         Handle problems that may occur during the delivery.
 
@@ -1889,12 +1942,13 @@ paths:
         <div align="center">
           <img src="https://abrasel-nacional.github.io/docs/images/logisticsProblem.png" />
         </div>
-
       responses:
         "200":
           description: "The problem has been addressed."
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: '#/components/responses/Unauthorized'   
         "403":
           $ref: "#/components/responses/AccessDenied"
         "404":
@@ -1906,6 +1960,9 @@ paths:
 
   /v1/logistics/cancel/{orderId}:
     post:
+      operationId: "logisticsCancel"
+      security:
+        - OAuth2: [od.all]     
       parameters:
         - name: orderId
           in: "path"
@@ -1916,10 +1973,7 @@ paths:
         $ref: "#/components/requestBodies/DeliveryCancel"
       tags:
         - "logisticOrder"
-      operationId: "logisticsCancel"
       summary: "Cancel delivery"
-      security:
-        - OAuth2: [od.all]
       description: |-
         Requests cancellation of a order delivery in progress
 
@@ -1940,6 +1994,8 @@ paths:
                 $ref: "#/components/schemas/DeliveryCancelResponse"
         "400":
           $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: '#/components/responses/Unauthorized'   
         "403":
           $ref: "#/components/responses/AccessDenied"
         "404":
@@ -2001,6 +2057,8 @@ x-webhooks:
           description: Data was received successfully. No response content.
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'   
         '403':
           $ref: '#/components/responses/AccessDenied'
         '404':
@@ -2012,6 +2070,9 @@ x-webhooks:
 
   /v1/newEvent:
     post:
+      operationId: newEvent
+      security: 
+        -  {}
       parameters:
         - in: 'header'
           name: 'X-App-Id'
@@ -2045,7 +2106,6 @@ x-webhooks:
         <div align="center">
           <img src="https://abrasel-nacional.github.io/docs/images/directionPOSTOA_SS.png" />
         </div>
-      operationId: newEvent
       tags:
         - ordersWebhook
       requestBody:
@@ -2071,6 +2131,9 @@ x-webhooks:
 
   /v1/newLogisticEvent:
     post:
+      operationId: newLogisticEvent
+      security: 
+        -  {}
       parameters:
         - in: "header"
           name: "X-App-Id"
@@ -2094,7 +2157,6 @@ x-webhooks:
             description: "SHA256 hash of the request body, using the client secret as the key"
       summary: Tracking event webhook
       description: Information about a new event in the systems
-      operationId: newLogisticEvent
       tags:
         - logisticTracking
       requestBody:
@@ -2260,6 +2322,12 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: 'Request lacks valid authentication credentials for the target resource'
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Error'
     NotFound:
       description: 'The requested resource was not found.'
       content:
@@ -2325,7 +2393,7 @@ components:
 
                 Existing MERCHANT routes:
 
-                > - "POST /v1/merchantUpdated"
+                > - "POST /v1/merchantUpdate"
                 > - "GET /v1/merchantStatus"
               enum:
                 - '1.0.0'
@@ -2391,7 +2459,7 @@ components:
           type: 'string'
           description: 'Client identifier provided by the **Ordering Application**.'
         client_secret:
-          type: 'integer'
+          type: 'string'
           description: 'Client Secret provided by the **Ordering Application**.'
         grant_type:
           type: 'string'
@@ -4246,11 +4314,14 @@ components:
                 extension:
                   type: 'string'
             documentNumber:
-              description: 'Customer document. This document is mandatory for dealing with tax issues.'
+              description: 'Customer document. This document may be sent for dealing with tax issues.'
               type: 'string'
             name:
               type: 'string'
               description: "Customer's name."
+            email:
+              description: 'Customer email. This document may be sent for dealing with tax issues.'
+              type: 'string'              
             ordersCountOnMerchant:
               description: 'Total number of orders that the customer already placed within the merchant.'
               type: 'number'
@@ -5720,7 +5791,7 @@ components:
           type: boolean
           description: "Informs if the problem was resolved or not."
         actionTaken:
-          type: boolean
+          type: string
           description: "Action taken by the requester."
           enum:
             - RETURN_TO_STORE
