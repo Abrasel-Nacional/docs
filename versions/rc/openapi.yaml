@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API (Release Candidate)
-  version: 'v1.2.0-rc.3'
+  version: 'v1.2.0-rc.5'
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -40,24 +40,88 @@ info:
 
 
     **API Reference**   
-      - **[Working Versions](#tag/versionsSection)**
       - **[Security](#tag/securitySection)**
-      - **[Merchant](#tag/merchantSection)**
       - **[Order](#tag/orderSection)**
+      - **[Merchant](#tag/merchantSection)**
       - **[Logistics](#tag/logisticsSection)**
+      - **[Configurations](#tag/versionsSection)**
 
     # └► Changelog
       
       Latest Changes:
 
-      ### Version [v1.1.1-rc.1] - Feb 13, 2023
+      ### Version [v1.2.0-rc.5] - Jun 15, 2023
 
+      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
 
-      ### Version [v1.1.1-rc.1] - Feb 13, 2023
+        - Added new optional field `sendTracking` to control whether or not the `Software Service` should call the [POST /orders/{orderId}/tracking](#operation/orderTracking) endpoint.
+        
+      - [POST /v1/logistics/delivery](#operation/logisticsNewDelivery)
 
+        - Added a new optional field `orderDeliveryFee` to inform to the `Logistics Service` the customer's paid shipping fee in the `Ordering Application`
 
+      - [POST /v1/logistics/availability](#tag/logisticPrice)
 
-      ### Version [v1.1.1-rc.0] - Jan 23, 2023
+        - Added a new optional field `orderDeliveryFee` to inform to the `Logistics Service` the customer's paid shipping fee in the `Ordering Application`
+
+      ### Version [v1.2.0-rc.4] - May 18, 2023
+
+      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
+
+        - Added an optional field `customer.email` to inform the customer email.
+
+      - [GET /v1/events:polling ](#operation/pollingEvents)
+
+        - Removed the requirement of the `x-polling-merchants` parameter.
+
+      - [POST /oauth/token](#operation/getToken)
+
+        - Fixed the `client_secret` propertie type to string instead of integer
+
+      - All endpoints that uses oAuth2 authentication:
+
+        - Added the 401 - Unauthorized response to be used when the credentials are not valid (the 403 response can still be used).
+
+      - [GET /v1/logistics/delivery/{orderId}](#operation/logisticDetails)
+
+        - Fixed the `problem.actionTaken` propertie type to string instead of boolean
+
+      ### Version [v1.2.0-rc.3] - Mar 23, 2023
+      
+      - [POST /orders/{orderId}/tracking](#operation/orderTracking)
+
+        - Added a new endpoint [POST /orders/{orderId}/tracking](#operation/orderTracking) for sending delivery information to the `Ordering Application`.
+        
+      - [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
+
+        - Added `DELIVERY_PROBLEM` as a new enum option to the `code` propertie.  
+        
+      - [GET /v1/merchant](#operation/getMerchant)
+
+        - Removed the requirement of the `categories.availabilityId` propertie.
+ 
+        - Removed the requirement of the `itemOffers.availabilityId` propertie.
+
+      ### Version [v1.2.0-rc.2] - Mar 9, 2023
+      
+      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
+
+        - Added a new option to work with **'TABs'** for **INDOOR** orders. This can be used by establishments that control orders via tabs or control cards. As a result, the following changes have been made:
+
+          - Added new `TAB` enum, to the `indoor.mode` propertie.
+          - Added new `indoor.tab` propertie.
+      
+        - Removed the requirement to send the `customer` object
+
+        - Removed the requirement to send the `customer.document` propertie
+
+      ### Version [v1.2.0-rc.1] - Feb 23, 2023
+
+      - [POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)
+
+        - Added new object `deliveryTRackingInfo` to send delivery informations to the `Ordering Application` when dispatching the order
+
+      ### Version [v1.2.0-rc.0] - Jan 23, 2023
 
       - Initial release.
 
@@ -144,36 +208,36 @@ info:
     |[POST /oauth/token](#operation/getToken)|X||X|
     |--------------------------------||||
     |**[MERCHANT](#tag/merchantSection)**||||
-    |[GET /v1/merchant](#operation/getMerchant)||X||
-    |[POST /v1/merchantUpdate](#operation/menuUpdated)|X|||
-    |[GET /v1/merchantStatus](#tag/merchantStatus)|X|||
+    |[GET /merchant](#operation/getMerchant)||X||
+    |[POST /merchantUpdate](#operation/menuUpdated)|X|||
+    |[GET /merchantStatus](#tag/merchantStatus)|X|||
     |--------------------------------||||
     |**[ORDER](#tag/ordersSection)**||||
-    |[GET /v1/events:polling ](#operation/pollingEvents)|X|||
-    |[POST /v1/events/acknowledgment](#operation/pollingAcknowledgment)|X|||
-    |[POST /v1/orderUpdate](#operation/newEvent)||X||
+    |[GET /events:polling ](#operation/pollingEvents)|X|||
+    |[POST /events/acknowledgment](#operation/pollingAcknowledgment)|X|||
+    |[POST /orderUpdate](#operation/newEvent)||X||
     |||||
-    |[GET /v1/orders/{orderId}](#operation/ordersDetails)|X|||
-    |[POST /v1/orders/{orderId}/confirm](#operation/confirmOrder)|X|||
-    |[POST /v1/orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
-    |[POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)|X|||
-    |[POST /v1/orders/{orderId}/delivered](#operation/orderDelivered)|X|||
+    |[GET /orders/{orderId}](#operation/ordersDetails)|X|||
+    |[POST /orders/{orderId}/confirm](#operation/confirmOrder)|X|||
+    |[POST /orders/{orderId}/readyForPickup](#operation/orderReady)|X|||
+    |[POST /orders/{orderId}/dispatch](#operation/dispatchOrder)|X|||
+    |[POST /orders/{orderId}/delivered](#operation/orderDelivered)|X|||
     |||||
-    |[POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
-    |[POST /v1/orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)|X|||
-    |[POST /v1/orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
+    |[POST /orders/{orderId}/requestCancellation](#operation/requestCancellation)|X|||
+    |[POST /orders/{orderId}/acceptCancellation](#operation/cancellationAccepted)|X|||
+    |[POST /orders/{orderId}/denyCancellation](#operation/cancellationDenied)|X|||
     |||||
-    |[POST /v1/orders/{orderId}/tracking](#operation/orderTracking)|X|||
+    |[POST /orders/{orderId}/tracking](#operation/orderTracking)|X|||
     |--------------------------------||||
     |**[LOGISTICS](#tag/logisticsSection)**||||
-    |[POST /v1/logistics/delivery](#operation/logisticsNewDelivery)|||X|
-    |[POST /v1/logistics/orderPicked/{orderId}](#operation/logisticsPicked)|||X|
-    |[POST /v1/logistics/finishDelivery/{orderId}](#operation/logisticsFinish)|||X|
-    |[POST /v1/logistics/handleProblem/{orderId}](#operation/logisticsProblem)|||X|
-    |[POST /v1/logistics/cancel/{orderId}](#operation/logisticsCancel)|||X|
-    |[GET /v1/logistics/delivery/{orderId}](#operation/logisticDetails)|||X|
-    |[POST /v1/logistics/availability](#tag/logisticPrice)|||X|
-    |[POST /v1/deliveryUpdate](#operation/newLogisticEvent) |X|X||
+    |[POST /logistics/delivery](#operation/logisticsNewDelivery)|||X|
+    |[POST /logistics/orderPicked/{orderId}](#operation/logisticsPicked)|||X|
+    |[POST /logistics/finishDelivery/{orderId}](#operation/logisticsFinish)|||X|
+    |[POST /logistics/handleProblem/{orderId}](#operation/logisticsProblem)|||X|
+    |[POST /logistics/cancel/{orderId}](#operation/logisticsCancel)|||X|
+    |[GET  /logistics/delivery/{orderId}](#operation/logisticDetails)|||X|
+    |[POST /logistics/availability](#tag/logisticPrice)|||X|
+    |[POST /deliveryUpdate](#operation/newLogisticEvent) |X|X||
 
       ## Parametrizations
 
@@ -348,14 +412,18 @@ info:
 #############################################################
 
 tags:
+  - name: footer
+    x-displayName: ''
+    x-traitTag: true
+
   # Versions
 
-  - name: versionsSection
-    x-displayName: '└─■ WORKING VERSIONS'
+  - name: configSection
+    x-displayName: '└─■ CONFIGURATIONS'
     x-traitTag: true
 
   - name: versionsEndpoint
-    x-displayName: '└───● Versions Listing'
+    x-displayName: '└───● Versions Listing and Configs'
     description: |-
 
       Because Open Delivery does not have its own servers and relies on the implementation of the endpoints by the platforms of the companies using the standard, it can happen that two platforms are using different versions of the Open Delivery API.
@@ -971,26 +1039,8 @@ tags:
 x-tagGroups:
   - name: ''
     tags:
-      - versionsSection
-      - versionsEndpoint
-  - name: '_______________________________________'
-    tags:
       - securitySection
       - authentication
-  - name: '_______________________________________'
-    tags:
-      - merchantSection
-  - name: '└──◌ Overview and Structure'
-    tags:
-      - merchantOverview
-      - merchantStructure
-  - name: '└──◌ api'
-    tags:
-      - merchantEndpoints
-  - name: '└──◌ Updates and Status'
-    tags:
-      - merchantUpdate
-      - merchantStatus
   - name: '_______________________________________'
     tags:
       - ordersSection
@@ -1008,7 +1058,21 @@ x-tagGroups:
     tags:
       - ordersStatus
       - ordersCancellation
-      - ordersTracking
+      - ordersTracking  
+  - name: '_______________________________________'
+    tags:
+      - merchantSection
+  - name: '└──◌ Overview and Structure'
+    tags:
+      - merchantOverview
+      - merchantStructure
+  - name: '└──◌ api'
+    tags:
+      - merchantEndpoints
+  - name: '└──◌ Updates and Status'
+    tags:
+      - merchantUpdate
+      - merchantStatus
   - name: "_______________________________________"
     tags:
       - logisticsSection
@@ -1019,6 +1083,13 @@ x-tagGroups:
       - logisticTracking
       - logisticDetails
       - logisticPrice
+  - name: '_______________________________________'
+    tags:
+      - configSection
+      - versionsEndpoint
+  - name: '_______________________________________'
+    tags:
+      - footer     
 
 #############################################################
 
@@ -2079,7 +2150,7 @@ x-webhooks:
           required: true
           schema:
             type: 'string'
-            format: 'UUID'
+            format: 'uuid'
             description: 'An unique Identificator of the `**Ordering Applications**`. The same ID must be sent to all `**Software Service**s` that implements this webhook.'
         - in: 'header'
           name: 'X-App-MerchantId'
@@ -2176,6 +2247,7 @@ x-webhooks:
 #############################################################
 
 components:
+
   securitySchemes:
     apiKey:
       type: apiKey
@@ -2306,7 +2378,6 @@ components:
           schema:
             $ref: "#/components/schemas/DeliveryCancel"
 
-
   responses:
     OK:
       description: 'Request has been processed.'
@@ -2398,6 +2469,9 @@ components:
               enum:
                 - '1.0.0'
                 - '1.0.1'
+                - '1.1.0'
+                - '1.1.1'
+                - '1.2.0'
         order:
           type: 'object'
           description: "Information regarding the **Order's** standard endpoints."
@@ -2421,6 +2495,9 @@ components:
               enum:
                 - '1.0.0'
                 - '1.0.1'
+                - '1.1.0'
+                - '1.1.1'
+                - '1.2.0'
             availableEventsMethods:
               type: array
               description: 'Lists which methods for obtaining new order events the **Software Service** can use with this **Ordering Application**.'
@@ -2440,6 +2517,9 @@ components:
           enum:
             - '1.0.0'
             - '1.0.1'
+            - '1.1.0'
+            - '1.1.1'
+            - '1.2.0'
         ordersWebhook:
           type: 'string'
           description: |-
@@ -2447,6 +2527,9 @@ components:
           enum:
             - '1.0.0'
             - '1.0.1'
+            - '1.1.0'
+            - '1.1.1'
+            - '1.2.0'
 
     # Authentication
 
@@ -2692,7 +2775,7 @@ components:
             \nA new request must be done when the TTL expires."
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description:
             "Unique Identifier. Must be formatted with `Merchant Document + UUID`
             \n\n This id must be generated by the company responsible for the merchant's menu and have to be informed in the Order object by the ***Ordering Application***."
@@ -2776,7 +2859,7 @@ components:
         document:
           type: 'string'
           description: 'Merchant Document'
-          pattern: "/^\\d{14}$/"
+          pattern: "^\\d{14}$"
           example: '22815773000169'
         corporateName:
           type: 'string'
@@ -2932,7 +3015,7 @@ components:
         properties:
           'merchantId':
             type: 'string'
-            format: 'UUID'
+            format: 'uuid'
           'name':
             type: 'string'
             description: 'Restaurant Name'
@@ -2947,7 +3030,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'Unique Identifier'
           example: 'f078e8e2-3044-4eec-b4a8-8359810de123'
         status:
@@ -3055,7 +3138,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the service area.'
           example: '01339e6d-520b-429e-bc7c-dcfd2df42278'
         polygon:
@@ -3167,7 +3250,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the service hours.'
           example: 'fb093d8c-2ca5-40fb-afcf-472fbdae81cc'
         weekHours:
@@ -3258,7 +3341,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the item.'
           example: '732bd31e-77fc-47ee-88ee-a0437f97b198'
         name:
@@ -3438,7 +3521,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the menu.'
           example: 'f627ccdc-6789-456f-a782-148538d5035b'
         name:
@@ -3467,7 +3550,7 @@ components:
           description: 'A list of the id values of the child `Category` entities that correspond to this `Menu` entity. Default assumes all `Category` entities are available in this menu.'
           items:
             type: 'string'
-            format: 'UUID'
+            format: 'uuid'
           example:
             [
               '92fad022-2c28-4239-a026-989f5b555cb7',
@@ -3482,7 +3565,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the category.'
           example: '92fad022-2c28-4239-a026-989f5b555cb7'
         index:
@@ -3538,7 +3621,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the item offer.'
           example: 'f080cfb3-5c4a-4eb7-907d-2de3bbb5dfb9'
         itemId:
@@ -3595,7 +3678,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the option group.'
           example: 'fe67e551-f42f-499a-8afb-0ed893c71fa3'
         index:
@@ -3646,7 +3729,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the option.'
           example: 'e5232f14-430c-4a94-8ff6-289d5a16a87a'
         itemId:
@@ -3681,7 +3764,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the availability.'
           example: '11d063c4-73a7-4f87-a0eb-71636cc02029'
         startDate:
@@ -3882,7 +3965,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the event.'
         orderId:
           $ref: '#/components/schemas/Order/properties/id'
@@ -3908,7 +3991,7 @@ components:
       properties:
         id:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'The unique identifier of the order. The order ID is generated by the **Ordering Application**.'
         'type':
           type: 'string'
@@ -3988,7 +4071,7 @@ components:
             properties:
               id:
                 type: 'string'
-                format: 'UUID'
+                format: 'uuid'
                 description: 'A unique identifier of the item.'
               index:
                 type: 'integer'
@@ -4072,7 +4155,7 @@ components:
                       description: "Option's position."
                     id:
                       type: 'string'
-                      format: 'UUID'
+                      format: 'uuid'
                       description: 'A unique identifier of the item.'
                     name:
                       type: 'string'
@@ -4302,7 +4385,7 @@ components:
           properties:
             id:
               type: 'string'
-              format: 'UUID'
+              format: 'uuid'
               description: 'A unique identifier related to the consumer. If the Ordering Application does not have an Id for the customer, this Id can be generated when creating the order. '
             phone:
               type: 'object'
@@ -4480,6 +4563,14 @@ components:
             `true`: Indicates that the `Ordering Application` is waiting for a request.
 
             `false` or `not informed`: It is not required to make a request.    
+        sendTracking:
+          type: 'boolean'
+          description: |- 
+            This field indicates whether it is necessary for the `Software Service` to make a request to the [POST /v1/orders/{orderId}/tracking](#operation/orderTracking) endpoint to inform the `Ordering Application` about delivery updates.
+
+            `true`: Indicates that the `Ordering Application` is waiting for a request.
+
+            `false` or `not informed`: It is not required to make a request.    
         extraInfo:
           type: 'string'
           description: 'Extra information, if necessary.'
@@ -4540,7 +4631,7 @@ components:
           type: 'array'
           description: "Items that do not exist in the merchant's inventory."
           items:
-            format: 'UUID'
+            format: 'uuid'
             type: string
 
     RequestDenied:
@@ -4578,7 +4669,7 @@ components:
       properties:
         eventId:
           type: 'string'
-          format: 'UUID'
+          format: 'uuid'
           description: 'A unique identifier of the event.'
         eventType:
           type: 'string'
@@ -5362,6 +5453,10 @@ components:
           description: "Total order price that was calculated and displayed for the final consumer in the **`Ordering Application`**. This value may already contain taxes and shipping in addition to the value of the items purchased."
           allOf:
             - $ref: "#/components/schemas/Price"
+        orderDeliveryFee:
+          description: "This field informs the delivery fee paid by the consumer in the **`Ordering Application`**."
+          allOf:
+            - $ref: "#/components/schemas/Price"            
         totalWeight:
           type: integer
           description: "Total packaging weight in **grams**"
@@ -5939,6 +6034,10 @@ components:
           description: "Total order price that was calculated and displayed for the final consumer in the **`Ordering Application`**. This value may already contain taxes and shipping in addition to the value of the items purchased."
           allOf:
             - $ref: "#/components/schemas/Price"
+        orderDeliveryFee:
+          description: "This field informs the delivery fee paid by the consumer in the **`Ordering Application`**."
+          allOf:
+            - $ref: "#/components/schemas/Price"                            
         totalWeight:
           type: integer
           description: "Total Weight in **grams**"
@@ -6590,7 +6689,7 @@ components:
                   CRC-32: 09345UIHF98,
                 },
               serving: 8,
-              unit: 'unit',
+              unit: 'UN',
             },
             {
               id: 'b728fd88-4af0-43f7-956f-95c251f01ddd',
@@ -6603,7 +6702,7 @@ components:
                   CRC-32: 09345UIHF98,
                 },
               serving: 4,
-              unit: 'unit',
+              unit: 'UN',
             },
             {
               id: '502ecf11-0509-48ed-b63c-6211c48fd9b9',
@@ -6621,7 +6720,7 @@ components:
                   calories: '2000 Cal',
                   allergen: ['GLUTEN'],
                 },
-              unit: 'unit',
+              unit: 'UN',
             },
             {
               id: 7e507cab-7235-4f75-a0c2-e955fb2f2048,
@@ -6639,7 +6738,7 @@ components:
                   calories: '2500 Cal',
                   allergen: ['GLUTEN', 'LACTOSE'],
                 },
-              unit: 'unit',
+              unit: 'UN',
             },
             {
               id: 2c0f3447-5309-49cc-a167-4eac5c664470,
@@ -6657,7 +6756,7 @@ components:
                   calories: '2500 Cal',
                   allergen: ['GLUTEN'],
                 },
-              unit: 'unit',
+              unit: 'UN',
             },
           ]
         menus:
