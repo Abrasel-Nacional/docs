@@ -6,66 +6,66 @@
 
 - [POST /orders/{orderId}/tracking](#operation/orderTracking)
 
-- Added a new endpoint [POST /orders/{orderId}/tracking](#operation/orderTracking) for sending delivery information to the `Ordering Application`.
+  - Added a new endpoint [POST /orders/{orderId}/tracking](#operation/orderTracking) for sending delivery information to the `Ordering Application`.
 
 - [GET /v1/orders/{orderId}](#operation/ordersDetails)
 
-- Added new optional field `sendTracking` to control whether or not the `Software Service` should call the [POST /orders/{orderId}/tracking](#operation/orderTracking) endpoint.
+  - Added new optional field `sendTracking` to control whether or not the `Software Service` should call the [POST /orders/{orderId}/tracking](#operation/orderTracking) endpoint.
+  
+  - Added a new option to work with **'TABs'** for **INDOOR** orders. This can be used by establishments that control orders via tabs or control cards. As a result, the following changes have been made:
 
-- Added a new option to work with **'TABs'** for **INDOOR** orders. This can be used by establishments that control orders via tabs or control cards. As a result, the following changes have been made:
+    - Added new `TAB` enum, to the `indoor.mode` propertie.
+    - Added new `indoor.tab` propertie.
+  
+  - Added an optional field `customer.email` to inform the customer email.
 
-  - Added new `TAB` enum, to the `indoor.mode` propertie.
-  - Added new `indoor.tab` propertie.
+  - Removed the requirement to send the `customer` object
 
-- Added an optional field `customer.email` to inform the customer email.
-
-- Removed the requirement to send the `customer` object
-
-- Removed the requirement to send the `customer.document` propertie
+  - Removed the requirement to send the `customer.document` propertie
 
 - [POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)
 
-- Added new object `deliveryTRackingInfo` to send delivery informations to the `Ordering Application` when dispatching the order
+  - Added new object `deliveryTRackingInfo` to send delivery informations to the `Ordering Application` when dispatching the order
 
 - [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
 
-- Added `DELIVERY_PROBLEM` as a new enum option to the `code` propertie. 
+  - Added `DELIVERY_PROBLEM` as a new enum option to the `code` propertie. 
 
 - [GET /v1/events:polling ](#operation/pollingEvents)
 
-- Removed the requirement of the `x-polling-merchants` parameter.
+  - Removed the requirement of the `x-polling-merchants` parameter.
 
 #### LOGISTICS changes
 
 - [POST /v1/logistics/delivery](#operation/logisticsNewDelivery)
 
-- Added a new optional field `orderDeliveryFee` to inform to the `Logistics Service` the customer's paid shipping fee in the `Ordering Application`
+  - Added a new optional field `orderDeliveryFee` to inform to the `Logistics Service` the customer's paid shipping fee in the `Ordering Application`
 
 - [POST /v1/logistics/availability](#tag/logisticPrice)
 
-- Added a new optional field `orderDeliveryFee` to inform to the `Logistics Service` the customer's paid shipping fee in the `Ordering Application`
+  - Added a new optional field `orderDeliveryFee` to inform to the `Logistics Service` the customer's paid shipping fee in the `Ordering Application`
 
 - [GET /v1/logistics/delivery/{orderId}](#operation/logisticDetails)
 
-- Fixed the `problem.actionTaken` propertie type to string instead of boolean
+  - Fixed the `problem.actionTaken` propertie type to string instead of boolean
 
 #### SECURITY changes
 
 - [POST /oauth/token](#operation/getToken)
 
-- Fixed the `client_secret` propertie type to string instead of integer
+  - Fixed the `client_secret` propertie type to string instead of integer
 
 - All endpoints that uses oAuth2 authentication:
 
-- Added the 401 - Unauthorized response to be used when the credentials are not valid (the 403 response can still be used).
+  - Added the 401 - Unauthorized response to be used when the credentials are not valid (the 403 response can still be used).
 
 #### MERCHANT changes
 
 - [GET /v1/merchant](#operation/getMerchant)
 
-- Removed the requirement of the `categories.availabilityId` propertie.
+  - Removed the requirement of the `categories.availabilityId` propertie.
 
-- Removed the requirement of the `itemOffers.availabilityId` propertie.
+  - Removed the requirement of the `itemOffers.availabilityId` propertie.
 
 #### OTHERS changes
 
