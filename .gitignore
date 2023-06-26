@@ -4,3 +4,4 @@ openapi_pt.yaml
 openapi copy.yaml
 versions/1_2_0-rcX/
 versions/1_2_0-rcX/openapi_1.2.0.yaml
+.vscode/settings.json
