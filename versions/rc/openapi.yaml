@@ -1187,7 +1187,6 @@ paths:
         '503':
           $ref: '#/components/responses/ServiceUnavailable'
 
-
   # Merchant
 
   /v1/merchant:
@@ -1376,15 +1375,16 @@ paths:
               **Event Types definitions:**
               > `CREATED` : Order created.\
               > `CONFIRMED` : Order confirmed.\
+              > `READY_FOR_PICKUP`: Order ready for pickup by the customer or delivery person.\
               > `DISPATCHED` : Order went out for delivery.\
-              > `READY_FOR_PICKUP`: Order ready for pickup.\
               > `PICKUP_AREA_ASSIGNED` : Designated area to pick up the order.\
-              > [NEW] `DELIVERED` : Order has been delivered.
+              > `DELIVERED` : Order has been delivered.\
               > `CONCLUDED` : Order completed.\
               > `CANCELLATION_REQUESTED` : Sent by the **Software Service** to the **Ordering Application**.\
               > `CANCELLATION_REQUEST_DENIED` : It must be sent from the **Ordering Application** to the **Software Service**.\
               > `CANCELLED` : When the order is actually cancelled.\
               > `ORDER_CANCELLATION_REQUEST`: It must be sent from the **Ordering Application** to the **Software Service**.
+              > `CANCELLED_DENIED`: When the cancellation request from the **Ordering Application** is denied by the **Software Service**.
             items:
               type: 'string'
               description: 'The event type. **[Click here](#operation/pollingEvents)** for definitions of each type.'
@@ -1400,8 +1400,7 @@ paths:
                 - 'CANCELLATION_REQUEST_DENIED'
                 - 'CANCELLED'
                 - 'ORDER_CANCELLATION_REQUEST'
-            
-      
+                - 'CANCELLED_DENIED'     
             maxItems: 15
       tags:
         - 'ordersPolling'
@@ -1409,9 +1408,9 @@ paths:
       security:
         - OAuth2: [od.all]
       description: |-
-        "Polls events for any orders from merchants associated with the authenticated user.
+        Polls events for any orders from merchants associated with the authenticated user.  
         Each event received from this endpoint must be properly acknowledged, otherwise it will continue to be returned on further requests.
-        In the body of the request, send an array containing only the event ids. Each request accepts a list of at most 2000 event ids."
+
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
 
@@ -1428,6 +1427,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Event'
+                maxItems: 1000  
         '204':
           description: 'No content.'
         '400':
@@ -1540,7 +1540,10 @@ paths:
       security:
         - OAuth2: [od.all]
       description: |-
-        Confirms receipt of order.
+        Informs the **Ordering Application** that the order has been accpeted and preparation will start soon.
+
+        > It is expected to receive a `CONFIRMED` event after this action.
+
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
 
@@ -1583,7 +1586,10 @@ paths:
       security:
         - OAuth2: [od.all]
       description: |-
-        Request order cancellation.
+        Request order cancellation to the **Ordering Application**.
+
+        > It is expected to receive a `CANCELLATION_REQUESTED` event after this action.
+
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
 
@@ -1624,7 +1630,10 @@ paths:
       security:
         - OAuth2: [od.all]
       description: |-
-        Accept order cancellation"
+        Informs the **Ordering Application** that the cancellation request has been accepted and the order can be Cancelled.
+
+        > It is expected to receive a `CANCELLED` event after this action.
+
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
 
@@ -1669,7 +1678,10 @@ paths:
       security:
         - OAuth2: [od.all]
       description: |-
-        Order Cancellation denied.
+        Informs the **Ordering Application** that the cancellation request has been denied and the order cannot be Cancelled.
+
+        > It is expected to receive a `CANCELLATION_DENIED` event after this action.
+
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
 
@@ -1712,7 +1724,10 @@ paths:
       security:
         - OAuth2: [od.all]
       description: |-
-        Informs you that the order is ready for pickup
+        Informs the **Ordering Application** that the order is ready for pickup.
+
+        > It is expected to receive a `READY_FOR_PICKUP` event after this action.
+
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
 
@@ -1758,7 +1773,10 @@ paths:
       security:
         - OAuth2: [od.all]
       description: |-
-        Dispatch an Order.
+        Informs the **Ordering Application** that the order has been dispatched.
+
+        > It is expected to receive a `DISPATCHED` event after this action.
+
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **ORDERING APPLICATION**
 
@@ -1799,7 +1817,9 @@ paths:
       security:
         - OAuth2: [od.all]
       description: |-
-        Inform the **Ordering Application** that the order has been delivered.
+        Informs the **Ordering Application** that the order has been delivered.
+
+        > It is expected to receive a `DELIVERED` event after this action.
 
         Important: This endpoint is not mandatory and should be sent only if the **Ordering Application** is able to receive this request and only in cases where the order logistics service is provided by the Merchant and not the Marketplace.
 
@@ -4069,6 +4089,7 @@ components:
             - 'CANCELLATION_REQUEST_DENIED'
             - 'CANCELLED'
             - 'ORDER_CANCELLATION_REQUEST'
+            - 'CANCELLED_DENIED'
 
     Order:
       type: 'object'
@@ -4128,6 +4149,7 @@ components:
             - 'CANCELLATION_REQUEST_DENIED'
             - 'CANCELLED'
             - 'ORDER_CANCELLATION_REQUEST'
+            - 'CANCELLED_DENIED'
         orderTiming:
           type: 'string'
           description: 'Order Timing. Indicates whether the ORDER will have immediate or scheduled delivery.'
@@ -4709,7 +4731,7 @@ components:
 
     RequestCancelled:
       type: 'object'
-      title: 'Request Cancelled'
+      title: 'Request Cancelattion'
       required: ['reason', 'code', 'mode']
       properties:
         reason:
@@ -4731,6 +4753,7 @@ components:
             - DELIVERY_PROBLEM
         mode:
           type: 'string'
+          description: 'Indicates whether the cancellation request was made by an automatic or manual process in the Software Service'
           enum:
             - 'AUTO'
             - 'MANUAL'
@@ -4781,6 +4804,7 @@ components:
           CANCELLATION_REQUESTED: '#/components/schemas/EventMetadataCancel'
           CANCELLATION_REQUEST_DENIED: '#/components/schemas/EventMetadataCancel'
           CANCELLED: '#/components/schemas/EventMetadataCancel'
+          CANCELLED_DENIED: '#/components/schemas/EventMetadataCancel'
       properties:
         eventId:
           type: 'string'
@@ -4801,6 +4825,7 @@ components:
             - 'CANCELLATION_REQUEST_DENIED'
             - 'CANCELLED'
             - 'ORDER_CANCELLATION_REQUEST'
+            - 'CANCELLED_DENIED'
         orderId:
           type: 'string'
           format: 'uuid'
@@ -4837,6 +4862,17 @@ components:
                   type: 'string'
                   description: 'Cancelation reason code'
                   enum:
+                    - SYSTEMIC_ISSUES
+                    - DUPLICATE_APPLICATION
+                    - UNAVAILABLE_ITEM
+                    - RESTAURANT_WITHOUT_DELIVERY_PERSON
+                    - OUTDATED_MENU
+                    - ORDER_OUTSIDE_THE_DELIVERY_AREA
+                    - BLOCKED_CUSTOMER
+                    - OUTSIDE_DELIVERY_HOURS
+                    - INTERNAL_DIFFICULTIES_OF_THE_RESTAURANT
+                    - RISK_AREA
+                    - DELIVERY_PROBLEM
                     - CONSUMER_CANCELLATION_REQUESTED
                     - OTHER_CANCELLATION_REASON
                 clientId:
