@@ -211,6 +211,7 @@ info:
     |[GET /merchant](#operation/getMerchant)||X||
     |[POST /merchantUpdate](#operation/menuUpdated)|X|||
     |[GET /merchantStatus](#tag/merchantStatus)|X|||
+    |[PUT /merchantOnboarding](#operation/putMerchantOnboarding)|X|||
     |--------------------------------||||
     |**[ORDER](#tag/ordersSection)**||||
     |[GET /events:polling ](#operation/pollingEvents)|X|||
@@ -679,7 +680,7 @@ tags:
     x-traitTag: true
 
   - name: ordersPolling
-    x-displayName: └───● Polling (Required)
+    x-displayName: └───● Polling
     description: |-
 
       Receiving events via Polling works as follows:
@@ -729,7 +730,7 @@ tags:
       > **Software Services** only needs to send acknowledgment of the event once."
 
   - name: ordersWebhook
-    x-displayName: └───● Webhook (Optional)
+    x-displayName: └───● Webhook
     description: |-
 
       Receiving events via Webhook works as follows:
@@ -1204,7 +1205,7 @@ paths:
          >  This endpoint can optionally require an **apiKey** for authentication.
          >  Check with the **Software Service** that hosts the endpoint whether authentication is required or not.
 
-         > If the Ordering Application has the PUT /merchantOnboarding endpoint implemented, the Software Service can pass the endpoint data through this operation.
+         > If the Ordering Application has the [PUT /merchantOnboarding](#operation/putMerchantOnboarding) endpoint implemented, the Software Service can pass the endpoint data through this operation.
 
         <br /><br />
         <span style="text-decoration:underline; color:#26323880; font-size:13.006px">HOST:</span> **SOFTWARE SERVICE**
@@ -2527,23 +2528,6 @@ components:
   schemas:
     # Versions
 
-    VersionRequest:
-      type: 'object'
-      title: 'TokenRequest'
-      required: ['client_id', 'client_secret', 'grant_type']
-      properties:
-        client_id:
-          type: 'string'
-          description: 'Client identifier provided by the **Ordering Application**.'
-        client_secret:
-          type: 'integer'
-          description: 'Client Secret provided by the **Ordering Application**.'
-        grant_type:
-          type: 'string'
-          description: 'The OAuth grant type. Currently, the only supported grant type is `client_credentials`.'
-          enum:
-            - 'client_credentials'
-
     VersionOrderingApp:
       type: 'object'
       properties:
@@ -3098,23 +3082,6 @@ components:
               - 'AVISTA'
               - 'OTHER'
     
-    ListMerchant:
-      type: 'array'
-      title: 'MerchantList'
-      items:
-        type: 'object'
-        required: ['merchantId', 'name']
-        properties:
-          'merchantId':
-            type: 'string'
-            format: 'uuid'
-          'name':
-            type: 'string'
-            description: 'Restaurant Name'
-          'merchantURL':
-            type: 'string'
-            description: 'Optional merchant URL.'
-
     Service:
       type: 'object'
       title: 'Service'
@@ -5382,52 +5349,52 @@ components:
           pattern: '^[A-Z]{3}$'
           description: 'The 3-letter ISO 4217 currency code.'
           example: 'BRL'
-
-    Repository:
-      type: 'object'
-      title: 'Repository'
-      required:
-        [
-          'document',
-          'corporateName',
-          'postalCode',
-          'email',
-          'website',
-          'baseApiUrl',
-          'TTL',
-          'hostCompanyDocument',
-        ]
-      properties:
-        document:
-          type: 'string'
-          description: 'Company registration document'
-          pattern: "/^\\d{14}$/"
-        corporateName:
-          type: 'string'
-          description: 'Corporate Name'
-          maxLength: 500
-        postalCode:
-          type: 'string'
-          description: 'Postal Code'
-        email:
-          type: 'string'
-          description: 'Contact Email. It is recommended that a contact be made available to deal with specific **Open Delivery** issues.'
-        website:
-          type: 'string'
-          format: 'URL'
-          description: 'Company Website. It is recommended to have a website (or landing page) with information about how the company works with Open Delivery.'
-        baseApiUrl:
-          type: 'string'
-          format: 'URL'
-          description: "Base URL of the endpoints with the company's data. It will be used by the indexing system to search the establishments under the responsibility of the menu software (see endpoint) and to search public menus (see endpoint)."
-        hostCompanyDocument:
-          type: 'string'
-          description: '**Software Service** registration document that provides the merchant information.'
-          pattern: "/^\\d{14}$/"
-        TTL:
-          type: 'integer'
-          description: "Time to Live (in seconds).
-            \nA new request must be done when the TTL expires."
+    
+    # Repository:
+    #   type: 'object'
+    #   title: 'Repository'
+    #   required:
+    #     [
+    #       'document',
+    #       'corporateName',
+    #       'postalCode',
+    #       'email',
+    #       'website',
+    #       'baseApiUrl',
+    #       'TTL',
+    #       'hostCompanyDocument',
+    #     ]
+    #   properties:
+    #     document:
+    #       type: 'string'
+    #       description: 'Company registration document'
+    #       pattern: "/^\\d{14}$/"
+    #     corporateName:
+    #       type: 'string'
+    #       description: 'Corporate Name'
+    #       maxLength: 500
+    #     postalCode:
+    #       type: 'string'
+    #       description: 'Postal Code'
+    #     email:
+    #       type: 'string'
+    #       description: 'Contact Email. It is recommended that a contact be made available to deal with specific **Open Delivery** issues.'
+    #     website:
+    #       type: 'string'
+    #       format: 'URL'
+    #       description: 'Company Website. It is recommended to have a website (or landing page) with information about how the company works with Open Delivery.'
+    #     baseApiUrl:
+    #       type: 'string'
+    #       format: 'URL'
+    #       description: "Base URL of the endpoints with the company's data. It will be used by the indexing system to search the establishments under the responsibility of the menu software (see endpoint) and to search public menus (see endpoint)."
+    #     hostCompanyDocument:
+    #       type: 'string'
+    #       description: '**Software Service** registration document that provides the merchant information.'
+    #       pattern: "/^\\d{14}$/"
+    #     TTL:
+    #       type: 'integer'
+    #       description: "Time to Live (in seconds).
+    #         \nA new request must be done when the TTL expires."
 
     Error:
       type: object
@@ -6655,130 +6622,130 @@ components:
         client_secret: 'ty23yhmas4ldfias9834023jsdf032j023f02'
         grant_type: 'client_credentials'
 
-    orderExample:
-      summary: 'Sample Order'
-      value:
-        id: '4818e72f-2304-466f-9fe7-af08f34ac4ed'
-        type: 'DELIVERY'
-        displayId: '12345'
-        createdAt: '2021-05-27T19:38:10.332Z'
-        orderTiming: 'INSTANT'
-        preparationStartDateTime: '2021-05-27T19:45:10.332Z'
-        merchant:
-          id: "7fb59cb8-5808-40c8-b967-1b3f20ee39cd"
-          name: 'Plaza Pizza'
-        items:
-          [
-            {
-              id: "732bd31e-77fc-47ee-88ee-a0437f97b198",
-              index: 0,
-              name: 'Medium - 2 flavors',
-              externalCode: '22',
-              unit: 'UNIT',
-              quantity: 1,
-              specialInstructions: 'Do not put onions.',
-              unitPrice: { value: 43.00, currency: 'BRL' },
-              optionsPrice: { value: 50.00, currency: 'BRL' },
-              totalPrice: { value: 50.00, currency: 'BRL' },
-              options:
-                [
-                  {
-                    id: "e5232f14-430c-4a94-8ff6-289d5a16a87a",
-                    name: '1/2 Pepperoni',
-                    externalCode: '23',
-                    unit: 'UNIT',
-                    quantity: 1,
-                    unitPrice: { value: 50.00, currency: 'BRL' },
-                    price: { value: 50.00, currency: 'BRL' },
-                    specialInstructions: 'None',
-                  },
-                  {
-                    id: "7e507cab-7235-4f75-a0c2-e955fb2f2048",
-                    name: '1/2 Mozzarella',
-                    externalCode: '24',
-                    unit: 'UNIT',
-                    quantity: 1,
-                    unitPrice: { value: 30.00, currency: 'BRL' },
-                    price: { value: 30.00, currency: 'BRL' },
-                    specialInstructions: 'None',
-                  },
-                ],
-            },
-          ]
-        otherFees:
-          [
-            {
-              name: 'Delivery',
-              type: 'DELIVERY_FEE',
-              receivedBy: 'MARKETPLACE',
-              receiverDocument: '1234',
-              price: { value: 5.00, currency: 'BRL' },
-              observation: 'None',
-            },
-          ]
-        discounts:
-          [
-            {
-              amount: { value: 20.00, currency: 'BRL' },
-              target: 'DELIVERY_FEE',
-              sponsorshipValues:
-                [
-                  {
-                    name: 'MARKETPLACE',
-                    amount: { value: 10.00, currency: 'BRL' },
-                  },
-                  {
-                    name: 'MERCHANT',
-                    amount: { value: 10.00, currency: 'BRL' },
-                  },
-                ],
-            },
-          ]
-        total:
-          {
-            itemsPrice: { value: 50.00, currency: 'BRL' },
-            otherFees: { value: 5.00, currency: 'BRL' },
-            discount: { value: 20.00, currency: 'BRL' },
-            orderAmount: { value: 35.50, currency: 'BRL' },
-          }
-        payments:
-          prepaid: 55.00
-          pending: 0
-          methods:
-            [
-              {
-                value: 55.00,
-                currency: 'BRL',
-                method: 'FOOD_VOUCHER',
-                methodInfo: 'None',
-              },
-            ]
-        customer:
-          id: "d9730653-a8ba-4e85-8dbb-b5697e6ae8d5"
-          phone:
-            number: '11999999999'
-            extension: '0'
-          documentNumber: '12345'
-          name: 'John'
-          ordersCountOnMerchant: 1
-        delivery:
-          deliveredBy: 'MERCHANT'
-          deliveryAddress:
-            country: 'BR'
-            streetName: 'Gomes de Carvalho Street'
-            formattedAddress: 'string'
-            streetNumber: '100'
-            city: 'São Paulo'
-            postalCode: '20111-000'
-            coordinates:
-              latitude: -23.54754
-              longitude: -46.63611
-            neighborhood: 'Moema'
-            state: 'SP'
-            complement: '102'
-        estimatedDeliveryDateTime: '2021-05-27T20:45:10.332Z'
-        deliveryDateTime: '2021-05-27T20:47:10.443Z'
-        extraInfo: 'None'
+    # orderExample:
+    #   summary: 'Sample Order'
+    #   value:
+    #     id: '4818e72f-2304-466f-9fe7-af08f34ac4ed'
+    #     type: 'DELIVERY'
+    #     displayId: '12345'
+    #     createdAt: '2021-05-27T19:38:10.332Z'
+    #     orderTiming: 'INSTANT'
+    #     preparationStartDateTime: '2021-05-27T19:45:10.332Z'
+    #     merchant:
+    #       id: "7fb59cb8-5808-40c8-b967-1b3f20ee39cd"
+    #       name: 'Plaza Pizza'
+    #     items:
+    #       [
+    #         {
+    #           id: "732bd31e-77fc-47ee-88ee-a0437f97b198",
+    #           index: 0,
+    #           name: 'Medium - 2 flavors',
+    #           externalCode: '22',
+    #           unit: 'UNIT',
+    #           quantity: 1,
+    #           specialInstructions: 'Do not put onions.',
+    #           unitPrice: { value: 43.00, currency: 'BRL' },
+    #           optionsPrice: { value: 50.00, currency: 'BRL' },
+    #           totalPrice: { value: 50.00, currency: 'BRL' },
+    #           options:
+    #             [
+    #               {
+    #                 id: "e5232f14-430c-4a94-8ff6-289d5a16a87a",
+    #                 name: '1/2 Pepperoni',
+    #                 externalCode: '23',
+    #                 unit: 'UNIT',
+    #                 quantity: 1,
+    #                 unitPrice: { value: 50.00, currency: 'BRL' },
+    #                 price: { value: 50.00, currency: 'BRL' },
+    #                 specialInstructions: 'None',
+    #               },
+    #               {
+    #                 id: "7e507cab-7235-4f75-a0c2-e955fb2f2048",
+    #                 name: '1/2 Mozzarella',
+    #                 externalCode: '24',
+    #                 unit: 'UNIT',
+    #                 quantity: 1,
+    #                 unitPrice: { value: 30.00, currency: 'BRL' },
+    #                 price: { value: 30.00, currency: 'BRL' },
+    #                 specialInstructions: 'None',
+    #               },
+    #             ],
+    #         },
+    #       ]
+    #     otherFees:
+    #       [
+    #         {
+    #           name: 'Delivery',
+    #           type: 'DELIVERY_FEE',
+    #           receivedBy: 'MARKETPLACE',
+    #           receiverDocument: '1234',
+    #           price: { value: 5.00, currency: 'BRL' },
+    #           observation: 'None',
+    #         },
+    #       ]
+    #     discounts:
+    #       [
+    #         {
+    #           amount: { value: 20.00, currency: 'BRL' },
+    #           target: 'DELIVERY_FEE',
+    #           sponsorshipValues:
+    #             [
+    #               {
+    #                 name: 'MARKETPLACE',
+    #                 amount: { value: 10.00, currency: 'BRL' },
+    #               },
+    #               {
+    #                 name: 'MERCHANT',
+    #                 amount: { value: 10.00, currency: 'BRL' },
+    #               },
+    #             ],
+    #         },
+    #       ]
+    #     total:
+    #       {
+    #         itemsPrice: { value: 50.00, currency: 'BRL' },
+    #         otherFees: { value: 5.00, currency: 'BRL' },
+    #         discount: { value: 20.00, currency: 'BRL' },
+    #         orderAmount: { value: 35.50, currency: 'BRL' },
+    #       }
+    #     payments:
+    #       prepaid: 55.00
+    #       pending: 0
+    #       methods:
+    #         [
+    #           {
+    #             value: 55.00,
+    #             currency: 'BRL',
+    #             method: 'FOOD_VOUCHER',
+    #             methodInfo: 'None',
+    #           },
+    #         ]
+    #     customer:
+    #       id: "d9730653-a8ba-4e85-8dbb-b5697e6ae8d5"
+    #       phone:
+    #         number: '11999999999'
+    #         extension: '0'
+    #       documentNumber: '12345'
+    #       name: 'John'
+    #       ordersCountOnMerchant: 1
+    #     delivery:
+    #       deliveredBy: 'MERCHANT'
+    #       deliveryAddress:
+    #         country: 'BR'
+    #         streetName: 'Gomes de Carvalho Street'
+    #         formattedAddress: 'string'
+    #         streetNumber: '100'
+    #         city: 'São Paulo'
+    #         postalCode: '20111-000'
+    #         coordinates:
+    #           latitude: -23.54754
+    #           longitude: -46.63611
+    #         neighborhood: 'Moema'
+    #         state: 'SP'
+    #         complement: '102'
+    #     estimatedDeliveryDateTime: '2021-05-27T20:45:10.332Z'
+    #     deliveryDateTime: '2021-05-27T20:47:10.443Z'
+    #     extraInfo: 'None'
 
     merchantExample:
       summary: 'Merchant Example'
