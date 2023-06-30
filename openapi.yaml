@@ -4240,7 +4240,7 @@ components:
                       'unit',
                       'quantity',
                       'unitPrice',
-                      'price',
+                      'totalPrice',
                     ]
                   properties:
                     index:
@@ -4337,7 +4337,7 @@ components:
                 type: 'array'
                 items:
                   type: 'object'
-                  required: ['name', 'value']
+                  required: ['name', 'amount']
                   properties:
                     name:
                       type: 'string'
