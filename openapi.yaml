@@ -4509,6 +4509,12 @@ components:
               type: 'string'
               format: 'uuid'
               description: 'A unique identifier related to the consumer. If the Ordering Application does not have an Id for the customer, this Id can be generated when creating the order. '
+            name:
+              type: 'string'
+              description: "Customer's name."
+            documentNumber:
+              description: 'Customer document. This document may be sent for dealing with tax issues.'
+              type: 'string'
             phone:
               type: 'object'
               description: "Customer's phone. Here you can enter the customer's phone number directly (provided that the customer has given permission for this data to be shared, according to local policies) or another phone number (such as the ordering application's call center phone number) where the merchant can communicate about order issues that affect the customer (such as health issues)."
@@ -4518,12 +4524,6 @@ components:
                   type: 'string'
                 extension:
                   type: 'string'
-            documentNumber:
-              description: 'Customer document. This document may be sent for dealing with tax issues.'
-              type: 'string'
-            name:
-              type: 'string'
-              description: "Customer's name."
             email:
               description: 'Customer email. This document may be sent for dealing with tax issues.'
               type: 'string'              
