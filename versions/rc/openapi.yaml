@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API (Release Candidate)
-  version: 'v1.2.0-rc.5'
+  version: 'v1.3.0-rc.1'
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -40,88 +40,36 @@ info:
 
 
     **API Reference**   
-      - **[Security](#tag/securitySection)**
-      - **[Order](#tag/orderSection)**
-      - **[Merchant](#tag/merchantSection)**
-      - **[Logistics](#tag/logisticsSection)**
-      - **[Configurations](#tag/versionsSection)**
+    - **[Security](#tag/securitySection)**
+    - **[Order](#tag/orderSection)**
+    - **[Merchant](#tag/merchantSection)**
+    - **[Logistics](#tag/logisticsSection)**
+    - **[Configurations](#tag/versionsSection)**
 
     # └► Changelog
       
       Latest Changes:
 
-      ### Version [v1.2.0-rc.5] - Jun 15, 2023
+      ### Version [v1.3.0-rc.1] - Jul 27, 2023
+
+      #### ORDERS changes
 
       - [GET /v1/orders/{orderId}](#operation/ordersDetails)
 
-        - Added new optional field `sendTracking` to control whether or not the `Software Service` should call the [POST /orders/{orderId}/tracking](#operation/orderTracking) endpoint.
+        - Corrected the formula to calculate the `items.totalPrice` field, where the correct formula is:
         
-      - [POST /v1/logistics/delivery](#operation/logisticsNewDelivery)
+           **(quantity * (unitPrice + optionsPrice))**
 
-        - Added a new optional field `orderDeliveryFee` to inform to the `Logistics Service` the customer's paid shipping fee in the `Ordering Application`
+          Thus, multiplying both the value of the item and the options by the quantity.
+          
+          Before it was incorrectly informed as: (quantity * unitPrice + optionsPrice)  
+          This formula was not multiplying the options price by the quantity of items chosen.
 
-      - [POST /v1/logistics/availability](#tag/logisticPrice)
-
-        - Added a new optional field `orderDeliveryFee` to inform to the `Logistics Service` the customer's paid shipping fee in the `Ordering Application`
-
-      ### Version [v1.2.0-rc.4] - May 18, 2023
-
-      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
-
-        - Added an optional field `customer.email` to inform the customer email.
-
-      - [GET /v1/events:polling ](#operation/pollingEvents)
-
-        - Removed the requirement of the `x-polling-merchants` parameter.
-
-      - [POST /oauth/token](#operation/getToken)
-
-        - Fixed the `client_secret` propertie type to string instead of integer
-
-      - All endpoints that uses oAuth2 authentication:
-
-        - Added the 401 - Unauthorized response to be used when the credentials are not valid (the 403 response can still be used).
-
-      - [GET /v1/logistics/delivery/{orderId}](#operation/logisticDetails)
-
-        - Fixed the `problem.actionTaken` propertie type to string instead of boolean
-
-      ### Version [v1.2.0-rc.3] - Mar 23, 2023
+        - Added new optionals fields `items.originalPrice` and `items.options.originalPrice`  to inform the price of an item before applying markdowns on the list price.
       
-      - [POST /orders/{orderId}/tracking](#operation/orderTracking)
+        - Added the information that the `customer` object is **REQUIRED** when the `type` of the order is `DELIVERY`.
 
-        - Added a new endpoint [POST /orders/{orderId}/tracking](#operation/orderTracking) for sending delivery information to the `Ordering Application`.
-        
-      - [POST /v1/orders/{orderId}/requestCancellation](#operation/requestCancellation)
-
-        - Added `DELIVERY_PROBLEM` as a new enum option to the `code` propertie.  
-        
-      - [GET /v1/merchant](#operation/getMerchant)
-
-        - Removed the requirement of the `categories.availabilityId` propertie.
- 
-        - Removed the requirement of the `itemOffers.availabilityId` propertie.
-
-      ### Version [v1.2.0-rc.2] - Mar 9, 2023
-      
-      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
-
-        - Added a new option to work with **'TABs'** for **INDOOR** orders. This can be used by establishments that control orders via tabs or control cards. As a result, the following changes have been made:
-
-          - Added new `TAB` enum, to the `indoor.mode` propertie.
-          - Added new `indoor.tab` propertie.
-      
-        - Removed the requirement to send the `customer` object
-
-        - Removed the requirement to send the `customer.document` propertie
-
-      ### Version [v1.2.0-rc.1] - Feb 23, 2023
-
-      - [POST /v1/orders/{orderId}/dispatch](#operation/dispatchOrder)
-
-        - Added new object `deliveryTRackingInfo` to send delivery informations to the `Ordering Application` when dispatching the order
-
-      ### Version [v1.2.0-rc.0] - Jan 23, 2023
+      ### Version [v1.3.0-rc.0] - Jun 29, 2023
 
       - Initial release.
 
@@ -131,6 +79,14 @@ info:
     In case of doubts, suggestions, improvements, problems or any information regarding the documentation presented here, access the project's Github repo and open a new issue.
         
     > https://github.com/Abrasel-Nacional/docs/issues
+
+    # └► Sandbox
+
+    You can test the endpoints described in this documentation through the Open Delivery Sandbox Portal, available at
+
+    > https://developer.opendelivery.com.br
+    
+    In the portal you can register your application to receive your access credentials. The sandbox environment also has some specific functions that simulate the actions of the `Ordering Application` that are not described here in this documentation.
 
     # └► Developer Tools
 
@@ -156,8 +112,10 @@ info:
 
       Contains the standards already published:  
       **MERCHANT** | **ORDERS** | **LOGISTICS**
-      - **1.2.0-rc.X - RELEASE CANDIDATE\***
-      - [v1.1.0 - (Latest Release)](https://abrasel-nacional.github.io/docs/)
+      - **1.3.0-rc.X - RELEASE CANDIDATE\***
+      - [v1.2.0 - (Latest Release)](https://abrasel-nacional.github.io/docs/)
+      - [v1.1.1](https://abrasel-nacional.github.io/docs/versions/1.1.1/)
+      - [v1.1.0](https://abrasel-nacional.github.io/docs/versions/1.1.0/)
       - [v1.0.1](https://abrasel-nacional.github.io/docs/versions/1.0.1/)
       - [v1.0.0](https://abrasel-nacional.github.io/docs/versions/1.0.0/)
 
@@ -169,7 +127,6 @@ info:
       **FINANCIAL RECONCILIATION** | **CONTRACTS**
 
       - [BETA VERSION](https://abrasel-nacional.github.io/docs/versions/beta/)
- 
 
     # 
     # ► ------- GENERAL INFO -------- ◄
@@ -179,6 +136,9 @@ info:
     The Open Delivery API proposes the implementation of a single communication standard between the various parts that make up the delivery environment. This documentation contains all the definitions needed for interested systems and platforms to implement it.
 
     Open Delivery does not have a server or baseURL. It is up to each company that implements the standard to use its infrastructure to host the endpoints.
+
+    You can use the **[Sandbox Enviroment](#section/Sandbox)** to test your requests and responses, but there is no Production Enviroment.  
+    Once your system or platform is compliant to the standard, you will be able to integrate with other companies also compliant to the standard.
 
     This section seeks to summarize the Open Delivery documentation as a whole, helping the different parts of the integrations to understand what needs to be developed and parameterized. 
 
@@ -246,7 +206,9 @@ info:
 
       Once the endpoints are implemented, the parties interested in integrating via the Open Delivery stantard should provide some parameters for the other party to correctly connect to its routes. 
 
-      Below is a list of information that each party must provide to the other party for the integrations to occur, i.e., you should consider that the information below will be created as parameters on the endpoint that will call the endpoints.
+      Below is a list of information that each party must provide to the other party for the integrations to occur, i.e., you should consider that the information below will be created as parameters on the system that will call the endpoints.
+
+    ### Orders / Merchant API  
 
       - **PARAMETERS IN THE SOFTWARE SERVICE   
       (ORDERING APPLICATION --> SOFTWARE SERVICE)**
@@ -261,8 +223,8 @@ info:
         
             > IMPORTANT: As described in the authentication section of the documentation, credentials must be generated BY MERCHANT and not by **Software Service**, that is, even if several MERCHANTS use the same **Software Service**, each of the MERCHANT will have a unique clientId and clientSecret.
 
-        - **AppId**: It is the unique ID of the **Ordering Application**. It must be generated by the **Ordering Application** itself, and once generated, it must be informed to all the **Software Service**S that it will integrate. Since the **AppId** is a unique key of the **Ordering Application**, you must not create oneAppId** per **Software Service**S, but the same key for all of them.
-      > The companies that play the role of hub, intermediating the integrations between the **Ordering Application** and the **Software Service**, must also generate their own **AppId**, different from the **Ordering Application**'s AppId.
+        - **AppId**: It is the unique ID of the **Ordering Application**. It must be generated by the **Ordering Application** itself, and once generated, it must be informed to all the **Software Services** that it will integrate. Since the **AppId** is a unique key of the **Ordering Application**, you must not create one **AppId** per **Software Service**, but use the same key for all of them.
+        > The companies that play the role of hub, intermediating the integrations between the **Ordering Application** and the **Software Service**, must also generate their own **AppId**, different from the **Ordering Application**'s AppId.
 
       - **PARAMETERS IN ORDERING APPLICATION  
       (SOFTWARE SERVICE --> ORDERING APPLICATION)**
@@ -277,6 +239,8 @@ info:
 
           `POST {baseURL}/newEvent`
 
+    ### Logistics API    
+
       - **PARAMETERS IN THE SOFTWARE SERVICE/ORDERING APPLICATION  
       (LOGISTIC SERVICE --> SOFTWARE SERVICE/ORDERING APPLICATION)**
 
@@ -290,7 +254,7 @@ info:
         
             > IMPORTANT: As described in the authentication section of the documentation, the credentials must be generated BY MERCHANT and not by **Software Service**/**Ordering Application**, that is, even if several MERCHANTS use the same **Software Service**/**Ordering Application**, each of the MERCHANT will have a unique clientId and clientSecret.
 
-        - **AppId**: It is a unique identification of the **Logistic Service**. It must be generated by the **Logistic Service** itself and once generated, it must be informed to all the **Software Service**S/**Ordering Application** to which it will integrate. As the **AppId** is a unique key of the **Logistic Service**, it must not be created an **AppId** per **Software Service**S/**Ordering Application**, but the same key must be informed for all.
+        - **AppId**: It is a unique identification of the **Logistic Service**. It must be generated by the **Logistic Service** itself and once generated, it must be informed to all the **Software Service** / **Ordering Application** to which it will integrate. As the **AppId** is a unique key of the **Logistic Service**, it must not be created an **AppId** per **Software Service** / **Ordering Application**, but the same key must be informed for all.
 
       - **PARAMETERS IN THE LOGISTIC SERVICE  
       (SOFTWARE SERVICE/ORDERING APPLICATION --> LOGISTIC SERVICE)**
@@ -299,8 +263,8 @@ info:
         Default webhook route:  
         `POST {baseURL}/deliveryEvent`
 
-        - **MerchantId**: It is a unique ID of the MERCHANT. Similar to the **AppId** but for Merchant. It must be generated by **Software Service**S and once generated, it must be informed to all **Logistic Services** it will integrate with. Since the **MerchantId** is a unique key, a **MerchantId** must not be created per **Logistic Service**, but the same key must be informed for all. 
-        The **Ordering Application** must send the **MerchantId** received previously through its integration with the **Software Service**.
+        - **MerchantId**: It is a unique ID of the MERCHANT. Similar to the **AppId** but for Merchant. It must be generated by the **Software Service** and once generated, it must be informed to all **Logistic Services** it will integrate with. Since the **MerchantId** is a unique key, a **MerchantId** must not be created per **Logistic Service**, but the same key must be informed for all. 
+        The **Ordering Application** must send the **MerchantId** received previously through its integration with the **Software Service** or if it does not have it, it can inform any id that it can use to identify the merchant.
         
     # └► Open Delivery API Evolution
 
@@ -361,6 +325,11 @@ info:
           param: Z
       ```
 
+    - **Image Files:** For properties that refer to **IMAGES**, two fields are available: `URL` and `CRC-32`
+      
+      It is expected that the images referenced in the URL are downloaded from the server that is making the request, because the URL may no longer be valid after a period of time.
+      
+      The CRC-32 field must be used to check if the image has changed since the last time it was received, allowing to verify if a new download is necessary or not.
 
 
     # └► Error Handling
@@ -2343,18 +2312,6 @@ x-webhooks:
 components:
 
   securitySchemes:
-    apiKey:
-      type: apiKey
-      description:
-        "The apiKey is a key that should be generated by the endpoint's host and passed to its clients.
-        Each client of the endpoint can have its own key.
-        The creation and content of the key is of responsibility of the endpoint's host.
-
-        > As of the time of this release, only the **[GET /v1/merchant](#operation/getMerchant)** endpoint can require authentication via apiKey."
-
-      in: header
-      name: X-API-KEY
-
     OAuth2:
       type: oauth2
       description:
@@ -2388,6 +2345,18 @@ components:
           tokenUrl: oauth/token
           scopes:
             od.all: 'Access to all **Open Delivery** APIs'
+
+    apiKey:
+      type: apiKey
+      description:
+        "The apiKey is a key that should be generated by the endpoint's host and passed to its clients.
+        Each client of the endpoint can have its own key.
+        The creation and content of the key is of responsibility of the endpoint's host.
+
+        > As of the time of this release, only the **[GET /v1/merchant](#operation/getMerchant)** endpoint can require authentication via apiKey."
+
+      in: header
+      name: X-API-KEY
 
   requestBodies:
     Token:
@@ -4223,20 +4192,31 @@ components:
                 type: 'object'
                 allOf:
                   - $ref: '#/components/schemas/Price'
-                description: 'Price per unit.'
+                description: 'Price per unit. This is the price the customer is paying and will be considered for order totals calculations.'
+              originalPrice:
+                  type: 'object'
+                  allOf:
+                    - $ref: '#/components/schemas/Price'
+                  description: |-
+                    Original price of the product. 
+                    This price **is for information purposes only** and should be used to inform the price of an item before applying markdowns on the list price. 
+                    
+                    Discounts applied during the order such as coupons and vouchers should not be considered here. These must be reported in the `discounts` object.
+                    
+                    **THIS PRICE WILL NOT BE CONSIDERED FOR ORDER TOTALS CALCULATIONS.**
               optionsPrice:
                 type: 'object'
                 allOf:
                   - $ref: '#/components/schemas/Price'
-                description: 'Pricing options.'
+                description: 'The sum of the total prices of all options of the item.'
               totalPrice:
                 type: 'object'
-                description: Total Price of the item. (quantity * unitPrice + optionsPrice)
+                description: Total Price of the item. **(quantity * (unitPrice + optionsPrice))**
                 allOf:
                   - $ref: '#/components/schemas/Price'
               options:
                 type: 'array'
-                description: 'Options related to the item.'
+                description: 'The optional extras chosen by the consumer, related to this item.'
                 items:
                   type: 'object'
                   required:
@@ -4247,7 +4227,7 @@ components:
                       'unit',
                       'quantity',
                       'unitPrice',
-                      'price',
+                      'totalPrice',
                     ]
                   properties:
                     index:
@@ -4276,10 +4256,21 @@ components:
                       type: 'object'
                       allOf:
                         - $ref: '#/components/schemas/Price'
-                      description: 'Price per unit.'
+                      description: 'Price per unit. This is the price the customer is paying and will be considered for order totals calculations.'
+                    originalPrice:
+                        type: 'object'
+                        allOf:
+                          - $ref: '#/components/schemas/Price'
+                        description: |-
+                          Original price of the option. 
+                          This price **is for information purposes only** and should be used to inform the price of an option before applying markdowns on the list price. 
+                          
+                          Discounts applied during the order such as coupons and vouchers should not be considered here. These must be reported in the `discounts` object.
+                          
+                          **THIS PRICE WILL NOT BE CONSIDERED FOR ORDER TOTALS CALCULATIONS.**
                     totalPrice:
                       type: 'object'
-                      description: Total Price of the option. (quantity * unitPrice)
+                      description: Total Price of the option. **(quantity * unitPrice)**
                       allOf:
                         - $ref: '#/components/schemas/Price'
                     specialInstructions:
@@ -4344,7 +4335,7 @@ components:
                 type: 'array'
                 items:
                   type: 'object'
-                  required: ['name', 'value']
+                  required: ['name', 'amount']
                   properties:
                     name:
                       type: 'string'
@@ -4483,12 +4474,18 @@ components:
           type: 'object'
           required:
             [id, 'phone', 'name', 'ordersCountOnMerchant']
-          description: 'Customer related information.'
+          description: "Customer related information. \n\n**REQUIRED** if the chosen `type` is `DELIVERY`"
           properties:
             id:
               type: 'string'
               format: 'uuid'
               description: 'A unique identifier related to the consumer. If the Ordering Application does not have an Id for the customer, this Id can be generated when creating the order. '
+            name:
+              type: 'string'
+              description: "Customer's name."
+            documentNumber:
+              description: 'Customer document. This document may be sent for dealing with tax issues.'
+              type: 'string'
             phone:
               type: 'object'
               description: "Customer's phone. Here you can enter the customer's phone number directly (provided that the customer has given permission for this data to be shared, according to local policies) or another phone number (such as the ordering application's call center phone number) where the merchant can communicate about order issues that affect the customer (such as health issues)."
@@ -4498,12 +4495,6 @@ components:
                   type: 'string'
                 extension:
                   type: 'string'
-            documentNumber:
-              description: 'Customer document. This document may be sent for dealing with tax issues.'
-              type: 'string'
-            name:
-              type: 'string'
-              description: "Customer's name."
             email:
               description: 'Customer email. This document may be sent for dealing with tax issues.'
               type: 'string'              
@@ -4513,7 +4504,7 @@ components:
               format: 'decimal'
         schedule:
           type: 'object'
-          description: 'Information for scheduled orders. Required if `orderTiming` is `SCHEDULED`.'
+          description: "Information for scheduled orders. \n\n**REQUIRED** if `orderTiming` is `SCHEDULED`."
           required: ['scheduledDateTimeStart', 'scheduledDateTimeEnd']
           properties:
             scheduledDateTimeStart:
@@ -4526,7 +4517,7 @@ components:
               description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
         delivery:
           type: 'object'
-          description: 'Information for DELIVERY orders. Required if the chosen `type` is `DELIVERY`.'
+          description: "Information for DELIVERY orders. \n\n**REQUIRED** if the chosen `type` is `DELIVERY`"
           required:
             ['deliveredBy', 'deliveryAddress', 'estimatedDeliveryDateTime']
           properties:
@@ -4616,7 +4607,7 @@ components:
               description: "Delivery date. The date time that the delivery actually took place. \n\n(UTC date-time in ISO timestamp format)."
         takeout:
           type: 'object'
-          description: 'Information for TAKEOUT orders. Required if the chosen `type` is `TAKEOUT`.'
+          description: "Information for TAKEOUT orders. \n\n**REQUIRED** if the chosen `type` is `TAKEOUT`"
           required: ['mode', 'takeoutDateTime']
           properties:
             mode:
@@ -4630,7 +4621,7 @@ components:
               description: "Takeout date and time. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
         indoor:
           type: 'object'
-          description: 'Information for INDOOR orders. Required if the chosen `type` is `INDOOR`.'
+          description: "Information for INDOOR orders. \n\n**REQUIRED** if the chosen `type` is `INDOOR`"
           required: ['mode', 'indoorDateTime']
           properties:
             mode:
@@ -5441,7 +5432,9 @@ components:
             \n - Hosted on a secure connection (SSL).
             \n - File size must be less than 10MB.
             \n - Image must be in JPEG, PNG or GIF format.
-            \n - Both width and height must be between 320px and 1144px."
+            \n - Both width and height must be between 320px and 1144px.
+            \n\n
+            > It is expected that the images referenced in the URL are downloaded from the server that is making the request, because the URL may no longer be valid after a period of time."
           example: 'https://food-company.com/image.jpg'
         CRC-32:
           type: string
