@@ -13,7 +13,7 @@ info:
     altText: Open Delivery logo
 
   description: |-
-    # ► ------ OPEN DELIVERY ------ ◄
+    # ► ---- OPEN DELIVERY ---- ◄
 
     # └► Introduction
       **Open Delivery** proposes to solve the challenge of organizing the flow of information between merchants and **Ordering Applications**, establishing a single communication standard for all, through a set of REST APIs.
@@ -203,7 +203,7 @@ info:
       - [BETA VERSION](https://abrasel-nacional.github.io/docs/versions/beta/)
 
     # 
-    # ► ------ GENERAL INFO ------- ◄
+    # ► ---- GENERAL INFO ----- ◄
 
     # └► How to Start (Setup Guide)
 
@@ -451,7 +451,7 @@ info:
 
 
     #   
-    # ► ------ API REFERENCE ------ ◄
+    # ► ---- API REFERENCE ---- ◄
 
 #############################################################
 
