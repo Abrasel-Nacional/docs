@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API
-  version: 'v1.2.0'
+  version: 'v1.2.1'
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -33,7 +33,7 @@ info:
 
     **API Reference**   
     - **[Security](#tag/securitySection)**
-    - **[Order](#tag/orderSection)**
+    - **[Order](#tag/ordersSection)**
     - **[Merchant](#tag/merchantSection)**
     - **[Logistics](#tag/logisticsSection)**
     - **[Configurations](#tag/versionsSection)**
@@ -42,6 +42,26 @@ info:
       
       Latest Changes:
 
+      ### Version [1.2.1] - Sep 4, 2023
+
+      #### ORDERS changes
+
+      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
+
+        - Fixed the description of the formula for calculating the final price of an item.  
+          
+          **NEW Description:**  
+              
+              (quantity * (unitPrice + optionsPrice))  
+            
+          _Old description: (quantity * unitPrice + optionsPrice)_  
+        
+          The new formula includes the value of the item's options when multiplying by the quantity.
+        
+        - Added the information that the `customer` property should be informed when the order `type` is `DELIVERY`.
+        
+        - Changed some properties descriptions to better explain their purpose.
+
       ### Version [1.2.0] - Jul 3, 2023
 
       We are happy to announce that we are launching the **[Open Delivery Developer Portal](https://developer.opendelivery.com.br)**, along with a fully operational **sandbox environment** for testing the documentation endpoints.
@@ -49,6 +69,7 @@ info:
       In this first release, only the **ORDER API** is covered, but all other standards will be available soon.
 
       We also added a new section **[Sandbox](#section/Sandbox)** in the documentation with info about the sandbox enviroment.
+      
       ### Version [1.2.0] - Jun 26, 2023
 
       #### ORDERS changes
@@ -223,6 +244,7 @@ info:
     |[GET /merchant](#operation/getMerchant)||X||
     |[POST /merchantUpdate](#operation/menuUpdated)|X|||
     |[GET /merchantStatus](#tag/merchantStatus)|X|||
+    |[PUT /merchantOnboarding](#operation/putMerchantOnboarding)|X|||
     |--------------------------------||||
     |**[ORDER](#tag/ordersSection)**||||
     |[GET /events:polling ](#operation/pollingEvents)|X|||
@@ -4243,20 +4265,20 @@ components:
                 type: 'object'
                 allOf:
                   - $ref: '#/components/schemas/Price'
-                description: 'Price per unit.'
+                description: 'Price per unit. This is the price the customer is paying and will be considered for order totals calculations.'
               optionsPrice:
                 type: 'object'
                 allOf:
                   - $ref: '#/components/schemas/Price'
-                description: 'Pricing options.'
+                description: 'The sum of the total prices of all options of the item.'
               totalPrice:
                 type: 'object'
-                description: Total Price of the item. (quantity * unitPrice + optionsPrice)
+                description: Total Price of the item. **(quantity * (unitPrice + optionsPrice))**
                 allOf:
                   - $ref: '#/components/schemas/Price'
               options:
                 type: 'array'
-                description: 'Options related to the item.'
+                description: 'The optional extras chosen by the consumer, related to this item.'
                 items:
                   type: 'object'
                   required:
@@ -4296,10 +4318,10 @@ components:
                       type: 'object'
                       allOf:
                         - $ref: '#/components/schemas/Price'
-                      description: 'Price per unit.'
+                      description: 'Price per unit. This is the price the customer is paying and will be considered for order totals calculations.'
                     totalPrice:
                       type: 'object'
-                      description: Total Price of the option. (quantity * unitPrice)
+                      description: Total Price of the option. **(quantity * unitPrice)**
                       allOf:
                         - $ref: '#/components/schemas/Price'
                     specialInstructions:
@@ -4503,7 +4525,7 @@ components:
           type: 'object'
           required:
             [id, 'phone', 'name', 'ordersCountOnMerchant']
-          description: 'Customer related information.'
+          description: "Customer related information. \n\n**REQUIRED** if the chosen `type` is `DELIVERY`"
           properties:
             id:
               type: 'string'
@@ -4533,7 +4555,7 @@ components:
               format: 'decimal'
         schedule:
           type: 'object'
-          description: 'Information for scheduled orders. Required if `orderTiming` is `SCHEDULED`.'
+          description: "Information for scheduled orders. \n\n**REQUIRED** if `orderTiming` is `SCHEDULED`."
           required: ['scheduledDateTimeStart', 'scheduledDateTimeEnd']
           properties:
             scheduledDateTimeStart:
@@ -4546,7 +4568,7 @@ components:
               description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
         delivery:
           type: 'object'
-          description: 'Information for DELIVERY orders. Required if the chosen `type` is `DELIVERY`.'
+          description: "Information for DELIVERY orders. \n\n**REQUIRED** if the chosen `type` is `DELIVERY`"
           required:
             ['deliveredBy', 'deliveryAddress', 'estimatedDeliveryDateTime']
           properties:
@@ -4636,7 +4658,7 @@ components:
               description: "Delivery date. The date time that the delivery actually took place. \n\n(UTC date-time in ISO timestamp format)."
         takeout:
           type: 'object'
-          description: 'Information for TAKEOUT orders. Required if the chosen `type` is `TAKEOUT`.'
+          description: "Information for TAKEOUT orders. \n\n**REQUIRED** if the chosen `type` is `TAKEOUT`"
           required: ['mode', 'takeoutDateTime']
           properties:
             mode:
@@ -4650,7 +4672,7 @@ components:
               description: "Takeout date and time. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
         indoor:
           type: 'object'
-          description: 'Information for INDOOR orders. Required if the chosen `type` is `INDOOR`.'
+          description: "Information for INDOOR orders. \n\n**REQUIRED** if the chosen `type` is `INDOOR`"
           required: ['mode', 'indoorDateTime']
           properties:
             mode:
