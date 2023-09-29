@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API (Release Candidate)
-  version: 'v1.3.0-rc.1'
+  version: 'v1.3.0-rc.2'
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -13,7 +13,7 @@ info:
     altText: Open Delivery logo
 
   description: |-
-    # ► ------- OPEN DELIVERY ------- ◄
+    # ► --- OPEN DELIVERY --- ◄
 
     # └► 'RELEASE CANDIDATE' VERSION WARNING
     > **This version includes the EVOLUTIONS and IMPROVMENTES that are currently being discussed and will integrate the release version in the future. With this version the companies already using OPEN DELIVERY standards can keep up to date with the changes and already be prepared for future releases.**
@@ -41,7 +41,7 @@ info:
 
     **API Reference**   
     - **[Security](#tag/securitySection)**
-    - **[Order](#tag/orderSection)**
+    - **[Order](#tag/ordersSection)**
     - **[Merchant](#tag/merchantSection)**
     - **[Logistics](#tag/logisticsSection)**
     - **[Configurations](#tag/versionsSection)**
@@ -50,6 +50,23 @@ info:
       
       Latest Changes:
 
+      ### Version [v1.3.0-rc.2] - Sep 15, 2023
+
+      #### ORDERS, MERCHANTS and LOGISTICS change
+
+      - Removed the necessity to enter at least 5 digits for all `latitude` and `longitude` properties.
+
+      #### ORDERS changes
+
+      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
+
+        - Added a new propertie `discounts.sponsorshipValues.discountCode`.  
+          This code is related to the discount applied to identify a coupon used by the user, or an identification code for a marketing campaign, for example.
+
+        - Modified the requirement for the `payments.methods.brand` property. It can now be informed for both prepaid and pending payments.
+
+        - Added the information that the `customer` object is **REQUIRED** when the `type` of the order is `DELIVERY`.
+  
       ### Version [v1.3.0-rc.1] - Jul 27, 2023
 
       #### ORDERS changes
@@ -129,7 +146,7 @@ info:
       - [BETA VERSION](https://abrasel-nacional.github.io/docs/versions/beta/)
 
     # 
-    # ► ------- GENERAL INFO -------- ◄
+    # ► --- GENERAL INFO --- ◄
 
     # └► How to Start (Setup Guide)
 
@@ -377,12 +394,12 @@ info:
 
 
     #   
-    # ► ------- API REFERENCE ------- ◄
+    # ► --- API REFERENCE --- ◄
 
 #############################################################
 
 tags:
-  - name: footer
+  - name: ''
     x-displayName: ''
     x-traitTag: true
 
@@ -2519,6 +2536,7 @@ components:
                 - '1.1.0'
                 - '1.1.1'
                 - '1.2.0'
+                - '1.2.1'
         order:
           type: 'object'
           description: "Information regarding the **Order's** standard endpoints."
@@ -2545,6 +2563,7 @@ components:
                 - '1.1.0'
                 - '1.1.1'
                 - '1.2.0'
+                - '1.2.1'
             availableEventsMethods:
               type: array
               description: 'Lists which methods for obtaining new order events the **Software Service** can use with this **Ordering Application**.'
@@ -2567,6 +2586,7 @@ components:
             - '1.1.0'
             - '1.1.1'
             - '1.2.0'
+            - '1.2.1'
         ordersWebhook:
           type: 'string'
           description: |-
@@ -2577,6 +2597,7 @@ components:
             - '1.1.0'
             - '1.1.1'
             - '1.2.0'
+            - '1.2.1'
 
     # Authentication
 
@@ -2637,7 +2658,7 @@ components:
         lastUpdate:
           type: 'string'
           format: 'date-time'
-          description: "The last modified date and time in ISO timestamp format but with type String. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication. \n\n(UTC date-time in ISO timestamp format)."
+          description: "The last modified date and time in ISO timestamp format but with type String. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
           example: '2021-05-27T20:45:10.332Z'
         TTL:
           type: 'integer'
@@ -2811,7 +2832,7 @@ components:
         lastUpdate:
           type: 'string'
           format: 'date-time'
-          description: "The last modified date and time. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication. \n\n(UTC date-time in ISO timestamp format)."
+          description: "The last modified date and time. \n\nThis should be used in conjuction of the TTL field to update the information on the ordering aplication. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         TTL:
           type: 'integer'
           description: "Time to Live (in seconds).
@@ -3019,7 +3040,7 @@ components:
         createdAt:
           type: 'string'
           format: date-time
-          description: "Merchant creation date and time. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Merchant creation date and time. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         acceptedCards:
           type: array
           description: 'Indicates which card brands are accepted by the merchant.'
@@ -3197,12 +3218,12 @@ components:
               latitude:
                 type: 'number'
                 format: 'float'
-                description: "Indicates the latitude coordinate of the polygon point.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+                description: "Indicates the latitude coordinate of the polygon point.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]]."
                 example: -23.54809
               longitude:
                 type: 'number'
                 format: 'float'
-                description: "Indicates the longitude coordinate of the polygon point.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+                description: "Indicates the longitude coordinate of the polygon point.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]]."
                 example: -46.63638
         price:
           type: 'object'
@@ -3222,12 +3243,12 @@ components:
         geoMidpointLatitude:
           type: 'number'
           format: 'float'
-          description: "Indicates the latitude coordinate at the center of the CIRCLE area.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Indicates the latitude coordinate at the center of the CIRCLE area.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]]."
           example: -23.54809
         geoMidpointLongitude:
           type: 'number'
           format: 'float'
-          description: "Indicates the longitude coordinate at the center of the CIRCLE area.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Indicates the longitude coordinate at the center of the CIRCLE area.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]]."
           example: -46.63638
         radius:
           type: 'array'
@@ -3826,7 +3847,7 @@ components:
         lastRead:
           type: 'string'
           format: 'date-time'
-          description: "Date of last attempt to read merchant information. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Date of last attempt to read merchant information. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         status:
           type: 'string'
           description: 'Reading attempt status'
@@ -4069,7 +4090,7 @@ components:
         createdAt:
           type: 'string'
           format: date-time
-          description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info.)."
         lastEvent:
           type: 'string'
           description: 'The last valid event polled (whether acknowledged or not) or sent via webhook. **[Click here](#operation/pollingEvents)** for definitions of each type.'
@@ -4097,7 +4118,7 @@ components:
           format: 'date-time'
           description:
             "Suggestion for the preparation start time after Order creation. This can be used by the **Ordering Application** to inform the merchant to delay the start of the preparation for any reason. Default is the same time as the order creation time.
-            \n\n(UTC date-time in ISO timestamp format)."
+            \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         merchant:
           type: 'object'
           required: [id, 'name']
@@ -4347,6 +4368,9 @@ components:
                       description: Discount amount given by the sponsor.
                       allOf:
                         - $ref: '#/components/schemas/Price'
+                    discountCode:
+                      type: 'string'
+                      description: Code related to the discount applied. Here you can enter a coupon used by the user, or an identification code from a marketing campaign, for example.                   
         total:
           type: 'object'
           required: ['itemsPrice', 'otherFees', 'orderAmount', 'discount']
@@ -4427,7 +4451,7 @@ components:
                     description: |-
                       Indicates the brand of the card selected in the `method` field.
 
-                      This field must only be filled in if `type` is `PREPAID` and `method` is `CREDIT`, `DEBIT`, `CREDIT_DEBIT`, `MEAL_VOUCHER` or `FOOD_VOUCHER`.
+                      This field must only be filled in if `method` is `CREDIT`, `DEBIT`, `CREDIT_DEBIT`, `MEAL_VOUCHER` or `FOOD_VOUCHER`.
 
                       If `OTHER` is chosen, it is recommended that you describe the brand name in the `methodInfo` field.
                     enum:
@@ -4510,11 +4534,11 @@ components:
             scheduledDateTimeStart:
               type: 'string'
               format: date-time
-              description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
             scheduledDateTimeEnd:
               type: 'string'
               format: date-time
-              description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         delivery:
           type: 'object'
           description: "Information for DELIVERY orders. \n\n**REQUIRED** if the chosen `type` is `DELIVERY`"
@@ -4590,21 +4614,21 @@ components:
                     latitude:
                       type: 'number'
                       format: 'float'
-                      description: "Latitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+                      description: "Latitude in degrees. Values are restricted to the range [[-90, 90]]."
                       example: -23.54823
                     longitude:
                       type: 'number'
                       format: 'float'
-                      description: "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+                      description: "Longitude in degrees. Values are restricted to the range [[-180, 180]]."
                       example: -46.63632
             estimatedDeliveryDateTime:
               type: 'string'
               format: date-time
-              description: "Estimated delivery date and time. The same date showed to the customer, in the **Ordering Application** interface. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Estimated delivery date and time. The same date showed to the customer, in the **Ordering Application** interface. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
             deliveryDateTime:
               type: 'string'
               format: date-time
-              description: "Delivery date. The date time that the delivery actually took place. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Delivery date. The date time that the delivery actually took place. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         takeout:
           type: 'object'
           description: "Information for TAKEOUT orders. \n\n**REQUIRED** if the chosen `type` is `TAKEOUT`"
@@ -4618,7 +4642,7 @@ components:
             takeoutDateTime:
               type: 'string'
               format: date-time
-              description: "Takeout date and time. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Takeout date and time. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         indoor:
           type: 'object'
           description: "Information for INDOOR orders. \n\n**REQUIRED** if the chosen `type` is `INDOOR`"
@@ -4641,7 +4665,7 @@ components:
             indoorDateTime:
               type: 'string'
               format: date-time
-              description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Date and time for when the order is ready. It can be calculated by the **Ordering Application** using the average preparation time of the dishes. Default is the same time as order creation time. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
             place:
               type: 'string'
               description: 'The place identifier (Required if mode is `PLACE`)'
@@ -4679,7 +4703,7 @@ components:
         createdAt:
           type: 'string'
           format: date-time
-          description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         orderExternalCode:
           type: 'string'
           description: 'External order code, which can be used by merchant or marketplace.'
@@ -4795,7 +4819,7 @@ components:
         createdAt:
           type: 'string'
           format: date-time
-          description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Order creation date and time. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         sourceAppId:
           type: 'string'
           format: UUID
@@ -4921,7 +4945,7 @@ components:
             datetime:
               type: string
               format: date-time
-              description: "Date and time when the event ocurred. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Date and time when the event ocurred. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         problem:
           description: 'In the event of a delivery problem, it states the last known reason.'
           type: object
@@ -4949,7 +4973,7 @@ components:
             datetime:
               type: string
               format: date-time
-              description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         vehicle:
           description: "The vehicle that will be used for this delivery."
           type: object
@@ -4981,11 +5005,11 @@ components:
             deliveryEtaDatetime:
               type: string
               format: date-time
-              description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
             maxDeliveryTime:
               type: string
               format: date-time
-              description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         deliveryPerson:
           type: 'object'
           description: 'Information about the person taht was assigned to deliver the order.'
@@ -5031,7 +5055,7 @@ components:
             datetime:
               type: string
               format: date-time
-              description: "Date and time when the event ocurred. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Date and time when the event ocurred. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         problem:
           description: 'In the event of a delivery problem, it states the last known reason.'
           type: object
@@ -5059,7 +5083,7 @@ components:
             datetime:
               type: string
               format: date-time
-              description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         vehicle:
           description: "The vehicle that will be used for this delivery."
           type: object
@@ -5092,18 +5116,18 @@ components:
             pickupEtaDatetime:
               type: string
               format: date-time
-              description: "Pickup Eta Datetime. Informs the date and time the delivery person is expected to arrive at the merchant for order pickup. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Pickup Eta Datetime. Informs the date and time the delivery person is expected to arrive at the merchant for order pickup. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
             deliveryEtaInMinutes:
               type: integer
               description: "Delivery Eta in **minutes**. Informs how many minutes it will take the delivery person to arrive at the consumer's address for order delivery."
             deliveryEtaDatetime:
               type: string
               format: date-time
-              description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
             maxDeliveryTime:
               type: string
               format: date-time
-              description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         deliveryPerson:
           type: 'object'
           description: 'Information about the person taht was assigned to deliver the order.'
@@ -5126,12 +5150,12 @@ components:
             latitude:
               type: "number"
               format: "float"
-              description: "Indicates the latitude coordinate of the actual position of the delivery person.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+              description: "Indicates the latitude coordinate of the actual position of the delivery person.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]]."
               example: -23.54809
             longitude:
               type: "number"
               format: "float"
-              description: "Indicates the longitude coordinate of the actual position of the delivery person.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+              description: "Indicates the longitude coordinate of the actual position of the delivery person.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]]."
               example: -46.63638
             lastAddress:
               description: The last known address that the delivery person was when the event was sent.
@@ -5173,7 +5197,7 @@ components:
                 timestamp:
                   type: string
                   format: date-time
-                  description: "Date and time when this information is valid. \n\n(UTC date-time in ISO timestamp format)."
+                  description: "Date and time when this information is valid. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         externalTrackingURL:
           type: string
           format: "URI"
@@ -5240,12 +5264,12 @@ components:
         'latitude':
           type: 'number'
           format: 'float'
-          description: "Latitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Latitude in degrees. Values are restricted to the range [[-90, 90]]."
           example: -23.54809
         'longitude':
           type: 'number'
           format: 'float'
-          description: "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Longitude in degrees. Values are restricted to the range [[-180, 180]]."
           example: -46.63638
 
     AddressLogistics:
@@ -5303,12 +5327,12 @@ components:
         'latitude':
           type: 'number'
           format: 'float'
-          description: "Latitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Latitude in degrees. Values are restricted to the range [[-90, 90]]."
           example: -23.54809
         'longitude':
           type: 'number'
           format: 'float'
-          description: "Longitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Longitude in degrees. Values are restricted to the range [[-180, 180]]."
           example: -46.63638
 
     ContactPhones:
@@ -5577,7 +5601,7 @@ components:
             orderCreatedAt:
               type: string
               format: date-time
-              description: "The date and time that the Order was created at the **Ordering Application**. \n\n(UTC date-time in ISO timestamp format)."
+              description: "The date and time that the Order was created at the **Ordering Application**. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         totalOrderPrice:
           description: "Total order price that was calculated and displayed for the final consumer in the **`Ordering Application`**. This value may already contain taxes and shipping in addition to the value of the items purchased."
           allOf:
@@ -5741,11 +5765,11 @@ components:
             estimate:
               type: string
               format: date-time
-              description: "Expected date and time for completion. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Expected date and time for completion. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
             rejectAfter:
               type: string
               format: date-time
-              description: "Maximum date and time to wait for the acceptance or refusal of the order. After this time the delivery request should be disregarded and a new request should be made. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Maximum date and time to wait for the acceptance or refusal of the order. After this time the delivery request should be disregarded and a new request should be made. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         deliveryDetailsURL:
           type: "string"
           format: "URI"
@@ -5885,7 +5909,7 @@ components:
         datetime:
           type: string
           format: date-time
-          description: "Date and time when the event ocurred. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Date and time when the event ocurred. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         rejectionInfo:
           description: "Rejection Info. It should be informed to provide more information when the event type is `REJECTED`."
           allOf:
@@ -6004,7 +6028,7 @@ components:
         datetime:
           type: string
           format: date-time
-          description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         canFinishDeliver:
           type: boolean
           description: "Informs whether or not it is still possible to finish the delivery."
@@ -6040,7 +6064,7 @@ components:
         datetime:
           type: string
           format: date-time
-          description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Date and time when the problem ocurred. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         resolved:
           type: boolean
           description: "Informs if the problem was resolved or not."
@@ -6054,7 +6078,7 @@ components:
         resolutionDate:
           type: string
           format: date-time
-          description: "Date and time when the problem was resolved. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Date and time when the problem was resolved. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
 
     ChosenVehicle:
       description: Delivery Order Response Object
@@ -6201,7 +6225,7 @@ components:
             orderCreatedAt:
               type: string
               format: date-time
-              description: "The date and time that the Order was created at the **Ordering Application**. \n\n(UTC date-time in ISO timestamp format)."
+              description: "The date and time that the Order was created at the **Ordering Application**. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         totalOrderPrice:
           description: "Total order price that was calculated and displayed for the final consumer in the **`Ordering Application`**. This value may already contain taxes and shipping in addition to the value of the items purchased."
           allOf:
@@ -6297,25 +6321,25 @@ components:
         pickupEtaDatetime:
           type: string
           format: date-time
-          description: "Pickup Eta Datetime. Informs the date and time the delivery person is expected to arrive at the merchant for order pickup. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Pickup Eta Datetime. Informs the date and time the delivery person is expected to arrive at the merchant for order pickup. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         deliveryEtaInMinutes:
           type: integer
           description: "Delivery Eta in **minutes**. Informs how many minutes it will take the delivery person to arrive at the consumer's address for order delivery."
         deliveryEtaDatetime:
           type: string
           format: date-time
-          description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         returnToMerchantEtaInMinutes:
           type: integer
           description: "Delivery Person return to merchant Eta in **minutes**. Informs how many minutes it will take the delivery person to return to the merchant. Only valid when `returnToMerchant` is `true`."        
         returnToMerchantEtaDatetime:
           type: string
           format: date-time
-          description: "Delivery Person return to merchant Eta Datetime. Informs the date and time the delivery person will arrive at the returning merchant. Only valid when `returnToMerchant` is `true`. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Delivery Person return to merchant Eta Datetime. Informs the date and time the delivery person will arrive at the returning merchant. Only valid when `returnToMerchant` is `true`. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         maxDeliveryTime:
           type: string
           format: date-time
-          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
 
     DeliveryMan:
       description: Delivery Person
@@ -6345,12 +6369,12 @@ components:
         latitude:
           type: "number"
           format: "float"
-          description: "Indicates the latitude coordinate of the actual position of the delivery person.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Indicates the latitude coordinate of the actual position of the delivery person.\n\n\n\nLatitude in degrees. Values are restricted to the range [[-90, 90]]."
           example: -23.54809
         longitude:
           type: "number"
           format: "float"
-          description: "Indicates the longitude coordinate of the actual position of the delivery person.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]].\n\n\n\nThe precision should be **at least 5 decimal places (multipleOf: 0.00001)**."
+          description: "Indicates the longitude coordinate of the actual position of the delivery person.\n\n\n\nLongitude in degrees. Values are restricted to the range [[-180, 180]]."
           example: -46.63638
         lastAddress:
           description: The last known address that the delivery person was when the event was sent.
@@ -6391,7 +6415,7 @@ components:
             timestamp:
               type: string
               format: date-time
-              description: "Date and time when this information is valid. \n\n(UTC date-time in ISO timestamp format)."
+              description: "Date and time when this information is valid. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
 
     DeliveryCancel:
       description: Delivery Cancel
@@ -6468,7 +6492,7 @@ components:
         pickupDate:
           type: "string"
           format: date-time
-          description: "Date and time when the order pickup occurred. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Date and time when the order pickup occurred. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         volumePicked:
           type: "integer"
           description: "Number of volumes picked up."
@@ -6484,7 +6508,7 @@ components:
         finishDate:
           type: "string"
           format: date-time
-          description: "Date and time when delivery completion occurred. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Date and time when delivery completion occurred. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         observation:
           type: string
           description: "Free text. It should be used to provide more detailed information."
@@ -6594,18 +6618,18 @@ components:
         deliveryEtaDate:
           type: string
           format: date-time
-          description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Delivery Eta Datetime. Informs the date and time the delivery person is expected to arrive at the consumer's address for order delivery. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         maxDeliveryTime:
           type: string
           format: date-time
-          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Maximum Date and Time for delivery. This time should not exceed the delivery time limit given in the order request. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
         isDeliveryFinished:
           type: boolean
           description: "Informs whether or not the delivery is finished."
         deliveryFinishDate:
           type: string
           format: date-time
-          description: "Date and time when the delivery finished. \n\n(UTC date-time in ISO timestamp format)."
+          description: "Date and time when the delivery finished. \n\n(UTC date-time in ISO timestamp format. See [Guidelines](#section/General-Guidelines) for more info)."
 
   examples:
     tokenExample:
