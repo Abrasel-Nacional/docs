@@ -66,7 +66,17 @@ info:
         - Modified the requirement for the `payments.methods.brand` property. It can now be informed for both prepaid and pending payments.
 
         - Added the information that the `customer` object is **REQUIRED** when the `type` of the order is `DELIVERY`.
-  
+
+      #### LOGISTICS changes
+
+      - [POST /logistics/delivery](#operation/logisticsNewDelivery)
+
+        - Added a new optional propertie `customerPhone` to inform the customer's phone number.
+
+      - [GET /logistics/delivery/{orderId}](#operation/logisticDetails)
+
+        - Added a new optional propertie `customerPhone`.       
+
       ### Version [v1.3.0-rc.1] - Jul 27, 2023
 
       #### ORDERS changes
@@ -5582,6 +5592,12 @@ components:
         customerName:
           type: "string"
           description: "Customer Name."
+        customerPhone:
+          type: "string"
+          description: |-
+            Customer's telephone number. 
+
+            **Please note**: The telephone number is considered an identification field and therefore the customer's advance consent is required.       
         vehicle:
           description: "Vehicle Info. informs which vehicle options are to be used for delivery. More than one can be informed, but the logistics service must choose only one of the types of vehicles informed."
           allOf:
@@ -6565,6 +6581,12 @@ components:
         customerName:
           type: "string"
           description: "Customer Name."
+        customerPhone:
+          type: "string"
+          description: |-
+            Customer's telephone number. 
+
+            **Please note**: The telephone number is considered an identification field and therefore the customer's advance consent is required.       
         events:
           type: array
           description: "Events History."
