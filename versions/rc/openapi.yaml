@@ -50,23 +50,22 @@ info:
       
       Latest Changes:
 
-        ### Version [v1.3.0-rc.3] - Nov 09, 2023
-  
-        #### ORDERS changes
-  
-        - [GET /v1/orders/{orderId}](#operation/ordersDetails)
-  
-          - Added a new propertie `salesChannel`.  
-            This should be used to inform the channel that originated the order.
-  
-        #### LOGISTICS changes
-  
-        - [POST /logistics/delivery](#operation/logisticsNewDelivery)
-  
-          - Fixed the guidance on how to use the combination of orders in a new delivery request.  
-            Previously the description was incorrectly quoting the `deliveryId` and `combinedDeliveriesId` fields. This has been corrected to `orderId` and `combinedOrdersId` respectively.  
-            Nothing has changed on the endpoint itself.
+      ### Version [v1.3.0-rc.3] - Nov 09, 2023
 
+      #### ORDERS changes
+
+      - [GET /v1/orders/{orderId}](#operation/ordersDetails)
+
+        - Added a new propertie `salesChannel`.  
+          This should be used to inform the channel that originated the order.
+
+      #### LOGISTICS changes
+
+      - [POST /logistics/delivery](#operation/logisticsNewDelivery)
+
+        - Fixed the guidance on how to use the combination of orders in a new delivery request.  
+          Previously the description was incorrectly quoting the `deliveryId` and `combinedDeliveriesId` fields. This has been corrected to `orderId` and `combinedOrdersId` respectively.  
+          Nothing has changed on the endpoint itself.
 
 
       ### Version [v1.3.0-rc.2] - Sep 15, 2023
