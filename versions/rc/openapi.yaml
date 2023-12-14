@@ -89,11 +89,7 @@ info:
 
       - [POST /logistics/delivery](#operation/logisticsNewDelivery)
 
-        - Added a new optional propertie `customerPhone` to inform the customer's phone number.
-
-      - [GET /logistics/delivery/{orderId}](#operation/logisticDetails)
-
-        - Added a new optional propertie `customerPhone`.       
+        - Added a new optional propertie `customerPhone` to inform the customer's phone number.   
 
       ### Version [v1.3.0-rc.1] - Jul 27, 2023
 
