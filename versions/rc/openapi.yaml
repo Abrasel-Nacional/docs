@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Open Delivery API (Release Candidate)
-  version: 'v1.3.0-rc.2'
+  version: 'v1.3.0-rc.3'
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0
@@ -49,6 +49,25 @@ info:
     # └► Changelog
       
       Latest Changes:
+
+        ### Version [v1.3.0-rc.3] - Nov 09, 2023
+  
+        #### ORDERS changes
+  
+        - [GET /v1/orders/{orderId}](#operation/ordersDetails)
+  
+          - Added a new propertie `salesChannel`.  
+            This should be used to inform the channel that originated the order.
+  
+        #### LOGISTICS changes
+  
+        - [POST /logistics/delivery](#operation/logisticsNewDelivery)
+  
+          - Fixed the guidance on how to use the combination of orders in a new delivery request.  
+            Previously the description was incorrectly quoting the `deliveryId` and `combinedDeliveriesId` fields. This has been corrected to `orderId` and `combinedOrdersId` respectively.  
+            Nothing has changed on the endpoint itself.
+
+
 
       ### Version [v1.3.0-rc.2] - Sep 15, 2023
 
@@ -958,7 +977,7 @@ tags:
       This can be done on both the **Software Service** (or **Ordering Application**) and the **Logistic Service** sides.
 
       To combine orders its necessary that at least one delivery is currently in progress.
-      When requesting for a new delivery, you need to inform the `deliveryId` field of the ongoing delivery in the `combinedDeliveryId` field of the new request.
+      When requesting for a new delivery, you need to inform the `orderId` of the ongoing deliveries in the `combinedOrdersIds` field of the new request.
 
       <div align="center">
         <img src="https://abrasel-nacional.github.io/docs/images/logisticsCombined.png" />
@@ -4097,6 +4116,9 @@ components:
           type: 'string'
           format: UUID
           description: 'This field must be filled in with the AppId of the **Ordering Application** that originated the order. This field is to help the applications that will work as a Hub, intermediating the requests from the **Ordering Application** with the **Software Service**.'
+        salesChannel:
+          type: 'string'
+          description: 'You can indicate through which sales channel this order originated.'          
         createdAt:
           type: 'string'
           format: date-time
