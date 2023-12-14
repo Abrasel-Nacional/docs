@@ -979,7 +979,7 @@ tags:
       When requesting for a new delivery, you need to inform the `orderId` of the ongoing deliveries in the `combinedOrdersIds` field of the new request.
 
       <div align="center">
-        <img src="https://abrasel-nacional.github.io/docs/images/logisticsCombined.png" />
+        <img src="https://abrasel-nacional.github.io/docs/versions/rc/images/logisticsCombined.png" />
       </div>
 
       > This combination will be subject to acceptance by the **Logistic Service**. 
