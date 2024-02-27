@@ -27,7 +27,7 @@ Thus, menus and orders are standardized and customer requests are received in a 
 Contains the specifications of the standards already published:  
 **MERCHANT** | **ORDERS** | **LOGISTICS**
 
-**[LATEST RELEASE - v1.2.0](https://abrasel-nacional.github.io/docs/)**
+**[LATEST RELEASE - v1.3.0](https://abrasel-nacional.github.io/docs/)**
 
 All Versions: 
 
