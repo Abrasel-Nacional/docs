@@ -1,43 +1,38 @@
-# Open Delivery Documentation (Redirect Repository)
+# Open Delivery Documentation
 
-This repository exists **solely for backward compatibility**.
+This repository exists to preserve **backward compatibility** with previously published links and bookmarks.
 
-The Open Delivery documentation has been moved to a new canonical location under the official **Open Delivery** repository and documentation site.
-
----
-
-## 📌 What happened?
-
-The original documentation repository was renamed in order to better reflect the scope and identity of the Open Delivery protocol.
-
-As part of this transition:
-
-- The documentation repository was renamed to **opendelivery**
-- A new protocol generation (Open Delivery v2) is being developed separately
-- This repository is kept only to preserve existing links and bookmarks
+The Open Delivery documentation was moved to a new repository name in order to better reflect the identity and scope of the Open Delivery protocol.
 
 ---
 
-## 🔀 Where is the documentation now?
+## 📌 What changed?
 
-👉 **Official documentation:**  
-https://docs.opendelivery.org *(or the current canonical URL)*
+The original documentation repository was renamed from `docs` to:
 
-👉 **Legacy repository (v1):**  
-https://github.com/Abrasel-Nacional/opendelivery
+👉 **https://github.com/Abrasel-Nacional/opendelivery**
 
-👉 **Current protocol development (v2):**  
-https://github.com/Abrasel-Nacional/opendelivery-v2
+This change improves clarity and consistency for contributors, integrators, and partners.
+
+---
+
+## 📖 Where is the documentation?
+
+The official Open Delivery documentation is now maintained in the following repository:
+
+👉 **https://github.com/Abrasel-Nacional/opendelivery**
+
+If you arrived here through an old link, please update your bookmarks.
 
 ---
 
 ## 🚫 Repository status
 
-- No content is maintained here
-- No issues or pull requests are accepted
-- This repository should not be used as a reference implementation
+- This repository is not actively maintained
+- No documentation updates happen here
+- Issues and pull requests are not monitored
 
-If you arrived here via an old link, please update your bookmarks.
+This repository is kept only to ensure that existing references continue to work.
 
 ---
 
